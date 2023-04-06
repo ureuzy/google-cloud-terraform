@@ -1,3 +1,3 @@
 module "organization" {
-  source = "./modules/org"
+  source = "./org"
 }

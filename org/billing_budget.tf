@@ -4,7 +4,7 @@ data "google_billing_account" "account" {
 
 resource "google_billing_budget" "budget" {
   billing_account = data.google_billing_account.account.id
-  display_name = "Example Billing Budget"
+  display_name = "Billing Budget"
   amount {
     specified_amount {
       currency_code = "JPY"
