@@ -8,7 +8,7 @@ resource "google_billing_budget" "budget" {
   amount {
     specified_amount {
       currency_code = "JPY"
-      units = "100000"
+      units = "10000"
     }
   }
   threshold_rules {
