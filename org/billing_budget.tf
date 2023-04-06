@@ -1,5 +1,5 @@
 data "google_billing_account" "account" {
-  billing_account = "0180E6-1F523F-8A7E63"
+  billing_account = var.billing_account
 }
 
 resource "google_billing_budget" "budget" {
