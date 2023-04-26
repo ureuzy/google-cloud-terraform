@@ -49,63 +49,31 @@ module "allowed_ingress_settings" {
   ]
 }
 
-module "allowed_enable_service_apis" {
-  source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+module "restricting_resource_for_system_project" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+  version = "5.2.2"
 
   policy_root    = "organization"
   policy_root_id = data.google_organization.ureuzy.org_id
-  constraint     = "constraints/serviceuser.services"
+  constraint     = "constraints/gcp.restrictServiceUsage"
   policy_type    = "list"
   rules = [
     {
       enforcement = true
-      allow       = [
-        "appengine.googleapis.com",
-        "artifactregistry.googleapis.com",
-        "bigquery.googleapis.com",
-        "bigquerymigration.googleapis.com",
-        "bigquerystorage.googleapis.com",
-        "billingbudgets.googleapis.com",
-        "cloudapis.googleapis.com",
-        "cloudbilling.googleapis.com",
-        "cloudbuild.googleapis.com",
+      allow = [
         "clouddebugger.googleapis.com",
-        "cloudfunctions.googleapis.com",
         "cloudkms.googleapis.com",
-        "cloudresourcemanager.googleapis.com",
         "cloudtrace.googleapis.com",
-        "containerregistry.googleapis.com",
         "datastore.googleapis.com",
-        "fcm.googleapis.com",
-        "fcmregistrations.googleapis.com",
-        "firebase.googleapis.com",
-        "firebaseappdistribution.googleapis.com",
-        "firebasedatabase.googleapis.com",
-        "firebasedynamiclinks.googleapis.com",
-        "firebasehosting.googleapis.com",
-        "firebaseinstallations.googleapis.com",
-        "firebaseremoteconfig.googleapis.com",
-        "firebaserules.googleapis.com",
-        "iamcredentials.googleapis.com",
-        "identitytoolkit.googleapis.com",
-        "logging.googleapis.com",
-        "mobilecrashreporting.googleapis.com",
-        "monitoring.googleapis.com",
-        "orgpolicy.googleapis.com",
-        "pubsub.googleapis.com",
-        "runtimeconfig.googleapis.com",
-        "securetoken.googleapis.com",
-        "servicemanagement.googleapis.com",
-        "serviceusage.googleapis.com",
-        "source.googleapis.com",
-        "sql-component.googleapis.com",
-        "storage-api.googleapis.com",
-        "storage-component.googleapis.com",
-        "storage.googleapis.com",
-        "testing.googleapis.com"
+        "storage.googleapis.com"
       ]
-      deny        = []
-      conditions  = []
+      deny = []
+      conditions = [{
+        description = "Limit resources used by system projects"
+        expression  = "resource.matchTag('948429943190/project', 'system')"
+        location    = ""
+        title       = "Limit resources used by system projects"
+      }]
     }
   ]
 }
