@@ -85,47 +85,43 @@ module "automatic_iam_grants_default_service_accounts" {
   ]
 }
 
-#module "restrict_resources_to_system_project" {
-#  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-#  version = "5.2.2"
-#
-#  policy_root    = "organization"
-#  policy_root_id = data.google_organization.ureuzy.org_id
-#  constraint     = "constraints/gcp.restrictServiceUsage"
-#  policy_type    = "list"
-#  rules = [
-#    {
-#      enforcement = true
-#      allow = [
-#        "cloudkms.googleapis.com",
-#        "storage.googleapis.com"
-#      ]
-#      deny = []
-#      conditions = [{
-#        description = "Limit resources used by system projects"
-#        expression  = "resource.matchTag('${data.google_organization.ureuzy.org_id}/project', 'system')"
-#        location    = ""
-#        title       = "Limit resources used by system projects"
-#      }]
-#    },
-#  ]
-#}
-#
-#module "restrict_resources_to_system_project_folder" {
-#  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-#  version = "5.2.2"
-#
-#  policy_root     = "organization"
-#  policy_root_id  = data.google_organization.ureuzy.org_id
-#  constraint      = "constraints/gcp.restrictServiceUsage"
-#  policy_type     = "list"
-#  exclude_folders = [data.google_folder.sample.folder_id]
-#  rules = [
-#    {
-#      enforcement = false
-#      allow       = []
-#      deny        = ["bigqueryreservation.googleapis.com"]
-#      conditions  = []
-#    }
-#  ]
-#}
+module "restrict_resources_to_system_project" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+  version = "5.2.2"
+
+  policy_root    = "organization"
+  policy_root_id = data.google_organization.ureuzy.org_id
+  constraint     = "constraints/gcp.restrictServiceUsage"
+  policy_type    = "list"
+  exclude_projects = [data.google_project.ureuzy.project_id]
+  rules = [
+    {
+      enforcement = true
+      allow = [
+        "cloudkms.googleapis.com",
+        "storage.googleapis.com"
+      ]
+      deny = []
+      conditions  = []
+    },
+  ]
+}
+
+module "deny_bigqueryreservation" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+  version = "5.2.2"
+
+  policy_root     = "organization"
+  policy_root_id  = data.google_organization.ureuzy.org_id
+  constraint      = "constraints/gcp.restrictServiceUsage"
+  policy_type     = "list"
+  exclude_folders = [data.google_folder.sample.folder_id]
+  rules = [
+    {
+      enforcement = true
+      allow       = []
+      deny        = ["bigqueryreservation.googleapis.com"]
+      conditions  = []
+    }
+  ]
+}

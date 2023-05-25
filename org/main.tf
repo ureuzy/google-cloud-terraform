@@ -6,3 +6,7 @@ data "google_folder" "sample" {
   folder              = "folders/1079656404947"
   lookup_organization = true
 }
+
+data "google_project" "ureuzy" {
+  project_id = "ureuzy"
+}
