@@ -8,7 +8,7 @@ module "allowed_policy_member_domains" {
   rules = [
     {
       enforcement = true
-      allow       = var.allowed_policy_member_domains
+      allow       = ["C03mi6sms"]
       deny        = []
       conditions  = []
     }
