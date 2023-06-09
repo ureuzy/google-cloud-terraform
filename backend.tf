@@ -3,7 +3,7 @@ terraform {
     organization = "ureuzy"
     hostname     = "app.terraform.io"
     workspaces {
-      name = "private-gcp"
+      name = "organization_gcp"
     }
   }
 }

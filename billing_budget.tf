@@ -1,5 +1,5 @@
 data "google_billing_account" "account" {
-  billing_account = var.billing_account
+  billing_account = data.sops_file.sops.data["billing_account"]
 }
 
 resource "google_billing_budget" "budget" {

@@ -1,4 +1,3 @@
-module "organization" {
-  source                        = "./org"
-  billing_account               = data.sops_file.sops.data["billing_account"]
+data "google_organization" "ureuzy" {
+  domain = "ureuzy.io"
 }
