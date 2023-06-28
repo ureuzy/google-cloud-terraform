@@ -8,6 +8,17 @@ resource "google_project" "ureuzy" {
   }
 }
 
+module "project-services" {
+  source     = "terraform-google-modules/project-factory/google//modules/project_services"
+  version    = "~> 14.2"
+  project_id = google_project.ureuzy.project_id
+  activate_apis = [
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "iam.googleapis.com",
+  ]
+}
+
 resource "google_project" "ureuzy_tmp" {
   name            = "ureuzy-tmp"
   project_id      = "ureuzy-tmp"
