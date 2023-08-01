@@ -17,3 +17,9 @@ resource "google_project_iam_member" "log-writer" {
   role    = "roles/logging.bucketWriter"
   member  = google_logging_organization_sink.audit_log.writer_identity
 }
+
+resource "google_logging_project_exclusion" "my-exclusion" {
+  name = "my-instance-debug-exclusion"
+  description = "Exclude GCE instance debug logs"
+  filter = "resource.type = gce_instance AND severity <= DEBUG"
+}
