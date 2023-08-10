@@ -2,7 +2,7 @@ resource "google_logging_project_bucket_config" "audit_log" {
   project        = google_project.ureuzy.id
   location       = "global"
   retention_days = 30
-  bucket_id      = "all-audit-logs-bucket"
+  bucket_id      = "all-audit-logs-bucket2"
 }
 
 resource "google_logging_organization_sink" "audit_log" {
