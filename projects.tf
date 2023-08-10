@@ -19,13 +19,6 @@ module "project-services" {
   ]
 }
 
-resource "google_logging_project_exclusion" "aggregationauditlog" {
-  name        = "excludeauditlogs"
-  project     = google_project.ureuzy.project_id
-  description = "Exclude audit logs"
-  filter      = "logName:cloudaudit.googleapis.com"
-}
-
 resource "google_project" "ureuzy_tmp" {
   name            = "ureuzy-tmp"
   project_id      = "ureuzy-tmp"
