@@ -17,3 +17,11 @@
 #  role    = "roles/logging.bucketWriter"
 #  member  = google_logging_organization_sink.audit_log.writer_identity
 #}
+
+resource "google_organization_iam_audit_config" "organization" {
+  org_id = data.google_organization.ureuzy.org_id
+  service = "iam.googleapis.com"
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+}
