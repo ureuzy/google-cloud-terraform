@@ -5,9 +5,19 @@
   ],
   "packageRules": [
     {
+      "groupName": "google provider",
       "matchManagers": ["terraform"],
-      "matchPackagePatterns": ["google"],
-      "groupName": "google provider"
+      "matchPackagePatterns": ["google"]
+    },
+    {
+      "groupName": "terraform",
+      "matchManagers": ["asdf"],
+      "matchPackageNames": ["terraform"]
+    },
+    {
+      "groupName": "terraform",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_version"]
     }
   ]
 }
