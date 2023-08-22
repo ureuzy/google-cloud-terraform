@@ -33,3 +33,15 @@ resource "google_logging_project_exclusion" "ureuzy-tmp" {
   description = "Exclude audit logs"
   filter = "logName:cloudaudit.googleapis.com"
 }
+
+resource "google_pubsub_topic" "main" {
+  name = "auditlogs_alert"
+  timeouts {}
+}
+
+resource "google_logging_project_sink" "auditlogs_alert" {
+  name = "auditlogs_alert"
+  destination = "pubsub.googleapis.com/${google_pubsub_topic.main.id}"
+  filter = "protoPayload.methodName: SetIamPolicy"
+  unique_writer_identity = true
+}
