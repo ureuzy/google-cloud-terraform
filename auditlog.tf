@@ -19,3 +19,17 @@ resource "google_project_iam_member" "log-writer" {
   role    = "roles/logging.bucketWriter"
   member  = google_logging_organization_sink.audit_log.writer_identity
 }
+
+resource "google_logging_project_exclusion" "ureuzy" {
+  name   = "auditlogs"
+  project = google_project.ureuzy.project_id
+  description = "Exclude audit logs"
+  filter = "logName:cloudaudit.googleapis.com"
+}
+
+resource "google_logging_project_exclusion" "ureuzy-tmp" {
+  name   = "auditlogs"
+  project = google_project.ureuzy_tmp.project_id
+  description = "Exclude audit logs"
+  filter = "logName:cloudaudit.googleapis.com"
+}
