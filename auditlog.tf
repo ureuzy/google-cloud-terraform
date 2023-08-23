@@ -21,27 +21,59 @@ resource "google_project_iam_member" "log-writer" {
 }
 
 resource "google_logging_project_exclusion" "ureuzy" {
-  name   = "auditlogs"
-  project = google_project.ureuzy.project_id
+  name        = "auditlogs"
+  project     = google_project.ureuzy.project_id
   description = "Exclude audit logs"
-  filter = "logName:cloudaudit.googleapis.com"
+  filter      = "logName:cloudaudit.googleapis.com"
 }
 
 resource "google_logging_project_exclusion" "ureuzy-tmp" {
-  name   = "auditlogs"
-  project = google_project.ureuzy_tmp.project_id
+  name        = "auditlogs"
+  project     = google_project.ureuzy_tmp.project_id
   description = "Exclude audit logs"
-  filter = "logName:cloudaudit.googleapis.com"
+  filter      = "logName:cloudaudit.googleapis.com"
 }
 
-resource "google_pubsub_topic" "main" {
-  name = "auditlogs_alert"
-  timeouts {}
-}
-
-resource "google_logging_project_sink" "auditlogs_alert" {
-  name = "auditlogs_alert"
-  destination = "pubsub.googleapis.com/${google_pubsub_topic.main.id}"
-  filter = "protoPayload.methodName: SetIamPolicy"
-  unique_writer_identity = true
-}
+# AuditLog Alert
+#resource "google_logging_project_sink" "auditlogs_alert" {
+#  name                   = "auditlogs_alert"
+#  destination            = "pubsub.googleapis.com/${google_pubsub_topic.main.id}"
+#  filter                 = "protoPayload.methodName: SetIamPolicy"
+#  unique_writer_identity = true
+#}
+#
+#resource "google_project_iam_member" "publisher" {
+#  project = google_project.ureuzy.id
+#  role    = "roles/pubsub.publisher"
+#  member  = google_logging_project_sink.auditlogs_alert.writer_identity
+#}
+#
+#resource "google_pubsub_topic" "main" {
+#  name = "auditlogs_alert"
+#  timeouts {}
+#}
+#
+#resource "google_eventarc_trigger" "main" {
+#  provider = google-beta
+#  name     = "test"
+#  location = "asia-northeast1"
+#  project  = google_project.ureuzy.project_id
+#  matching_criteria {
+#    attribute = "type"
+#    value     = "google.cloud.pubsub.topic.v1.messagePublished"
+#  }
+#  destination {
+#    cloud_run_service {
+#      path    = "/"
+#      region  = "asia-northeast1"
+#      service = "test"
+#    }
+#  }
+#  transport {
+#    pubsub {
+#      topic = google_pubsub_topic.main.id
+#    }
+#  }
+#  timeouts {}
+#  service_account = "375832898018-compute@developer.gserviceaccount.com"
+#}
