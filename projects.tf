@@ -16,6 +16,7 @@ module "project-services" {
     "compute.googleapis.com",
     "container.googleapis.com",
     "iam.googleapis.com",
+    "dataflow.googleapis.com"
   ]
 }
 
