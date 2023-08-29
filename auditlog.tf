@@ -9,7 +9,7 @@ resource "google_logging_organization_sink" "audit_log" {
   name             = "all-audit-logs-sink"
   description      = "All audit logs from my org log sink"
   org_id           = data.google_organization.ureuzy.org_id
-  destination      = "logging.googleapis.com/${google_logging_project_bucket_config.audit_log.id}"
+  destination      = "logging.googleapis.com/projects/ureuzy"
   include_children = true
   filter           = "logName:cloudaudit.googleapis.com"
 }
@@ -38,7 +38,7 @@ resource "google_logging_project_exclusion" "ureuzy-tmp" {
 resource "google_logging_project_sink" "auditlogs_alert" {
   name                   = "auditlogs_alert"
   destination            = "pubsub.googleapis.com/${google_pubsub_topic.main.id}"
-  filter                 = "protoPayload.methodName: SetIamPolicy"
+  filter                 = "protoPayload.methodName=\"SetIamPolicy\" OR protoPayload.methodName=\"google.cloud.bigquery.v2.JobService.InsertJob\""
   unique_writer_identity = true
 }
 

@@ -14,3 +14,27 @@
 #    }
 #  ]
 #}
+
+module "allowed_policy_member_domains" {
+  source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+
+  policy_root    = "project"
+  policy_root_id = google_project.ureuzy.project_id
+  constraint     = "constraints/gcp.restrictServiceUsage"
+  policy_type    = "list"
+  rules = [
+    {
+      enforcement = true
+      allow       = [
+        "cloudkms.googleapis.com",
+        "storage.googleapis.com",
+        "cloudbuild.googleapis.com",
+        "cloudfunctions.googleapis.com",
+        "pubsub.googleapis.com",
+        "run.googleapis.com",
+      ]
+      deny        = []
+      conditions  = []
+    }
+  ]
+}
