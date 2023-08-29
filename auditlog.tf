@@ -48,9 +48,26 @@ resource "google_project_iam_member" "publisher" {
   member  = google_logging_project_sink.auditlogs_alert.writer_identity
 }
 
+resource "google_kms_key_ring" "pubsub_keyring" {
+  name     = "pubsub_keyring"
+  location = "global"
+}
+
+resource "google_kms_crypto_key" "pubsub_key" {
+  name            = "pubsub_key"
+  key_ring        = google_kms_key_ring.pubsub_keyring.id
+}
+
+resource "google_kms_crypto_key_iam_member" "crypto_key" {
+  crypto_key_id = google_kms_crypto_key.pubsub_key.id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:service-${google_project.ureuzy.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+}
+
 resource "google_pubsub_topic" "main" {
   name = "auditlogs_alert"
-  timeouts {}
+  kms_key_name = google_kms_crypto_key.pubsub_key.id
+  depends_on = [google_kms_crypto_key_iam_member.crypto_key]
 }
 
 resource "google_service_account" "eventarc" {
