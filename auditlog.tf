@@ -53,6 +53,17 @@ resource "google_pubsub_topic" "main" {
   timeouts {}
 }
 
+resource "google_service_account" "eventarc" {
+  account_id   = "eventarc"
+  display_name = "Eventarc Trigger"
+}
+
+resource "google_project_iam_member" "sample" {
+  project = google_project.ureuzy.id
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.eventarc.email}"
+}
+
 resource "google_eventarc_trigger" "main" {
   name     = "test"
   location = "asia-northeast1"
@@ -74,4 +85,5 @@ resource "google_eventarc_trigger" "main" {
     }
   }
   timeouts {}
+  service_account = google_service_account.eventarc.email
 }
