@@ -32,6 +32,7 @@
 #        "cloudfunctions.googleapis.com",
 #        "pubsub.googleapis.com",
 #        "run.googleapis.com",
+#        "eventarc.googleapis.com"
 #      ]
 #      deny        = []
 #      conditions  = []
