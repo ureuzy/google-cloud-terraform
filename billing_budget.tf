@@ -1,3 +1,7 @@
+data "google_billing_account" "account" {
+  billing_account = data.sops_file.sops.data["billing_account"]
+}
+
 resource "google_billing_budget" "budget" {
   billing_account = data.google_billing_account.account.id
   display_name = "Billing Budget"
