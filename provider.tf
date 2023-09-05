@@ -1,3 +1,1 @@
-provider "google" {
-  project = "ureuzy"
-}
+provider "google" {}
