@@ -100,3 +100,12 @@ resource "google_organization_iam_member" "domain" {
   role   = each.key
   member = "domain:ureuzy.io"
 }
+
+resource "google_project_iam_member" "gha_workload_identity" {
+  for_each = toset([
+    "roles/cloudfunctions.admin"
+  ])
+  project = google_project.org_system.id
+  role    = "roles/cloudfunctions.admin"
+  member  = "serviceAccount:${google_service_account.gha_workload_identity.email}"
+}

@@ -1,4 +1,4 @@
-resource "google_service_account" "service_account" {
+resource "google_service_account" "gha_workload_identity" {
   project      = google_project.org_system.project_id
   account_id   = "gha-account"
   display_name = "GitHub Actions"
