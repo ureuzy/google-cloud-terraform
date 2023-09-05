@@ -80,12 +80,6 @@ resource "google_pubsub_topic" "main" {
   depends_on   = [google_kms_crypto_key_iam_member.crypto_key]
 }
 
-resource "google_service_account" "eventarc" {
-  project      = google_project.org_system.project_id
-  account_id   = "eventarc"
-  display_name = "Eventarc Trigger"
-}
-
 resource "google_project_iam_member" "sample" {
   project = google_project.org_system.id
   role    = "roles/run.invoker"
