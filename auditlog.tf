@@ -57,7 +57,7 @@ resource "google_project_iam_member" "publisher" {
 }
 
 resource "google_kms_key_ring" "pubsub_keyring" {
-  project  = google_project.org_system.id
+  project  = google_project.org_system.project_id
   name     = "pubsub_keyring"
   location = "global"
 }
@@ -70,18 +70,18 @@ resource "google_kms_crypto_key" "pubsub_key" {
 resource "google_kms_crypto_key_iam_member" "crypto_key" {
   crypto_key_id = google_kms_crypto_key.pubsub_key.id
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = "serviceAccount:service-${google_project.ureuzy.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+  member        = "serviceAccount:service-${google_project.org_system.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
 
 resource "google_pubsub_topic" "main" {
   name         = "auditlogs_alert"
-  project      = google_project.org_system.id
+  project      = google_project.org_system.project_id
   kms_key_name = google_kms_crypto_key.pubsub_key.id
   depends_on   = [google_kms_crypto_key_iam_member.crypto_key]
 }
 
 resource "google_service_account" "eventarc" {
-  project      = google_project.org_system.id
+  project      = google_project.org_system.project_id
   account_id   = "eventarc"
   display_name = "Eventarc Trigger"
 }
