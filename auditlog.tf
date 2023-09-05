@@ -27,14 +27,14 @@ resource "google_logging_project_exclusion" "ureuzy" {
   filter      = "logName:cloudaudit.googleapis.com"
 }
 
-resource "google_logging_project_exclusion" "ureuzy-tmp" {
+resource "google_logging_project_exclusion" "ureuzy_tmp" {
   project     = google_project.ureuzy_tmp.project_id
   name        = "auditlogs"
   description = "Exclude audit logs"
   filter      = "logName:cloudaudit.googleapis.com"
 }
 
-resource "google_logging_project_exclusion" "ureuzy-tmp" {
+resource "google_logging_project_exclusion" "org_system" {
   project     = google_project.org_system.project_id
   name        = "auditlogs"
   description = "Exclude audit logs"
