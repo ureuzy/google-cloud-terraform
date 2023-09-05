@@ -43,6 +43,7 @@ module "project-services" {
     "pubsub.googleapis.com",
     "artifactregistry.googleapis.com",
     "secretmanager.googleapis.com",
-    "eventarc.googleapis.com"
+    "eventarc.googleapis.com",
+    "cloudkms.googleapis.com"
   ]
 }
