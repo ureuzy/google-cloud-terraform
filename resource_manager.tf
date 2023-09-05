@@ -37,8 +37,8 @@ module "project-services" {
 }
 
 resource "google_project" "org_system" {
-  name            = "org-system"
-  project_id      = "org-system"
+  name            = "ureuzy-org-system"
+  project_id      = "ureuzy-org-system"
   org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
 }
