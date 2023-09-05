@@ -104,7 +104,7 @@ resource "google_eventarc_trigger" "main" {
     cloud_run_service {
       path    = "/"
       region  = "asia-northeast1"
-      service = "test"
+      service = "audit-alert"
     }
   }
   transport {
