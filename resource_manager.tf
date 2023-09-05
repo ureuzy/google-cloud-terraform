@@ -24,21 +24,25 @@ resource "google_project" "ureuzy_tmp" {
   billing_account = data.google_billing_account.account.id
 }
 
-module "project-services" {
-  source        = "terraform-google-modules/project-factory/google//modules/project_services"
-  version       = "~> 14.2"
-  project_id    = google_project.ureuzy.project_id
-  activate_apis = [
-    "compute.googleapis.com",
-    "container.googleapis.com",
-    "iam.googleapis.com",
-    "dataflow.googleapis.com"
-  ]
-}
-
 resource "google_project" "org_system" {
   name            = "ureuzy-org-system"
   project_id      = "ureuzy-org-system"
   org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
+}
+
+module "project-services" {
+  source        = "terraform-google-modules/project-factory/google//modules/project_services"
+  version       = "~> 14.2"
+  project_id    = google_project.org_system.project_id
+  activate_apis = [
+    "iam.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "run.googleapis.com",
+    "pubsub.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "secretmanager.googleapis.com",
+    "eventarc.googleapis.com"
+  ]
 }
