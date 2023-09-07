@@ -1,10 +1,10 @@
 ### Audit Log Aggregation Sink
-resource "google_logging_project_bucket_config" "audit_log" {
-  project        = google_project.org_system.project_id
-  location       = "global"
-  retention_days = 30
-  bucket_id      = "all-audit-logs-bucket"
-}
+#resource "google_logging_project_bucket_config" "audit_log" {
+#  project        = google_project.org_system.project_id
+#  location       = "global"
+#  retention_days = 30
+#  bucket_id      = "all-audit-logs-bucket"
+#}
 
 resource "google_logging_organization_sink" "audit_log" {
   org_id           = data.google_organization.ureuzy.org_id
@@ -18,8 +18,7 @@ resource "google_logging_organization_sink" "audit_log" {
 resource "google_logging_project_exclusion" "audit_log" {
   for_each = toset([
     google_project.ureuzy.project_id,
-    google_project.ureuzy_tmp.project_id,
-    google_project.org_system.project_id
+    google_project.ureuzy_tmp.project_id
   ])
   project     = each.value
   name        = "auditlogs"
