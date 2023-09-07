@@ -101,11 +101,37 @@ resource "google_organization_iam_member" "domain" {
   member = "domain:ureuzy.io"
 }
 
-resource "google_project_iam_member" "gha_workload_identity" {
+### Workload Identity User for GitHub Actions
+
+resource "google_service_account" "gha" {
+  project      = google_project.org_system.project_id
+  account_id   = "gha-account"
+  display_name = "Github Actions"
+  description  = "Github Actions"
+}
+
+resource "google_project_iam_member" "gha" {
   for_each = toset([
-    "roles/cloudfunctions.admin"
+    "roles/cloudfunctions.developer",
+    "roles/run.developer",
+    "roles/iam.serviceAccountUser"
   ])
-  project = google_project.org_system.id
-  role    = "roles/cloudfunctions.admin"
-  member  = "serviceAccount:${google_service_account.gha_workload_identity.email}"
+
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.gha.email}"
+}
+
+data "google_iam_policy" "policy" {
+  binding {
+    role = "roles/iam.workloadIdentityUser"
+    members = [
+      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.pool.name}/attribute.repository/ureuzy/cloud_functions",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "binding" {
+  service_account_id = google_service_account.gha.name
+  policy_data        = data.google_iam_policy.policy.policy_data
 }
