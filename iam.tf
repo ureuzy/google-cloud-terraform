@@ -101,30 +101,49 @@ resource "google_organization_iam_member" "domain" {
   member = "domain:ureuzy.io"
 }
 
-### Workload Identity User for GitHub Actions
+### Audit Log Aggregation Sink
+resource "google_project_iam_member" "log-writer" {
+  project = google_project.org_system.id
+  role    = "roles/logging.bucketWriter"
+  member  = google_logging_organization_sink.audit_log.writer_identity
+}
 
-#resource "google_project_iam_member" "gha" {
-#  for_each = toset([
-#    "roles/cloudfunctions.developer",
-#    "roles/run.developer",
-#    "roles/iam.serviceAccountUser"
-#  ])
-#
-#  project = google_project.org_system.project_id
-#  role    = each.value
-#  member  = "serviceAccount:${google_service_account.gha.email}"
-#}
-#
-#data "google_iam_policy" "policy" {
-#  binding {
-#    role = "roles/iam.workloadIdentityUser"
-#    members = [
-#      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.pool.name}/attribute.repository/ureuzy/cloud_functions",
-#    ]
-#  }
-#}
-#
-#resource "google_service_account_iam_policy" "binding" {
-#  service_account_id = google_service_account.gha.name
-#  policy_data        = data.google_iam_policy.policy.policy_data
-#}
+### Audit Log Alert
+resource "google_project_iam_member" "publisher" {
+  project = google_project.org_system.id
+  role    = "roles/pubsub.publisher"
+  member  = google_logging_project_sink.auditlogs_alert.writer_identity
+}
+
+resource "google_project_iam_member" "invoker" {
+  project = google_project.org_system.id
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.eventarc.email}"
+}
+
+### Workload Identity User for GitHub Actions
+resource "google_project_iam_member" "gha" {
+  for_each = toset([
+    "roles/cloudfunctions.developer",
+    "roles/run.developer",
+    "roles/iam.serviceAccountUser"
+  ])
+
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.gha.email}"
+}
+
+data "google_iam_policy" "policy" {
+  binding {
+    role = "roles/iam.workloadIdentityUser"
+    members = [
+      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.pool.name}/attribute.repository/ureuzy/cloud_functions",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "binding" {
+  service_account_id = google_service_account.gha.name
+  policy_data        = data.google_iam_policy.policy.policy_data
+}

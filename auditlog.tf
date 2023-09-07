@@ -1,3 +1,4 @@
+### Audit Log Aggregation Sink
 resource "google_logging_project_bucket_config" "audit_log" {
   project        = google_project.org_system.project_id
   location       = "global"
@@ -14,46 +15,25 @@ resource "google_logging_organization_sink" "audit_log" {
   filter           = "logName:cloudaudit.googleapis.com"
 }
 
-resource "google_project_iam_member" "log-writer" {
-  project = google_project.org_system.id
-  role    = "roles/logging.bucketWriter"
-  member  = google_logging_organization_sink.audit_log.writer_identity
-}
-
-resource "google_logging_project_exclusion" "ureuzy" {
-  project     = google_project.ureuzy.project_id
+resource "google_logging_project_exclusion" "audit_log" {
+  for_each = toset([
+    google_project.ureuzy.project_id,
+    google_project.ureuzy_tmp.project_id,
+    google_project.org_system.project_id
+  ])
+  project     = each.value
   name        = "auditlogs"
   description = "Exclude audit logs"
   filter      = "logName:cloudaudit.googleapis.com"
 }
 
-resource "google_logging_project_exclusion" "ureuzy_tmp" {
-  project     = google_project.ureuzy_tmp.project_id
-  name        = "auditlogs"
-  description = "Exclude audit logs"
-  filter      = "logName:cloudaudit.googleapis.com"
-}
-
-resource "google_logging_project_exclusion" "org_system" {
-  project     = google_project.org_system.project_id
-  name        = "auditlogs"
-  description = "Exclude audit logs"
-  filter      = "logName:cloudaudit.googleapis.com"
-}
-
-# AuditLog Alert
+### AuditLog Alert
 resource "google_logging_project_sink" "auditlogs_alert" {
-  project = google_project.org_system.project_id
+  project                = google_project.org_system.project_id
   name                   = "auditlogs_alert"
   destination            = "pubsub.googleapis.com/${google_pubsub_topic.main.id}"
   filter                 = "protoPayload.methodName=\"SetIamPolicy\" OR protoPayload.methodName=\"google.cloud.bigquery.v2.JobService.InsertJob\""
   unique_writer_identity = true
-}
-
-resource "google_project_iam_member" "publisher" {
-  project = google_project.org_system.id
-  role    = "roles/pubsub.publisher"
-  member  = google_logging_project_sink.auditlogs_alert.writer_identity
 }
 
 resource "google_kms_key_ring" "pubsub_keyring" {
@@ -78,12 +58,6 @@ resource "google_pubsub_topic" "main" {
   project      = google_project.org_system.project_id
   kms_key_name = google_kms_crypto_key.pubsub_key.id
   depends_on   = [google_kms_crypto_key_iam_member.crypto_key]
-}
-
-resource "google_project_iam_member" "sample" {
-  project = google_project.org_system.id
-  role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.eventarc.email}"
 }
 
 resource "google_eventarc_trigger" "main" {
