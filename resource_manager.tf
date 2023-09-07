@@ -37,6 +37,9 @@ module "project-services" {
   project_id    = google_project.org_system.project_id
   activate_apis = [
     "iam.googleapis.com",
+    "cloudbilling.googleapis.com",
+    "billingbudgets.googleapis.com",
+    "serviceusage.googleapis.com",
     "cloudbuild.googleapis.com",
     "cloudfunctions.googleapis.com",
     "run.googleapis.com",
