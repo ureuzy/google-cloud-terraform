@@ -18,7 +18,7 @@ resource "google_logging_organization_sink" "audit_log" {
 resource "google_logging_project_exclusion" "audit_log" {
   for_each = toset([
     google_project.ureuzy.project_id,
-    google_project.ureuzy_tmp.project_id
+    google_project.exam.project_id
   ])
   project     = each.value
   name        = "auditlogs"
@@ -26,10 +26,7 @@ resource "google_logging_project_exclusion" "audit_log" {
   filter      = "logName:cloudaudit.googleapis.com"
 }
 
-import {
-  id = "projects/ureuzy-org-system/sinks/_Default"
-  to = google_logging_project_sink.default
-}
+// require before import
 resource "google_logging_project_sink" "default" {
   name                   = "_Default"
   destination            = "logging.googleapis.com/projects/ureuzy-org-system/locations/global/buckets/_Default"
