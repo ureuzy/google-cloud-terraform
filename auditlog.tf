@@ -26,6 +26,18 @@ resource "google_logging_project_exclusion" "audit_log" {
   filter      = "logName:cloudaudit.googleapis.com"
 }
 
+import {
+  id = "projects/ureuzy-org-system/sinks/_Default"
+  to = google_logging_project_sink.default
+}
+resource "google_logging_project_sink" "default" {
+  name                   = "_Default"
+  destination            = "logging.googleapis.com/projects/ureuzy-org-system/locations/global/buckets/_Default"
+  description            = ""
+  filter                 = ""
+  unique_writer_identity = true
+}
+
 ### AuditLog Alert
 resource "google_logging_project_sink" "auditlogs_alert" {
   project                = google_project.org_system.project_id
