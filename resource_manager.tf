@@ -12,7 +12,7 @@ resource "google_project" "ureuzy" {
   project_id      = "ureuzy"
   folder_id       = google_folder.projects.name
   billing_account = data.google_billing_account.account.id
-  labels          = {
+  labels = {
     "firebase" = "enabled"
   }
 }
@@ -32,9 +32,9 @@ resource "google_project" "org_system" {
 }
 
 module "project-services" {
-  source        = "terraform-google-modules/project-factory/google//modules/project_services"
-  version       = "~> 14.2"
-  project_id    = google_project.org_system.project_id
+  source     = "terraform-google-modules/project-factory/google//modules/project_services"
+  version    = "~> 14.2"
+  project_id = google_project.org_system.project_id
   activate_apis = [
     "iam.googleapis.com",
     "cloudbilling.googleapis.com",
