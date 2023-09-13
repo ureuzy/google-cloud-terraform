@@ -141,7 +141,7 @@ data "google_iam_policy" "audit_alert_functions" {
 
 resource "google_service_account_iam_policy" "sa_account_binding" {
   service_account_id = google_service_account.audit_alert_functions.name
-  policy_data        = data.google_iam_policy.policy.policy_data
+  policy_data        = data.google_iam_policy.audit_alert_functions.policy_data
 }
 
 ### Workload Identity User for GitHub Actions
