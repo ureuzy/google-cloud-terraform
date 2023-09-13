@@ -121,12 +121,34 @@ resource "google_project_iam_member" "invoker" {
   member  = "serviceAccount:${google_service_account.eventarc.email}"
 }
 
+resource "google_project_iam_member" "audit_alert_functions" {
+  for_each = toset([
+    "roles/secretmanager.secretAccessor"
+  ])
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.audit_alert_functions.email}"
+}
+
+data "google_iam_policy" "audit_alert_functions" {
+  binding {
+    role    = "roles/iam.serviceAccountUser"
+    members = [
+      "serviceAccount:${google_service_account.gha.email}"
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "sa_account_binding" {
+  service_account_id = google_service_account.audit_alert_functions.name
+  policy_data        = data.google_iam_policy.policy.policy_data
+}
+
 ### Workload Identity User for GitHub Actions
 resource "google_project_iam_member" "gha" {
   for_each = toset([
     "roles/cloudfunctions.developer",
-    "roles/run.developer",
-    "roles/iam.serviceAccountUser"
+    "roles/run.developer"
   ])
 
   project = google_project.org_system.project_id
@@ -136,7 +158,7 @@ resource "google_project_iam_member" "gha" {
 
 data "google_iam_policy" "policy" {
   binding {
-    role = "roles/iam.workloadIdentityUser"
+    role    = "roles/iam.workloadIdentityUser"
     members = [
       "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.pool.name}/attribute.repository/ureuzy/cloud_functions",
     ]
