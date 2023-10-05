@@ -41,3 +41,21 @@
 #    }
 #  ]
 #}
+
+module "cloudfunctions_allowed_ingress_settings" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+  version = "5.2.2"
+
+  policy_root    = "organization"
+  policy_root_id = data.google_organization.ureuzy.org_id
+  constraint     = "constraints/cloudfunctions.allowedIngressSettings"
+  policy_type    = "list"
+  rules = [
+    {
+      enforcement = true
+      allow       = ["ALLOW_ALL", "ALLOW_INTERNAL_ONLY"]
+      deny        = []
+      conditions  = []
+    }
+  ]
+}
