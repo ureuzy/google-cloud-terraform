@@ -1,19 +1,32 @@
-#module "allowed_policy_member_domains" {
-#  source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-#
-#  policy_root    = "organization"
-#  policy_root_id = data.google_organization.ureuzy.org_id
-#  constraint     = "constraints/iam.allowedPolicyMemberDomains"
-#  policy_type    = "list"
-#  rules = [
-#    {
-#      enforcement = true
-#      allow       = ["C03mi6sms"]
-#      deny        = []
-#      conditions  = []
-#    }
-#  ]
-#}
+
+resource "google_tags_tag_key" "all_users_ingress" {
+  parent      = data.google_organization.ureuzy.name
+  short_name  = "allUsersIngress"
+  description = "All users ingress"
+}
+
+resource "google_tags_tag_value" "all_users_ingress" {
+  parent      = "tagKeys/${google_tags_tag_key.all_users_ingress.name}"
+  short_name  = "true"
+  description = "Allowed all users ingress"
+}
+
+module "allowed_policy_member_domains" {
+  source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+
+  policy_root    = "organization"
+  policy_root_id = data.google_organization.ureuzy.org_id
+  constraint     = "constraints/iam.allowedPolicyMemberDomains"
+  policy_type    = "list"
+  rules = [
+    {
+      enforcement = true
+      allow       = ["C03mi6sms"]
+      deny        = []
+      conditions  = []
+    }
+  ]
+}
 
 #module "allowed_service_usage" {
 #  source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
@@ -50,7 +63,7 @@ module "cloudfunctions_allowed_ingress_settings" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/cloudfunctions.allowedIngressSettings"
   policy_type    = "list"
-  rules = [
+  rules          = [
     {
       enforcement = true
       allow       = ["ALLOW_ALL", "ALLOW_INTERNAL_ONLY"]
