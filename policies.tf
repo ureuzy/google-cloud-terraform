@@ -1,4 +1,3 @@
-
 resource "google_tags_tag_key" "all_users_ingress" {
   parent      = data.google_organization.ureuzy.name
   short_name  = "allUsersIngress"
@@ -6,7 +5,7 @@ resource "google_tags_tag_key" "all_users_ingress" {
 }
 
 resource "google_tags_tag_value" "all_users_ingress" {
-  parent      = "tagKeys/${google_tags_tag_key.all_users_ingress.name}"
+  parent      = google_tags_tag_key.all_users_ingress.id
   short_name  = "true"
   description = "Allowed all users ingress"
 }
@@ -18,7 +17,7 @@ module "allowed_policy_member_domains" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/iam.allowedPolicyMemberDomains"
   policy_type    = "list"
-  rules = [
+  rules          = [
     {
       enforcement = true
       allow       = ["C03mi6sms"]
@@ -26,15 +25,17 @@ module "allowed_policy_member_domains" {
       conditions  = []
     },
     {
-      enforcement = false
+      enforcement = true
       allow       = []
       deny        = []
-      conditions  = [{
-        description = "Allowed all users ingress"
-        expression  = "resource.matchTagId('${google_tags_tag_key.all_users_ingress.id}', '${google_tags_tag_value.all_users_ingress.id}')"
-        location    = "all-users-ingress.log"
-        title       = "Allowed all users ingress"
-      }]
+      conditions  = [
+        {
+          description = "Allowed all users ingress"
+          expression  = "resource.matchTagId('${google_tags_tag_key.all_users_ingress.id}', '${google_tags_tag_value.all_users_ingress.id}')"
+          location    = "all-users-ingress.log"
+          title       = "Allowed all users ingress"
+        }
+      ]
     }
   ]
 }
@@ -77,9 +78,22 @@ module "cloudfunctions_allowed_ingress_settings" {
   rules          = [
     {
       enforcement = true
-      allow       = ["ALLOW_ALL", "ALLOW_INTERNAL_ONLY"]
+      allow       = ["ALLOW_ALL"]
       deny        = []
       conditions  = []
+    },
+    {
+      enforcement = false
+      allow       = []
+      deny        = []
+      conditions  = [
+        {
+          description = "Allowed all users ingress"
+          expression  = "resource.matchTagId('${google_tags_tag_key.all_users_ingress.id}', '${google_tags_tag_value.all_users_ingress.id}')"
+          location    = "all-users-ingress.log"
+          title       = "Allowed all users ingress"
+        }
+      ]
     }
   ]
 }
