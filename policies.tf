@@ -24,6 +24,17 @@ module "allowed_policy_member_domains" {
       allow       = ["C03mi6sms"]
       deny        = []
       conditions  = []
+    },
+    {
+      enforcement = false
+      allow       = []
+      deny        = []
+      conditions  = [{
+        description = "Allowed all users ingress"
+        expression  = "resource.matchTagId('${google_tags_tag_key.all_users_ingress.id}', '${google_tags_tag_value.all_users_ingress.id}')"
+        location    = "all-users-ingress.log"
+        title       = "Allowed all users ingress"
+      }]
     }
   ]
 }
