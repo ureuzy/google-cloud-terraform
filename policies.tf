@@ -25,7 +25,7 @@ module "allowed_policy_member_domains" {
       conditions  = []
     },
     {
-      enforcement = true
+      enforcement = false
       allow       = []
       deny        = []
       conditions  = [
