@@ -10,6 +10,12 @@ resource "google_tags_tag_value" "all_users_ingress" {
   description = "Allowed all users ingress"
 }
 
+resource "google_tags_location_tag_binding" "binding" {
+  parent = "//run.googleapis.com/projects/ureuzy-org-system/locations/asia-northeast1/services/audit-alert"
+  tag_value = "tagValues/${google_tags_tag_value.all_users_ingress.name}"
+  location  = "asia-northeast1"
+}
+
 module "allowed_policy_member_domains" {
   source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
 
@@ -25,8 +31,8 @@ module "allowed_policy_member_domains" {
       conditions  = []
     },
     {
-      enforcement = false
-      allow       = []
+      enforcement = true
+      allow       = ["C03mi6sms"]
       deny        = []
       conditions  = [
         {
