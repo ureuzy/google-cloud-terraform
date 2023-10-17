@@ -91,3 +91,11 @@ resource "google_eventarc_trigger" "main" {
   timeouts {}
   service_account = google_service_account.eventarc.email
 }
+
+resource "google_organization_iam_audit_config" "organization" {
+  org_id = data.google_organization.ureuzy.org_id
+  service = "iam.googleapis.com"
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+}
