@@ -73,7 +73,19 @@ module "allowed_policy_member_domains" {
 #  ]
 #}
 
-module "allow_create_wi_pool_providers" {
+resource "google_tags_tag_key" "ignore_wi_pool_providers" {
+  parent      = data.google_organization.ureuzy.name
+  short_name  = "ignoreWorkloadIdentityPoolProviders"
+  description = "Ignore external identity providers policy restrictions"
+}
+
+resource "google_tags_tag_value" "ignore_wi_pool_providers" {
+  parent      = google_tags_tag_key.ignore_wi_pool_providers.id
+  short_name  = "true"
+  description = "Ignore external identity providers policy restrictions"
+}
+
+module "allowed_external_identity_providers" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
   version = "5.2.2"
 
@@ -87,6 +99,19 @@ module "allow_create_wi_pool_providers" {
       allow       = []
       deny        = []
       conditions  = []
+    },
+    {
+      enforcement = false
+      allow       = []
+      deny        = []
+      conditions  = [
+        {
+          description = "Ignore external identity providers policy restrictions by tag"
+          expression  = "resource.matchTagId('${google_tags_tag_key.ignore_wi_pool_providers.id}', '${google_tags_tag_value.ignore_wi_pool_providers.id}')"
+          location    = "ignore-wi-pool-providers-policy.log"
+          title       = "Ignore external identity providers policy restrictions by tag"
+        }
+      ]
     }
   ]
 }
