@@ -73,6 +73,24 @@ module "allowed_policy_member_domains" {
 #  ]
 #}
 
+module "allow_create_wi_pool_providers" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+  version = "5.2.2"
+
+  policy_root    = "organization"
+  policy_root_id = data.google_organization.ureuzy.org_id
+  constraint     = "constraints/iam.workloadIdentityPoolProviders"
+  policy_type    = "list"
+  rules          = [
+    {
+      enforcement = true
+      allow       = []
+      deny        = []
+      conditions  = []
+    }
+  ]
+}
+
 module "cloudfunctions_allowed_ingress_settings" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
   version = "5.2.2"
