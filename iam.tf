@@ -151,7 +151,7 @@ resource "google_project_iam_member" "gha" {
     "roles/run.developer"
   ])
 
-  project = google_project.wi_provider_mgmt.project_id
+  project = google_project.org_system.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.gha.email}"
 }
