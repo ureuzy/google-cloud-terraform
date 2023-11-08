@@ -1,12 +1,12 @@
 resource "google_iam_workload_identity_pool" "pool" {
-  project                   = google_project.org_system.project_id
+  project                   = google_project.wi_provider_mgmt.project_id
   disabled                  = false
   display_name              = "github-actions"
   workload_identity_pool_id = "github-actions"
 }
 
 resource "google_iam_workload_identity_pool_provider" "provider" {
-  project                            = google_project.org_system.project_id
+  project                            = google_project.wi_provider_mgmt.project_id
   disabled                           = false
   display_name                       = "github"
   workload_identity_pool_id          = google_iam_workload_identity_pool.pool.workload_identity_pool_id
