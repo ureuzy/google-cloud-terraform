@@ -46,45 +46,6 @@ module "allowed_policy_member_domains" {
   ]
 }
 
-#module "allowed_service_usage" {
-#  source = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-#
-#  policy_root    = "project"
-#  policy_root_id = google_project.org_system.project_id
-#  constraint     = "constraints/gcp.restrictServiceUsage"
-#  policy_type    = "list"
-#  rules = [
-#    {
-#      enforcement = true
-#      allow       = [
-#        "cloudkms.googleapis.com",
-#        "storage.googleapis.com",
-#        "cloudbuild.googleapis.com",
-#        "cloudfunctions.googleapis.com",
-#        "pubsub.googleapis.com",
-#        "run.googleapis.com",
-#        "eventarc.googleapis.com",
-#        "artifactregistry.googleapis.com",
-#        "secretmanager.googleapis.com"
-#      ]
-#      deny        = []
-#      conditions  = []
-#    }
-#  ]
-#}
-
-#resource "google_tags_tag_key" "ignore_wi_pool_providers" {
-#  parent      = data.google_organization.ureuzy.name
-#  short_name  = "ignoreWorkloadIdentityPoolProviders"
-#  description = "Ignore external identity providers policy restrictions"
-#}
-#
-#resource "google_tags_tag_value" "ignore_wi_pool_providers" {
-#  parent      = google_tags_tag_key.ignore_wi_pool_providers.id
-#  short_name  = "true"
-#  description = "Ignore external identity providers policy restrictions"
-#}
-
 module "allowed_external_identity_providers" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
   version = "5.2.2"
@@ -93,7 +54,7 @@ module "allowed_external_identity_providers" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/iam.workloadIdentityPoolProviders"
   policy_type    = "list"
-  exclude_projects = [google_project.org_system.project_id]
+  exclude_projects = [google_project.wi_provider_mgmt.project_id]
   rules          = [
     {
       enforcement = false
