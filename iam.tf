@@ -151,7 +151,7 @@ resource "google_project_iam_member" "gha" {
     "roles/run.developer"
   ])
 
-  project = google_project.org_system.project_id
+  project = google_project.wi_provider_mgmt.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.gha.email}"
 }
@@ -166,7 +166,6 @@ data "google_iam_policy" "policy" {
 }
 
 resource "google_service_account_iam_policy" "binding" {
-  provider           = google.wi-provider-mgmt
   service_account_id = google_service_account.gha.name
   policy_data        = data.google_iam_policy.policy.policy_data
 }

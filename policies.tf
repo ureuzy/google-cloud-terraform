@@ -11,7 +11,7 @@ resource "google_tags_tag_value" "all_users_ingress" {
 }
 
 resource "google_tags_location_tag_binding" "binding" {
-  parent = "//run.googleapis.com/projects/ureuzy-org-system/locations/asia-northeast1/services/audit-alert"
+  parent    = "//run.googleapis.com/projects/ureuzy-org-system/locations/asia-northeast1/services/audit-alert"
   tag_value = "tagValues/${google_tags_tag_value.all_users_ingress.name}"
   location  = "asia-northeast1"
 }
@@ -31,8 +31,8 @@ module "allowed_policy_member_domains" {
       conditions  = []
     },
     {
-      enforcement = true
-      allow       = ["C03mi6sms"]
+      enforcement = false
+      allow       = []
       deny        = []
       conditions  = [
         {
@@ -50,12 +50,12 @@ module "allowed_external_identity_providers" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
   version = "5.2.2"
 
-  policy_root    = "organization"
-  policy_root_id = data.google_organization.ureuzy.org_id
-  constraint     = "constraints/iam.workloadIdentityPoolProviders"
-  policy_type    = "list"
+  policy_root      = "organization"
+  policy_root_id   = data.google_organization.ureuzy.org_id
+  constraint       = "constraints/iam.workloadIdentityPoolProviders"
+  policy_type      = "list"
   exclude_projects = [google_project.wi_provider_mgmt.project_id]
-  rules          = [
+  rules            = [
     {
       enforcement = false
       allow       = []
