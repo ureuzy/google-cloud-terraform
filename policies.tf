@@ -96,7 +96,7 @@ module "allowed_external_identity_providers" {
   exclude_projects = [google_project.org_system.project_id]
   rules          = [
     {
-      enforcement = true
+      enforcement = false
       allow       = []
       deny        = []
       conditions  = []
