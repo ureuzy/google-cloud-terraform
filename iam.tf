@@ -166,6 +166,7 @@ data "google_iam_policy" "policy" {
 }
 
 resource "google_service_account_iam_policy" "binding" {
+  provider           = google.wi-provider-mgmt
   service_account_id = google_service_account.gha.name
   policy_data        = data.google_iam_policy.policy.policy_data
 }
