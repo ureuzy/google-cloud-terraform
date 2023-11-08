@@ -73,17 +73,17 @@ module "allowed_policy_member_domains" {
 #  ]
 #}
 
-resource "google_tags_tag_key" "ignore_wi_pool_providers" {
-  parent      = data.google_organization.ureuzy.name
-  short_name  = "ignoreWorkloadIdentityPoolProviders"
-  description = "Ignore external identity providers policy restrictions"
-}
-
-resource "google_tags_tag_value" "ignore_wi_pool_providers" {
-  parent      = google_tags_tag_key.ignore_wi_pool_providers.id
-  short_name  = "true"
-  description = "Ignore external identity providers policy restrictions"
-}
+#resource "google_tags_tag_key" "ignore_wi_pool_providers" {
+#  parent      = data.google_organization.ureuzy.name
+#  short_name  = "ignoreWorkloadIdentityPoolProviders"
+#  description = "Ignore external identity providers policy restrictions"
+#}
+#
+#resource "google_tags_tag_value" "ignore_wi_pool_providers" {
+#  parent      = google_tags_tag_key.ignore_wi_pool_providers.id
+#  short_name  = "true"
+#  description = "Ignore external identity providers policy restrictions"
+#}
 
 module "allowed_external_identity_providers" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
@@ -93,25 +93,13 @@ module "allowed_external_identity_providers" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/iam.workloadIdentityPoolProviders"
   policy_type    = "list"
+  exclude_projects = [google_project.org_system.project_id]
   rules          = [
     {
       enforcement = true
       allow       = []
       deny        = []
       conditions  = []
-    },
-    {
-      enforcement = false
-      allow       = []
-      deny        = []
-      conditions  = [
-        {
-          description = "Ignore external identity providers policy restrictions by tag"
-          expression  = "resource.matchTagId('${google_tags_tag_key.ignore_wi_pool_providers.id}', '${google_tags_tag_value.ignore_wi_pool_providers.id}')"
-          location    = "ignore-wi-pool-providers-policy.log"
-          title       = "Ignore external identity providers policy restrictions by tag"
-        }
-      ]
     }
   ]
 }
