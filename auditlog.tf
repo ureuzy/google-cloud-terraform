@@ -6,6 +6,26 @@
 #  bucket_id      = "all-audit-logs-bucket"
 #}
 
+resource "google_organization_iam_audit_config" "data_access" {
+  for_each = toset([
+    "iam.googleapis.com",
+    "sts.googleapis.com"
+  ])
+  org_id  = data.google_organization.ureuzy.org_id
+  service = each.value
+
+  dynamic "audit_log_config" {
+    for_each = toset([
+      "ADMIN_READ",
+      "DATA_READ",
+      "DATA_WRITE"
+    ])
+    content {
+      log_type = audit_log_config.value
+    }
+  }
+}
+
 resource "google_logging_organization_sink" "audit_log" {
   org_id           = data.google_organization.ureuzy.org_id
   name             = "all-audit-logs-sink"
@@ -90,12 +110,4 @@ resource "google_eventarc_trigger" "main" {
   }
   timeouts {}
   service_account = google_service_account.eventarc.email
-}
-
-resource "google_organization_iam_audit_config" "organization" {
-  org_id = data.google_organization.ureuzy.org_id
-  service = "iam.googleapis.com"
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
 }
