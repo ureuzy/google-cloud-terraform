@@ -54,6 +54,7 @@ module "project-services" {
     "artifactregistry.googleapis.com",
     "secretmanager.googleapis.com",
     "eventarc.googleapis.com",
-    "cloudkms.googleapis.com"
+    "cloudkms.googleapis.com",
+    "recommender.googleapis.com"
   ]
 }
