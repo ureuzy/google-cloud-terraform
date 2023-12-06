@@ -88,9 +88,9 @@ resource "google_pubsub_topic" "main" {
   depends_on   = [google_kms_crypto_key_iam_member.crypto_key]
 }
 
-resource "google_eventarc_trigger" "main" {
+resource "google_eventarc_trigger" "audit_alert" {
   project  = google_project.org_system.project_id
-  name     = "test"
+  name     = "audit-alert"
   location = "asia-northeast1"
   matching_criteria {
     attribute = "type"
@@ -106,6 +106,25 @@ resource "google_eventarc_trigger" "main" {
   transport {
     pubsub {
       topic = google_pubsub_topic.main.id
+    }
+  }
+  timeouts {}
+  service_account = google_service_account.eventarc.email
+}
+
+resource "google_eventarc_trigger" "search_unused_sa" {
+  project  = google_project.org_system.project_id
+  name     = "search-unused-sa"
+  location = "asia-northeast1"
+  matching_criteria {
+    attribute = "type"
+    value     = "google.cloud.pubsub.topic.v1.messagePublished"
+  }
+  destination {
+    cloud_run_service {
+      path    = "/"
+      region  = "asia-northeast1"
+      service = "search-unused-sa"
     }
   }
   timeouts {}
