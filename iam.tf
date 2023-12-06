@@ -144,7 +144,7 @@ resource "google_project_iam_member" "search_unused_sa" {
   member  = "serviceAccount:${google_service_account.search_unused_sa.email}"
 }
 
-data "google_iam_policy" "audit_alert_functions" {
+data "google_iam_policy" "service_account_user" {
   binding {
     role    = "roles/iam.serviceAccountUser"
     members = [
@@ -154,8 +154,12 @@ data "google_iam_policy" "audit_alert_functions" {
 }
 
 resource "google_service_account_iam_policy" "sa_account_binding" {
-  service_account_id = google_service_account.audit_alert_functions.name
-  policy_data        = data.google_iam_policy.audit_alert_functions.policy_data
+  for_each = toset([
+    google_service_account.audit_alert_functions.name,
+    google_service_account.search_unused_sa.name
+  ])
+  service_account_id = each.value
+  policy_data        = data.google_iam_policy.service_account_user.policy_data
 }
 
 ### Workload Identity User for GitHub Actions
