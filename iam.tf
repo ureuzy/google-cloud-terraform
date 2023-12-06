@@ -116,8 +116,12 @@ resource "google_project_iam_member" "publisher" {
 }
 
 resource "google_project_iam_member" "invoker" {
+  for_each = toset([
+    "roles/eventarc.eventReceiver",
+    "roles/run.invoker"
+  ])
   project = google_project.org_system.id
-  role    = "roles/run.invoker"
+  role    = each.value
   member  = "serviceAccount:${google_service_account.eventarc.email}"
 }
 
