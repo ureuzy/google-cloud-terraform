@@ -134,6 +134,16 @@ resource "google_project_iam_member" "audit_alert_functions" {
   member  = "serviceAccount:${google_service_account.audit_alert_functions.email}"
 }
 
+resource "google_project_iam_member" "search_unused_sa" {
+  for_each = toset([
+    "roles/secretmanager.secretAccessor",
+    "roles/policyanalyzer.activityAnalysisViewer"
+  ])
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.search_unused_sa.email}"
+}
+
 data "google_iam_policy" "audit_alert_functions" {
   binding {
     role    = "roles/iam.serviceAccountUser"
