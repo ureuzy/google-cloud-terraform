@@ -3,7 +3,7 @@ resource "google_cloud_scheduler_job" "search_unused_sa_job" {
   description = "test job"
   project     = google_project.org_system.project_id
   region      = "asia-northeast1"
-  schedule    = "*/2 * * * *"
+  schedule    = "0 * * * *"
   time_zone   = "Asia/Tokyo"
   pubsub_target {
     topic_name = google_pubsub_topic.search_unused_sa.id
