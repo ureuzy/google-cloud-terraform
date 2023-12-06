@@ -59,7 +59,7 @@ resource "google_logging_project_sink" "default" {
 resource "google_logging_project_sink" "auditlogs_alert" {
   project                = google_project.org_system.project_id
   name                   = "auditlogs_alert"
-  destination            = "pubsub.googleapis.com/${google_pubsub_topic.main.id}"
+  destination            = "pubsub.googleapis.com/${google_pubsub_topic.audit_alert.id}"
   filter                 = "protoPayload.methodName=\"SetIamPolicy\" OR protoPayload.methodName=\"google.cloud.bigquery.v2.JobService.InsertJob\""
   unique_writer_identity = true
 }
@@ -81,7 +81,7 @@ resource "google_kms_crypto_key_iam_member" "crypto_key" {
   member        = "serviceAccount:service-${google_project.org_system.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
 
-resource "google_pubsub_topic" "main" {
+resource "google_pubsub_topic" "audit_alert" {
   name         = "auditlogs_alert"
   project      = google_project.org_system.project_id
   kms_key_name = google_kms_crypto_key.pubsub_key.id
@@ -105,26 +105,7 @@ resource "google_eventarc_trigger" "audit_alert" {
   }
   transport {
     pubsub {
-      topic = google_pubsub_topic.main.id
-    }
-  }
-  timeouts {}
-  service_account = google_service_account.eventarc.email
-}
-
-resource "google_eventarc_trigger" "search_unused_sa" {
-  project  = google_project.org_system.project_id
-  name     = "search-unused-sa"
-  location = "asia-northeast1"
-  matching_criteria {
-    attribute = "type"
-    value     = "google.cloud.pubsub.topic.v1.messagePublished"
-  }
-  destination {
-    cloud_run_service {
-      path    = "/"
-      region  = "asia-northeast1"
-      service = "search-unused-sa"
+      topic = google_pubsub_topic.audit_alert.id
     }
   }
   timeouts {}
