@@ -4,9 +4,10 @@ resource "google_cloud_scheduler_job" "search_unused_sa_job" {
   project     = google_project.org_system.project_id
   region      = "asia-northeast1"
   schedule    = "*/2 * * * *"
+  time_zone   = "Asia/Tokyo"
   pubsub_target {
     topic_name = google_pubsub_topic.search_unused_sa.id
-    data       = base64encode("test")
+    data       = base64encode("data")
   }
 }
 
