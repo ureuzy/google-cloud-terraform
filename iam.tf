@@ -101,6 +101,16 @@ resource "google_organization_iam_member" "domain" {
   member = "domain:ureuzy.io"
 }
 
+resource "google_organization_iam_member" "search_unused_sa" {
+  for_each = toset([
+    "roles/policyanalyzer.activityAnalysisViewer",
+    "roles/resourcemanager.folderViewer"
+  ])
+  org_id = data.google_organization.ureuzy.org_id
+  role   = each.key
+  member = "serviceAccount:${google_service_account.search_unused_sa.email}"
+}
+
 ### Audit Log Aggregation Sink
 resource "google_project_iam_member" "log-writer" {
   project = google_project.org_system.id
@@ -136,8 +146,7 @@ resource "google_project_iam_member" "audit_alert_functions" {
 
 resource "google_project_iam_member" "search_unused_sa" {
   for_each = toset([
-    "roles/secretmanager.secretAccessor",
-    "roles/policyanalyzer.activityAnalysisViewer"
+    "roles/secretmanager.secretAccessor"
   ])
   project = google_project.org_system.project_id
   role    = each.value
