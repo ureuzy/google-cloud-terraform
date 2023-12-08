@@ -11,11 +11,11 @@ resource "google_service_account" "audit_alert_functions" {
   description  = "Service Account for Audit alert functions"
 }
 
-resource "google_service_account" "search_unused_sa" {
+resource "google_service_account" "activity_analyzer" {
   project      = google_project.org_system.project_id
-  account_id   = "search-unused-sa"
-  display_name = "search-unused-sa"
-  description  = "Search unused service account"
+  account_id   = "activity-analyzer"
+  display_name = "activity-analyzer"
+  description  = "Analyze unused service account"
 }
 
 ### Workload Identity User for GitHub Actions

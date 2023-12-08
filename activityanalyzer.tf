@@ -1,26 +1,26 @@
-resource "google_cloud_scheduler_job" "search_unused_sa_job" {
-  name        = "test-job"
-  description = "test job"
+resource "google_cloud_scheduler_job" "activity_analyzer" {
+  name        = "activity-analyzer"
+  description = "Analyze unused service account"
   project     = google_project.org_system.project_id
   region      = "asia-northeast1"
   schedule    = "0 * * * *"
   time_zone   = "Asia/Tokyo"
   pubsub_target {
-    topic_name = google_pubsub_topic.search_unused_sa.id
+    topic_name = google_pubsub_topic.activity_analyzer.id
     data       = base64encode("data")
   }
 }
 
-resource "google_pubsub_topic" "search_unused_sa" {
-  name         = "search_unused_sa"
+resource "google_pubsub_topic" "activity_analyzer" {
+  name         = "activity-analyzer"
   project      = google_project.org_system.project_id
   kms_key_name = google_kms_crypto_key.pubsub_key.id
   depends_on   = [google_kms_crypto_key_iam_member.crypto_key]
 }
 
-resource "google_eventarc_trigger" "search_unused_sa" {
+resource "google_eventarc_trigger" "activity_analyzer" {
   project  = google_project.org_system.project_id
-  name     = "search-unused-sa"
+  name     = "activity-analyzer"
   location = "asia-northeast1"
   matching_criteria {
     attribute = "type"
@@ -30,12 +30,12 @@ resource "google_eventarc_trigger" "search_unused_sa" {
     cloud_run_service {
       path    = "/"
       region  = "asia-northeast1"
-      service = "search-unused-sa"
+      service = "activity-analyzer"
     }
   }
   transport {
     pubsub {
-      topic = google_pubsub_topic.search_unused_sa.id
+      topic = google_pubsub_topic.activity_analyzer.id
     }
   }
   timeouts {}
