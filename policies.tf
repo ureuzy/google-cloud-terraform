@@ -90,7 +90,7 @@ module "cloudfunctions_allowed_ingress_settings" {
   ]
 }
 
-module "automatic_iam_grants" {
+module "disable_automatic_iam_grants" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
   version = "5.2.2"
 
