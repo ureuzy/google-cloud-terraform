@@ -89,3 +89,21 @@ module "cloudfunctions_allowed_ingress_settings" {
     }
   ]
 }
+
+module "automatic_iam_grants" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+  version = "5.2.2"
+
+  policy_root    = "organization"
+  policy_root_id = data.google_organization.ureuzy.org_id
+  constraint     = "constraints/iam.automaticIamGrantsForDefaultServiceAccounts"
+  policy_type    = "boolean"
+  rules          = [
+    {
+      enforcement = true
+      allow       = []
+      deny        = []
+      conditions  = []
+    }
+  ]
+}
