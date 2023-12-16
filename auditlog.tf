@@ -38,7 +38,9 @@ resource "google_logging_organization_sink" "audit_log" {
 resource "google_logging_project_exclusion" "audit_log" {
   for_each = toset([
     google_project.ureuzy.project_id,
-    google_project.exam.project_id
+    google_project.wi_provider_mgmt.project_id,
+    google_project.org_system.project_id,
+    google_project.sandbox.project_id
   ])
   project     = each.value
   name        = "auditlogs"
@@ -60,7 +62,7 @@ resource "google_logging_project_sink" "auditlogs_alert" {
   project                = google_project.org_system.project_id
   name                   = "auditlogs_alert"
   destination            = "pubsub.googleapis.com/${google_pubsub_topic.audit_alert.id}"
-  filter                 = "protoPayload.methodName=\"SetIamPolicy\" OR protoPayload.methodName=\"google.cloud.bigquery.v2.JobService.InsertJob\""
+  filter                 = "protoPayload.methodName=\"SetIamPolicy\""
   unique_writer_identity = true
 }
 

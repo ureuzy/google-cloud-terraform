@@ -23,7 +23,3 @@ resource "google_iam_workload_identity_pool_provider" "provider" {
     "google.subject"       = "assertion.sub"
   }
 }
-
-output "aaa" {
-  value = google_iam_workload_identity_pool.pool.workload_identity_pool_id
-}

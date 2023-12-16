@@ -17,20 +17,6 @@ resource "google_project" "ureuzy" {
   }
 }
 
-resource "google_project" "exam" {
-  name            = "ureuzy-exam"
-  project_id      = "ureuzy-exam"
-  org_id          = data.google_organization.ureuzy.org_id
-  billing_account = data.google_billing_account.account.id
-}
-
-resource "google_project" "test" {
-  name            = "ureuzy-test"
-  project_id      = "ureuzy-test"
-  org_id          = data.google_organization.ureuzy.org_id
-  billing_account = data.google_billing_account.account.id
-}
-
 resource "google_project" "wi_provider_mgmt" {
   name            = "ureuzy-wi-provider-mgmt"
   project_id      = "ureuzy-wi-provider-mgmt"
@@ -41,6 +27,13 @@ resource "google_project" "wi_provider_mgmt" {
 resource "google_project" "org_system" {
   name            = "ureuzy-org-system"
   project_id      = "ureuzy-org-system"
+  org_id          = data.google_organization.ureuzy.org_id
+  billing_account = data.google_billing_account.account.id
+}
+
+resource "google_project" "sandbox" {
+  name            = "ureuzy-sandbox"
+  project_id      = "ureuzy-sandbox"
   org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
 }
