@@ -39,8 +39,7 @@ resource "google_logging_project_exclusion" "audit_log" {
   for_each = toset([
     google_project.ureuzy.project_id,
     google_project.wi_provider_mgmt.project_id,
-    google_project.org_system.project_id,
-    google_project.sandbox.project_id
+    google_project.org_system.project_id
   ])
   project     = each.value
   name        = "auditlogs"

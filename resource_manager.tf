@@ -31,13 +31,6 @@ resource "google_project" "org_system" {
   billing_account = data.google_billing_account.account.id
 }
 
-resource "google_project" "sandbox" {
-  name            = "ureuzy-sandbox"
-  project_id      = "ureuzy-sandbox"
-  org_id          = data.google_organization.ureuzy.org_id
-  billing_account = data.google_billing_account.account.id
-}
-
 module "project-services" {
   source        = "terraform-google-modules/project-factory/google//modules/project_services"
   version       = "~> 14.2"
@@ -56,6 +49,7 @@ module "project-services" {
     "eventarc.googleapis.com",
     "cloudkms.googleapis.com",
     "recommender.googleapis.com",
-    "policyanalyzer.googleapis.com"
+    "policyanalyzer.googleapis.com",
+    "compute.googleapis.com"
   ]
 }
