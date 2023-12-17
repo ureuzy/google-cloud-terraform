@@ -153,6 +153,15 @@ resource "google_project_iam_member" "activity_analyzer" {
   member  = "serviceAccount:${google_service_account.activity_analyzer.email}"
 }
 
+resource "google_project_iam_member" "mitene_downloader" {
+  for_each = toset([
+    "roles/secretmanager.secretAccessor"
+  ])
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.mitene_downloader.email}"
+}
+
 data "google_iam_policy" "service_account_user" {
   binding {
     role    = "roles/iam.serviceAccountUser"
@@ -165,7 +174,8 @@ data "google_iam_policy" "service_account_user" {
 resource "google_service_account_iam_policy" "sa_account_binding" {
   for_each = toset([
     google_service_account.audit_alert_functions.name,
-    google_service_account.activity_analyzer.name
+    google_service_account.activity_analyzer.name,
+#    google_service_account.mitene_downloader.name
   ])
   service_account_id = each.value
   policy_data        = data.google_iam_policy.service_account_user.policy_data
