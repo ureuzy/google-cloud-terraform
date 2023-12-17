@@ -155,7 +155,8 @@ resource "google_project_iam_member" "activity_analyzer" {
 
 resource "google_project_iam_member" "mitene_downloader" {
   for_each = toset([
-    "roles/secretmanager.secretAccessor"
+    "roles/secretmanager.secretAccessor",
+    "roles/storage.folderAdmin"
   ])
   project = google_project.org_system.project_id
   role    = each.value
