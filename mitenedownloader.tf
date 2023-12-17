@@ -3,7 +3,7 @@ resource "google_cloud_scheduler_job" "mitene_downloader" {
   description = "Download photo from mitene and upload to cloud storage"
   project     = google_project.org_system.project_id
   region      = "asia-northeast1"
-  schedule    = "0 * * * *"
+  schedule    = "0 0 * * *"
   time_zone   = "Asia/Tokyo"
   pubsub_target {
     topic_name = google_pubsub_topic.mitene_downloader.id
