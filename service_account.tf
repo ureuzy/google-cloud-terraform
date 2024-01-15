@@ -25,6 +25,13 @@ resource "google_service_account" "mitene_downloader" {
   description  = "Service Account for mitene downloader"
 }
 
+resource "google_service_account" "spreadsheets" {
+  project      = google_project.org_system.project_id
+  account_id   = "spreadsheets"
+  display_name = "spreadsheets"
+  description  = "spreadsheets"
+}
+
 ### Workload Identity User for GitHub Actions
 resource "google_service_account" "gha" {
   project      = google_project.org_system.project_id
