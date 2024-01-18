@@ -19,13 +19,16 @@ resource "google_pubsub_topic" "role_recommender" {
 }
 
 resource "google_pubsub_subscription" "role_recommender" {
-  name  = "role-recommender-subscription"
-  topic = google_pubsub_topic.role_recommender.id
-
-  message_retention_duration = "1200s"
-  retain_acked_messages      = true
-  ack_deadline_seconds       = 60
-  enable_message_ordering    = false
+  name                 = "role-recommender-subscription"
+  topic                = google_pubsub_topic.role_recommender.id
+  project              = google_project.org_system.project_id
+  ack_deadline_seconds = 60
+  push_config {
+    push_endpoint = "https://example.com/push"
+    attributes    = {
+      x-goog-version = "v1"
+    }
+  }
 }
 
 resource "google_eventarc_trigger" "role_recommender" {
