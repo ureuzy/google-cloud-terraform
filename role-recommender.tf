@@ -18,6 +18,16 @@ resource "google_pubsub_topic" "role_recommender" {
   depends_on   = [google_kms_crypto_key_iam_member.crypto_key]
 }
 
+resource "google_pubsub_subscription" "role_recommender" {
+  name  = "role-recommender-subscription"
+  topic = google_pubsub_topic.role_recommender.id
+
+  message_retention_duration = "1200s"
+  retain_acked_messages      = true
+  ack_deadline_seconds       = 60
+  enable_message_ordering    = false
+}
+
 resource "google_eventarc_trigger" "role_recommender" {
   project  = google_project.org_system.project_id
   name     = "role-recommender"
@@ -35,8 +45,7 @@ resource "google_eventarc_trigger" "role_recommender" {
   }
   transport {
     pubsub {
-      topic                = google_pubsub_topic.role_recommender.id
-      ack_deadline_seconds = 60
+      subscription = google_pubsub_subscription.role_recommender.id
     }
   }
   timeouts {}
