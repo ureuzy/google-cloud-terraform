@@ -35,7 +35,8 @@ resource "google_eventarc_trigger" "role_recommender" {
   }
   transport {
     pubsub {
-      topic = google_pubsub_topic.role_recommender.id
+      topic                = google_pubsub_topic.role_recommender.id
+      ack_deadline_seconds = 60
     }
   }
   timeouts {}
