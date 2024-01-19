@@ -32,6 +32,13 @@ resource "google_service_account" "role_recommender" {
   description  = "role-recommender"
 }
 
+resource "google_service_account" "audit_test" {
+  project      = google_project.org_system.project_id
+  account_id   = "audit-test"
+  display_name = "test"
+  description  = "test"
+}
+
 ### Workload Identity User for GitHub Actions
 resource "google_service_account" "gha" {
   project      = google_project.org_system.project_id
