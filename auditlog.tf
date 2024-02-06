@@ -113,7 +113,7 @@ resource "google_eventarc_trigger" "audit_alert" {
 }
 
 resource "google_secret_manager_secret" "secret-basic" {
-  secret_id = "secret"
+  secret_id = "test5"
   project = google_project.org_system.project_id
   replication {
     automatic = true
