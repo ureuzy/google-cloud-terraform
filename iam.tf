@@ -165,7 +165,7 @@ resource "google_project_iam_member" "mitene_downloader" {
 
 data "google_iam_policy" "service_account_user" {
   binding {
-    role    = "roles/iam.serviceAccountUser"
+    role = "roles/iam.serviceAccountUser"
     members = [
       "serviceAccount:${google_service_account.gha.email}"
     ]
@@ -197,9 +197,9 @@ resource "google_project_iam_member" "gha" {
 
 data "google_iam_policy" "policy" {
   binding {
-    role    = "roles/iam.workloadIdentityUser"
+    role = "roles/iam.workloadIdentityUser"
     members = [
-      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.pool.name}/attribute.repository/ureuzy/cloud_functions",
+      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.gha.name}/attribute.repository/ureuzy/cloud_functions",
     ]
   }
 }

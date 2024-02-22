@@ -17,7 +17,7 @@ module "allowed_policy_member_domains" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/iam.allowedPolicyMemberDomains"
   policy_type    = "list"
-  rules          = [
+  rules = [
     {
       enforcement = true
       allow       = ["C03mi6sms"]
@@ -28,7 +28,7 @@ module "allowed_policy_member_domains" {
       enforcement = false
       allow       = []
       deny        = []
-      conditions  = [
+      conditions = [
         {
           description = "Allowed all users ingress"
           expression  = "resource.matchTagId('${google_tags_tag_key.all_users_ingress.id}', '${google_tags_tag_value.all_users_ingress.id}')"
@@ -49,7 +49,7 @@ module "allowed_external_identity_providers" {
   constraint       = "constraints/iam.workloadIdentityPoolProviders"
   policy_type      = "list"
   exclude_projects = [google_project.wi_provider_mgmt.project_id]
-  rules            = [
+  rules = [
     {
       enforcement = false
       allow       = []
@@ -67,7 +67,7 @@ module "cloudfunctions_allowed_ingress_settings" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/cloudfunctions.allowedIngressSettings"
   policy_type    = "list"
-  rules          = [
+  rules = [
     {
       enforcement = true
       allow       = ["ALLOW_ALL"]
@@ -78,7 +78,7 @@ module "cloudfunctions_allowed_ingress_settings" {
       enforcement = false
       allow       = []
       deny        = []
-      conditions  = [
+      conditions = [
         {
           description = "Allowed all users ingress"
           expression  = "resource.matchTagId('${google_tags_tag_key.all_users_ingress.id}', '${google_tags_tag_value.all_users_ingress.id}')"
@@ -98,7 +98,7 @@ module "disable_automatic_iam_grants" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/iam.automaticIamGrantsForDefaultServiceAccounts"
   policy_type    = "boolean"
-  rules          = [
+  rules = [
     {
       enforcement = true
       allow       = []
