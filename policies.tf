@@ -107,22 +107,3 @@ module "disable_automatic_iam_grants" {
     }
   ]
 }
-
-module "allowed_external_identity_providers" {
-  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-  version = "5.3.0"
-
-  policy_root      = "organization"
-  policy_root_id   = data.google_organization.ureuzy.org_id
-  constraint       = "constraints/iam.workloadIdentityPoolProviders"
-  policy_type      = "list"
-  exclude_projects = [google_project.wi_provider_mgmt.name]
-  rules = [
-    {
-      enforcement = true
-      allow       = []
-      deny        = []
-      conditions  = []
-    }
-  ]
-}
