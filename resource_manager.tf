@@ -32,8 +32,8 @@ resource "google_project" "org_system" {
 }
 
 resource "google_project" "test" {
-  name            = "ureuzy-test"
-  project_id      = "ureuzy-test"
+  name            = "ureuzy-compute-test"
+  project_id      = "ureuzy-compute-test"
   org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
 }
