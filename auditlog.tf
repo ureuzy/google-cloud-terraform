@@ -111,11 +111,3 @@ resource "google_eventarc_trigger" "audit_alert" {
   timeouts {}
   service_account = google_service_account.eventarc.email
 }
-
-resource "google_secret_manager_secret" "secret-basic" {
-  secret_id = "test5"
-  project = google_project.org_system.project_id
-  replication {
-    automatic = true
-  }
-}
