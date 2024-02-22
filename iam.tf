@@ -220,7 +220,7 @@ data "google_iam_policy" "compute_test_terraform" {
   binding {
     role = "roles/iam.workloadIdentityUser"
     members = [
-      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.gha.name}/attribute.terraform_workspace_name/ureuzy-compute-test",
+      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.terraform.name}/attribute.terraform_workspace_name/ureuzy-compute-test",
     ]
   }
 }
