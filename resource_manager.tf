@@ -31,6 +31,13 @@ resource "google_project" "org_system" {
   billing_account = data.google_billing_account.account.id
 }
 
+resource "google_project" "test" {
+  name            = "ureuzy-test"
+  project_id      = "ureuzy-test"
+  org_id          = data.google_organization.ureuzy.org_id
+  billing_account = data.google_billing_account.account.id
+}
+
 module "project-services" {
   source        = "terraform-google-modules/project-factory/google//modules/project_services"
   version       = "~> 14.2"
