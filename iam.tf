@@ -210,7 +210,6 @@ resource "google_service_account_iam_policy" "gha" {
 }
 
 ### Workload Identity User for Terraform Cloud
-
 data "google_service_account" "compute_test_terraform" {
   project    = google_project.test.project_id
   account_id = "terraform"
@@ -228,4 +227,23 @@ data "google_iam_policy" "compute_test_terraform" {
 resource "google_service_account_iam_policy" "compute_test_terraform" {
   service_account_id = data.google_service_account.compute_test_terraform.name
   policy_data        = data.google_iam_policy.compute_test_terraform.policy_data
+}
+
+data "google_service_account" "gke_test_terraform" {
+  project    = google_project.gke_test.project_id
+  account_id = "terraform"
+}
+
+data "google_iam_policy" "gke_test_terraform" {
+  binding {
+    role = "roles/iam.workloadIdentityUser"
+    members = [
+      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.terraform.name}/attribute.terraform_workspace_name/ureuzy-gke-test",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "gke_test_terraform" {
+  service_account_id = data.google_service_account.gke_test_terraform.name
+  policy_data        = data.google_iam_policy.gke_test_terraform.policy_data
 }
