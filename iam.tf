@@ -172,6 +172,15 @@ data "google_iam_policy" "service_account_user" {
   }
 }
 
+resource "google_project_iam_member" "ryuta" {
+  for_each = toset([
+    "roles/viewer",
+  ])
+  project = google_project.konotalos_test.project_id
+  role    = each.value
+  member  = "user:konotalos@gmail.com"
+}
+
 resource "google_service_account_iam_policy" "sa_account_binding" {
   for_each = toset([
     google_service_account.audit_alert_functions.name,
