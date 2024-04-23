@@ -31,13 +31,6 @@ resource "google_project" "org_system" {
   billing_account = data.google_billing_account.account.id
 }
 
-resource "google_project" "test" {
-  name            = "ureuzy-compute-test"
-  project_id      = "ureuzy-compute-test"
-  org_id          = data.google_organization.ureuzy.org_id
-  billing_account = data.google_billing_account.account.id
-}
-
 resource "google_project" "gke_test" {
   name            = "ureuzy-gke-test"
   project_id      = "ureuzy-gke-test"
