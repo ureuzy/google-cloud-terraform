@@ -38,9 +38,9 @@ resource "google_project" "gke_test" {
   billing_account = data.google_billing_account.account.id
 }
 
-resource "google_project" "konotalos_test" {
-  name            = "konotalos-test"
-  project_id      = "konotalos-test"
+resource "google_project" "konotalos" {
+  name            = "konotalos"
+  project_id      = "konotalos"
   org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
 }

@@ -172,11 +172,11 @@ data "google_iam_policy" "service_account_user" {
   }
 }
 
-resource "google_project_iam_member" "ryuta" {
+resource "google_project_iam_member" "konotalos" {
   for_each = toset([
     "roles/viewer",
   ])
-  project = google_project.konotalos_test.project_id
+  project = google_project.konotalos.project_id
   role    = each.value
   member  = "user:konotalos@gmail.com"
 }
