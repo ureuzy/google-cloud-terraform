@@ -17,6 +17,7 @@ module "allowed_policy_member_domains" {
   policy_root_id = data.google_organization.ureuzy.org_id
   constraint     = "constraints/iam.allowedPolicyMemberDomains"
   policy_type    = "list"
+  exclude_projects = [google_project.konotalos.project_id]
   rules = [
     {
       enforcement = true
