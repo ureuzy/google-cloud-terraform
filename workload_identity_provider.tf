@@ -48,17 +48,17 @@ resource "google_iam_workload_identity_pool_provider" "organization" {
   }
 }
 
-resource "google_iam_workload_identity_pool_provider" "compute_test" {
+resource "google_iam_workload_identity_pool_provider" "konotalos" {
   project                            = google_project.wi_provider_mgmt.project_id
   disabled                           = false
-  display_name                       = "compute-test"
+  display_name                       = "konotalos"
   workload_identity_pool_id          = google_iam_workload_identity_pool.terraform.workload_identity_pool_id
-  workload_identity_pool_provider_id = "compute-test"
+  workload_identity_pool_provider_id = "konotalos"
   oidc {
     allowed_audiences = []
     issuer_uri        = "https://app.terraform.io"
   }
-  attribute_condition = "assertion.terraform_workspace_name == 'ureuzy-compute-test'"
+  attribute_condition = "assertion.terraform_workspace_name == 'konotalos'"
   attribute_mapping = {
     "attribute.terraform_workspace_name" = "assertion.terraform_workspace_name"
     "google.subject"                     = "assertion.sub"
