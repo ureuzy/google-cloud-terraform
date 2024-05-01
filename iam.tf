@@ -238,3 +238,22 @@ resource "google_service_account_iam_policy" "gke_test_terraform" {
   service_account_id = data.google_service_account.gke_test_terraform.name
   policy_data        = data.google_iam_policy.gke_test_terraform.policy_data
 }
+
+data "google_service_account" "konotalos_terraform" {
+  project    = google_project.konotalos.project_id
+  account_id = "terraform"
+}
+
+data "google_iam_policy" "konotalos_terraform" {
+  binding {
+    role = "roles/iam.workloadIdentityUser"
+    members = [
+      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.terraform.name}/attribute.terraform_workspace_name/konotalos",
+    ]
+  }
+}
+
+resource "google_service_account_iam_policy" "konotalos_terraform" {
+  service_account_id = data.google_service_account.konotalos_terraform.name
+  policy_data        = data.google_iam_policy.konotalos_terraform.policy_data
+}
