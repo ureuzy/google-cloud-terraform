@@ -62,7 +62,6 @@ module "project-services" {
     "secretmanager.googleapis.com",
     "eventarc.googleapis.com",
     "cloudkms.googleapis.com",
-    "recommender.googleapis.com",
     "policyanalyzer.googleapis.com",
     "compute.googleapis.com"
   ]

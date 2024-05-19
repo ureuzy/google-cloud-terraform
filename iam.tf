@@ -187,7 +187,6 @@ resource "google_service_account_iam_policy" "sa_account_binding" {
     google_service_account.audit_alert_functions.name,
     google_service_account.activity_analyzer.name,
     google_service_account.mitene_downloader.name,
-    google_service_account.role_recommender.name
   ])
   service_account_id = each.value
   policy_data        = data.google_iam_policy.service_account_user.policy_data

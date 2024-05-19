@@ -25,13 +25,6 @@ resource "google_service_account" "mitene_downloader" {
   description  = "Service Account for mitene downloader"
 }
 
-resource "google_service_account" "role_recommender" {
-  project      = google_project.org_system.project_id
-  account_id   = "role-recommender"
-  display_name = "role-recommender"
-  description  = "role-recommender"
-}
-
 ### Workload Identity User for GitHub Actions
 resource "google_service_account" "gha" {
   project      = google_project.org_system.project_id
