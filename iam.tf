@@ -176,6 +176,7 @@ resource "google_project_iam_member" "konotalos" {
   for_each = toset([
     "roles/viewer",
     "roles/compute.admin",
+    "roles/compute.storageAdmin",
   ])
   project = google_project.konotalos.project_id
   role    = each.value
