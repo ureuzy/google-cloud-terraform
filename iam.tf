@@ -177,6 +177,7 @@ resource "google_project_iam_member" "konotalos" {
     "roles/viewer",
     "roles/compute.admin",
     "roles/compute.storageAdmin",
+    "roles/storage.admin"
   ])
   project = google_project.konotalos.project_id
   role    = each.value
