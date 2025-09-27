@@ -15,9 +15,6 @@ resource "google_project" "ureuzy" {
   labels = {
     "firebase" = "enabled"
   }
-  terraform_labels = {
-    "firebase" = "enabled"
-  }
 }
 
 resource "google_project" "wi_provider_mgmt" {
