@@ -47,7 +47,6 @@ resource "google_project" "konotalos" {
 
 module "project-services" {
   source     = "terraform-google-modules/project-factory/google//modules/project_services"
-  version    = "~> 14.2"
   project_id = google_project.org_system.project_id
   activate_apis = [
     "iam.googleapis.com",
