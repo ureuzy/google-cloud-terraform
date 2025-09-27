@@ -43,7 +43,6 @@ module "allowed_policy_member_domains" {
 
 module "allowed_external_identity_providers" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-  version = "5.2.2"
 
   policy_root      = "organization"
   policy_root_id   = data.google_organization.ureuzy.org_id
@@ -62,7 +61,6 @@ module "allowed_external_identity_providers" {
 
 module "cloudfunctions_allowed_ingress_settings" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-  version = "5.2.2"
 
   policy_root    = "organization"
   policy_root_id = data.google_organization.ureuzy.org_id
@@ -93,7 +91,6 @@ module "cloudfunctions_allowed_ingress_settings" {
 
 module "disable_automatic_iam_grants" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-  version = "5.2.2"
 
   policy_root    = "organization"
   policy_root_id = data.google_organization.ureuzy.org_id
