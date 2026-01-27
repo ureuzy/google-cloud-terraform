@@ -1,3 +1,39 @@
+resource "google_organization_iam_member" "domain" {
+  for_each = toset([
+    "roles/resourcemanager.projectCreator",
+    "roles/billing.creator"
+  ])
+  org_id = data.google_organization.ureuzy.org_id
+  role   = each.key
+  member = "domain:ureuzy.io"
+}
+
+resource "google_organization_iam_member" "owner" {
+  for_each = toset([
+    "roles/owner",
+    "roles/viewer"
+  ])
+  org_id = data.google_organization.ureuzy.org_id
+  role   = each.key
+  member = "group:gcp-owners@ureuzy.io"
+}
+
+resource "google_organization_iam_member" "organization" {
+  for_each = toset([
+    "roles/cloudsupport.admin",
+    "roles/securitycenter.admin",
+    "roles/resourcemanager.folderAdmin",
+    "roles/resourcemanager.projectCreator",
+    "roles/billing.user",
+    "roles/iam.organizationRoleAdmin",
+    "roles/resourcemanager.organizationAdmin",
+    "roles/orgpolicy.policyAdmin"
+  ])
+  org_id = data.google_organization.ureuzy.org_id
+  role   = each.key
+  member = "group:gcp-organization-admins@ureuzy.io"
+}
+
 resource "google_organization_iam_member" "activity_analyzer" {
   for_each = toset([
     "roles/policyanalyzer.activityAnalysisViewer",
