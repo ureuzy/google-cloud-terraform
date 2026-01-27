@@ -172,18 +172,6 @@ data "google_iam_policy" "service_account_user" {
   }
 }
 
-resource "google_project_iam_member" "konotalos" {
-  for_each = toset([
-    "roles/viewer",
-    "roles/compute.admin",
-    "roles/compute.storageAdmin",
-    "roles/storage.admin"
-  ])
-  project = google_project.konotalos.project_id
-  role    = each.value
-  member  = "user:konotalos@gmail.com"
-}
-
 resource "google_service_account_iam_policy" "sa_account_binding" {
   for_each = toset([
     google_service_account.audit_alert_functions.name,
@@ -218,43 +206,4 @@ data "google_iam_policy" "gha" {
 resource "google_service_account_iam_policy" "gha" {
   service_account_id = google_service_account.gha.name
   policy_data        = data.google_iam_policy.gha.policy_data
-}
-
-### Workload Identity User for Terraform Cloud
-data "google_service_account" "gke_test_terraform" {
-  project    = google_project.gke_test.project_id
-  account_id = "terraform"
-}
-
-data "google_iam_policy" "gke_test_terraform" {
-  binding {
-    role = "roles/iam.workloadIdentityUser"
-    members = [
-      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.terraform.name}/attribute.terraform_workspace_name/ureuzy-gke-test",
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "gke_test_terraform" {
-  service_account_id = data.google_service_account.gke_test_terraform.name
-  policy_data        = data.google_iam_policy.gke_test_terraform.policy_data
-}
-
-data "google_service_account" "konotalos_terraform" {
-  project    = google_project.konotalos.project_id
-  account_id = "terraform"
-}
-
-data "google_iam_policy" "konotalos_terraform" {
-  binding {
-    role = "roles/iam.workloadIdentityUser"
-    members = [
-      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.terraform.name}/attribute.terraform_workspace_name/konotalos",
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "konotalos_terraform" {
-  service_account_id = data.google_service_account.konotalos_terraform.name
-  policy_data        = data.google_iam_policy.konotalos_terraform.policy_data
 }

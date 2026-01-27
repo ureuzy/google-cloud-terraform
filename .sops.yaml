@@ -1,3 +1,0 @@
-creation_rules:
-  - path_regex: secrets\.yaml
-    gcp_kms: projects/ureuzy-org-system/locations/asia1/keyRings/sops/cryptoKeys/terraform
