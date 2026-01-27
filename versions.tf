@@ -5,7 +5,7 @@ terraform {
     google-beta = "~> 7.16.0"
     sops = {
       source  = "carlpett/sops"
-      version = "1.2.1"
+      version = "1.3.0"
     }
   }
 }
