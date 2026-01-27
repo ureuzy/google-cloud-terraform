@@ -41,7 +41,7 @@ resource "google_iam_workload_identity_pool_provider" "organization" {
     allowed_audiences = []
     issuer_uri        = "https://app.terraform.io"
   }
-  attribute_condition = "assertion.terraform_workspace_name == 'organization_gcp'"
+  attribute_condition = "assertion.terraform_workspace_name == 'google-cloud-terraform'"
   attribute_mapping = {
     "attribute.terraform_workspace_name" = "assertion.terraform_workspace_name"
     "google.subject"                     = "assertion.sub"
