@@ -31,19 +31,19 @@ resource "google_iam_workload_identity_pool" "terraform" {
   workload_identity_pool_id = "terraform"
 }
 
-resource "google_iam_workload_identity_pool_provider" "organization" {
+resource "google_iam_workload_identity_pool_provider" "terraform_cloud" {
   project                            = google_project.wi_provider_mgmt.project_id
   disabled                           = false
-  display_name                       = "organization"
+  display_name                       = "terraform-cloud"
   workload_identity_pool_id          = google_iam_workload_identity_pool.terraform.workload_identity_pool_id
-  workload_identity_pool_provider_id = "organization"
+  workload_identity_pool_provider_id = "terraform-cloud"
   oidc {
     allowed_audiences = []
     issuer_uri        = "https://app.terraform.io"
   }
-  attribute_condition = "assertion.terraform_workspace_name == 'google-cloud-terraform'"
+  attribute_condition = "assertion.terraform_organization_name == 'ureuzy'"
   attribute_mapping = {
-    "attribute.terraform_workspace_name" = "assertion.terraform_workspace_name"
     "google.subject"                     = "assertion.sub"
+    "attribute.organization" = "assertion.terraform_organization_name"
   }
 }
