@@ -6,6 +6,7 @@
 *.tfstate.*
 !init/terraform.tfstate
 !init/terraform.tfstate.*
+*.tfvars
 
 # Crash log files
 crash.log

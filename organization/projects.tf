@@ -2,26 +2,14 @@ data "google_organization" "ureuzy" {
   domain = "ureuzy.io"
 }
 
-resource "google_folder" "projects" {
-  display_name = "projects"
-  parent       = data.google_organization.ureuzy.id
-}
-
 resource "google_project" "ureuzy" {
   name            = "ureuzy"
   project_id      = "ureuzy"
-  folder_id       = google_folder.projects.name
+  org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
   labels = {
     "firebase" = "enabled"
   }
-}
-
-resource "google_project" "wi_provider_mgmt" {
-  name            = "ureuzy-wi-provider-mgmt"
-  project_id      = "ureuzy-wi-provider-mgmt"
-  org_id          = data.google_organization.ureuzy.org_id
-  billing_account = data.google_billing_account.account.id
 }
 
 resource "google_project" "org_system" {
@@ -50,4 +38,11 @@ module "project-services" {
     "policyanalyzer.googleapis.com",
     "compute.googleapis.com"
   ]
+}
+
+resource "google_project" "wi_provider_mgmt" {
+  name            = "ureuzy-wi-provider-mgmt"
+  project_id      = "ureuzy-wi-provider-mgmt"
+  org_id          = data.google_organization.ureuzy.org_id
+  billing_account = data.google_billing_account.account.id
 }
