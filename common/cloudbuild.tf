@@ -19,13 +19,14 @@ resource "google_cloudbuild_trigger" "mitene_downloader" {
     }
   }
 
+  # Once the trigger is created successfully, we can re-add included_files
   included_files = ["mitene-downloader/**"]
 
   filename = "mitene-downloader/cloudbuild.yaml"
 
   substitutions = {
-    _REGION          = "asia-northeast1"
-    _REPOSITORY      = google_artifact_registry_repository.common.name
-    _PIPELINE_NAME   = "mitene-downloader"
+    _REGION        = "asia-northeast1"
+    _REPOSITORY    = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME = "mitene-downloader"
   }
 }
