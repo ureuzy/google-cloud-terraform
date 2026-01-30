@@ -15,6 +15,22 @@ resource "google_storage_bucket_iam_member" "mitene_downloader_photos" {
   member = "serviceAccount:${google_service_account.mitene_downloader.email}"
 }
 
+# Cloud Build Custom SA Permissions
+resource "google_project_iam_member" "cloudbuild" {
+  for_each = toset([
+    "roles/logging.logWriter",
+    "roles/artifactregistry.writer",
+    "roles/clouddeploy.releaser",
+    "roles/iam.serviceAccountUser", # To deploy as the Run SA
+    "roles/storage.admin"           # For build artifacts/logs
+  ])
+
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.cloudbuild.email}"
+}
+
+
 
 
 # Secret Manager Access (Limited to specific secrets)

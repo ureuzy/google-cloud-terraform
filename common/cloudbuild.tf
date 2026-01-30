@@ -50,9 +50,10 @@ resource "google_cloudbuildv2_repository" "cloud_functions" {
 
 # 5. トリガーの修正 (第2世代を参照)
 resource "google_cloudbuild_trigger" "mitene_downloader" {
-  project  = data.google_project.main.project_id
-  location = "asia-northeast1"
-  name     = "mitene-downloader"
+  project         = data.google_project.main.project_id
+  location        = "asia-northeast1"
+  name            = "mitene-downloader"
+  service_account = google_service_account.cloudbuild.id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
