@@ -7,7 +7,7 @@ resource "google_service_account" "mitene_downloader" {
 
 resource "google_service_account" "cloudbuild" {
   project      = data.google_project.main.project_id
-  account_id   = "cloudbuild-sa"
+  account_id   = "cloudbuild"
   display_name = "Cloud Build Service Account"
   description  = "Custom Service Account for Cloud Build triggers"
-}
+}c
