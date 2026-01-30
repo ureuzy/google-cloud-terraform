@@ -14,12 +14,20 @@ resource "google_secret_manager_secret" "github_pat" {
   }
 }
 
-# 2. Cloud Build サービスエージェントにシークレットの読み取り権限を付与
-resource "google_secret_manager_secret_iam_member" "cloudbuild_secrets_accessor" {
+# 2. Cloud Build サービスエージェントにシークレットの読み取り権限を付与 (Connection用)
+resource "google_secret_manager_secret_iam_member" "cloudbuild_agent_secrets_accessor" {
   project   = data.google_project.main.project_id
   secret_id = google_secret_manager_secret.github_pat.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:service-${data.google_project.main.number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
+}
+
+# カスタムサービスアカウントにも権限を付与
+resource "google_secret_manager_secret_iam_member" "cloudbuild_sa_secrets_accessor" {
+  project   = data.google_project.main.project_id
+  secret_id = google_secret_manager_secret.github_pat.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cloudbuild.email}"
 }
 
 # 3. Cloud Build 第2世代の接続 (Connection)
@@ -36,7 +44,10 @@ resource "google_cloudbuildv2_connection" "github_conn" {
     }
   }
 
-  depends_on = [google_secret_manager_secret_iam_member.cloudbuild_secrets_accessor]
+  depends_on = [
+    google_secret_manager_secret_iam_member.cloudbuild_agent_secrets_accessor,
+    google_secret_manager_secret_iam_member.cloudbuild_sa_secrets_accessor
+  ]
 }
 
 # 4. リポジトリの登録
