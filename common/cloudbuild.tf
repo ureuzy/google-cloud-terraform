@@ -7,7 +7,7 @@ resource "google_artifact_registry_repository" "common" {
 
 resource "google_cloudbuild_trigger" "mitene_downloader" {
   project     = data.google_project.main.project_id
-  location    = "asia-northeast1"
+  location    = "global"
   name        = "mitene-downloader"
   description = "Build and Deploy mitene-downloader to Cloud Run Job"
 
