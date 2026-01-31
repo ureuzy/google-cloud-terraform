@@ -10,4 +10,4 @@ resource "google_service_account" "cloudbuild" {
   account_id   = "cloudbuild"
   display_name = "Cloud Build Service Account"
   description  = "Custom Service Account for Cloud Build triggers"
-}c
+}
