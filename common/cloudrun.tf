@@ -1,12 +1,11 @@
 resource "google_cloud_run_v2_job" "mitene_downloader" {
-  project  = data.google_project.main.project_id
   name     = "mitene-downloader"
   location = "asia-northeast1"
 
   template {
     template {
       containers {
-        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/mitene-downloader:latest"
+        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/mitene-downloader:ad9ad3e"
 
         env {
           name  = "CHANNEL"
@@ -41,7 +40,7 @@ resource "google_cloud_run_v2_job" "mitene_downloader" {
 
   lifecycle {
     ignore_changes = [
-      template[0].template[0].containers[0].image,
+      template[0]
     ]
   }
 }

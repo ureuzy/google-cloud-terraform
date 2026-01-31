@@ -1,5 +1,4 @@
 resource "google_storage_bucket" "photos" {
-  project                     = data.google_project.main.project_id
   name                        = "ureuzy-family-photos"
   location                    = "ASIA"
   storage_class               = "STANDARD"

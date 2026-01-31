@@ -1,7 +1,6 @@
 resource "google_cloud_scheduler_job" "mitene_downloader" {
   name        = "mitene-downloader"
   description = "Trigger mitene-downloader Cloud Run Job"
-  project     = data.google_project.main.project_id
   region      = "asia-northeast1"
   schedule    = "0 0 * * *"
   time_zone   = "Asia/Tokyo"

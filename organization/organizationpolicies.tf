@@ -74,3 +74,20 @@ module "disable_automatic_iam_grants" {
     }
   ]
 }
+
+module "disable_service_account_creation" {
+  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
+
+  policy_root    = "organization"
+  policy_root_id = data.google_organization.ureuzy.org_id
+  constraint     = "constraints/iam.managed.disableServiceAccountCreation"
+  policy_type    = "boolean"
+  rules = [
+    {
+      enforcement = true
+      allow       = []
+      deny        = []
+      conditions  = []
+    }
+  ]
+}
