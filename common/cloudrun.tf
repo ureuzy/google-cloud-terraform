@@ -1,6 +1,7 @@
 resource "google_cloud_run_v2_job" "mitene_downloader" {
   name     = "mitene-downloader"
   location = "asia-northeast1"
+  deletion_protection = false
 
   template {
     template {
@@ -48,6 +49,7 @@ resource "google_cloud_run_v2_job" "mitene_downloader" {
 resource "google_cloud_run_v2_job" "activity_analyzer" {
   name     = "activity-analyzer"
   location = "asia-northeast1"
+  deletion_protection = false
 
   template {
     template {
@@ -87,6 +89,7 @@ resource "google_cloud_run_v2_service" "audit_alert" {
   name     = "audit-alert"
   location = "asia-northeast1"
   ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  deletion_protection = false
 
   template {
     containers {
