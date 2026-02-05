@@ -65,11 +65,11 @@ resource "google_cloud_run_v2_job" "activity_analyzer" {
         }
         env {
           name  = "CHANNEL"
-          value = "#google_cloud_alert" # デフォルト値を設定
+          value = "#google_cloud"
         }
         env {
           name  = "DAYS_AFTER_CREATION"
-          value = "7"
+          value = "30"
         }
       }
       service_account = google_service_account.activity_analyzer.email
@@ -92,17 +92,30 @@ resource "google_cloud_run_v2_service" "audit_alert" {
     containers {
       image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/audit-alert:latest"
 
-      env {
-        name = "SLACK_WEBHOOK"
-        value_source {
-          secret_key_ref {
-            secret  = google_secret_manager_secret.slack_webhook.secret_id
-            version = "latest"
+        env {
+          name = "SLACK_WEBHOOK"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.slack_webhook.secret_id
+              version = "latest"
+            }
           }
         }
+        env {
+          name  = "CHANNEL"
+          value = "#google_cloud"
+        }
+        env {
+          name  = "STORAGE_SCOPE"
+          value = "projects/ureuzy-org-system/locations/global/buckets/_Default/views/_AllLogs"
+        }
+        env {
+          name  = "PROJECT"
+          value = "ureuzy-org-system"
+        }
       }
+      service_account = google_service_account.audit_alert.email
     }
-    service_account = google_service_account.audit_alert.email
   }
 
   lifecycle {
