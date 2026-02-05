@@ -1,3 +1,4 @@
+# Mitene Downloader
 resource "google_clouddeploy_delivery_pipeline" "mitene_downloader" {
   location    = "asia-northeast1"
   name        = "mitene-downloader-job-pipeline"
@@ -23,6 +24,7 @@ resource "google_clouddeploy_target" "mitene_downloader" {
   }
 }
 
+# Activity Analyzer
 resource "google_clouddeploy_delivery_pipeline" "activity_analyzer" {
   location    = "asia-northeast1"
   name        = "activity-analyzer-job-pipeline"
@@ -48,10 +50,11 @@ resource "google_clouddeploy_target" "activity_analyzer" {
   }
 }
 
+# Audit Alert
 resource "google_clouddeploy_delivery_pipeline" "audit_alert" {
   location    = "asia-northeast1"
-  name        = "audit-alert-job-pipeline"
-  description = "Delivery pipeline for audit-alert Cloud Run Job"
+  name        = "audit-alert-pipeline"
+  description = "Delivery pipeline for audit-alert Cloud Run Service"
 
   serial_pipeline {
     stages {
@@ -62,8 +65,8 @@ resource "google_clouddeploy_delivery_pipeline" "audit_alert" {
 
 resource "google_clouddeploy_target" "audit_alert" {
   location    = "asia-northeast1"
-  name        = "audit-alert-job-target"
-  description = "Target for audit-alert Cloud Run Job"
+  name        = "audit-alert-target"
+  description = "Target for audit-alert Cloud Run Service"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
     service_account = google_service_account.clouddeploy.email

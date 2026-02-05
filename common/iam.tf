@@ -80,6 +80,7 @@ resource "google_project_iam_member" "eventarc" {
   for_each = toset([
     "roles/eventarc.eventReceiver",
     "roles/run.developer",
+    "roles/run.invoker",
   ])
   project = data.google_project.main.project_id
   role    = each.value

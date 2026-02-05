@@ -9,12 +9,9 @@ resource "google_eventarc_trigger" "audit_alert" {
   }
 
   destination {
-    workflow = null # Job を指定する場合は workflow ではなく cloud_run_job を使いたいが、プロバイダーのバージョンによって書き方が異なる
-    # Cloud Run V2 Job をサポートしているか確認。なければ Cloud Run Service か Workflow を経由する必要がある
-    cloud_run_service { # 代替案として既存の構成を模倣
-      service = google_cloud_run_v2_job.audit_alert.name
+    cloud_run_service {
+      service = google_cloud_run_v2_service.audit_alert.name
       region  = "asia-northeast1"
-      path    = "/" # Job の場合は path ではなく run-job などの指定が必要な場合がある
     }
   }
 

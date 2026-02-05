@@ -75,32 +75,33 @@ resource "google_cloud_run_v2_job" "activity_analyzer" {
   }
 }
 
-resource "google_cloud_run_v2_job" "audit_alert" {
+resource "google_cloud_run_v2_service" "audit_alert" {
   name     = "audit-alert"
   location = "asia-northeast1"
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   template {
-    template {
-      containers {
-        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/audit-alert:latest"
+    containers {
+      image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/audit-alert:latest"
 
-        env {
-          name = "SLACK_WEBHOOK"
-          value_source {
-            secret_key_ref {
-              secret  = google_secret_manager_secret.slack_webhook.secret_id
-              version = "latest"
-            }
+      env {
+        name = "SLACK_WEBHOOK"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.slack_webhook.secret_id
+            version = "latest"
           }
         }
       }
-      service_account = google_service_account.audit_alert.email
     }
+    service_account = google_service_account.audit_alert.email
   }
 
   lifecycle {
     ignore_changes = [
-      template[0]
+      client,
+      client_version,
+      template[0].containers[0].image,
     ]
   }
 }
