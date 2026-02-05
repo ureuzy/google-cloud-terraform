@@ -80,3 +80,4 @@ resource "google_service_account_iam_member" "pubsub_token_creator" {
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:service-${data.google_project.main.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
+

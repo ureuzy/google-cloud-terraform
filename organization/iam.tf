@@ -53,8 +53,9 @@ resource "google_project_iam_member" "log-writer" {
 }
 
 ### Audit Log Alert
-resource "google_project_iam_member" "publisher" {
-  project = google_project.org_system.id
+resource "google_pubsub_topic_iam_member" "audit_alert_publisher" {
+  project = "ureuzy-common"
+  topic   = "audit-alert"
   role    = "roles/pubsub.publisher"
   member  = google_logging_project_sink.auditlogs_alert.writer_identity
 }
