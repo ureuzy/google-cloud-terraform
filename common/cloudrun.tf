@@ -116,7 +116,6 @@ resource "google_cloud_run_v2_service" "audit_alert" {
       }
       service_account = google_service_account.audit_alert.email
     }
-  }
 
   lifecycle {
     ignore_changes = [
