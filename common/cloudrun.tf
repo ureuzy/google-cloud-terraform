@@ -63,6 +63,14 @@ resource "google_cloud_run_v2_job" "activity_analyzer" {
             }
           }
         }
+        env {
+          name  = "CHANNEL"
+          value = "#google_cloud_alert" # デフォルト値を設定
+        }
+        env {
+          name  = "DAYS_AFTER_CREATION"
+          value = "7"
+        }
       }
       service_account = google_service_account.activity_analyzer.email
     }
@@ -101,7 +109,7 @@ resource "google_cloud_run_v2_service" "audit_alert" {
     ignore_changes = [
       client,
       client_version,
-      template[0].containers[0].image,
+      template[0]
     ]
   }
 }
