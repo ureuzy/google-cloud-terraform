@@ -42,7 +42,7 @@ resource "google_organization_iam_member" "activity_analyzer" {
   ])
   org_id = data.google_organization.ureuzy.org_id
   role   = each.key
-  member = "serviceAccount:${google_service_account.activity_analyzer.email}"
+  member = "serviceAccount:activity-analyzer@ureuzy-common.iam.gserviceaccount.com"
 }
 
 ### Audit Log Aggregation Sink
@@ -66,25 +66,7 @@ resource "google_project_iam_member" "invoker" {
   ])
   project = google_project.org_system.id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.eventarc.email}"
-}
-
-resource "google_project_iam_member" "audit_alert_functions" {
-  for_each = toset([
-    "roles/secretmanager.secretAccessor"
-  ])
-  project = google_project.org_system.project_id
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.audit_alert_functions.email}"
-}
-
-resource "google_project_iam_member" "activity_analyzer" {
-  for_each = toset([
-    "roles/secretmanager.secretAccessor"
-  ])
-  project = google_project.org_system.project_id
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.activity_analyzer.email}"
+  member  = "serviceAccount:eventarc@ureuzy-common.iam.gserviceaccount.com"
 }
 
 

@@ -51,7 +51,7 @@ resource "google_logging_project_sink" "default" {
 resource "google_logging_project_sink" "auditlogs_alert" {
   project                = google_project.org_system.project_id
   name                   = "auditlogs_alert"
-  destination            = "pubsub.googleapis.com/${google_pubsub_topic.audit_alert.id}"
+  destination            = "pubsub.googleapis.com/projects/ureuzy-common/topics/audit-alert"
   filter                 = "protoPayload.methodName=\"SetIamPolicy\""
   unique_writer_identity = true
 }

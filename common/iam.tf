@@ -52,3 +52,36 @@ resource "google_project_iam_member" "clouddeploy" {
   member  = "serviceAccount:${google_service_account.clouddeploy.email}"
 
 }
+
+# Activity Analyzer
+resource "google_project_iam_member" "activity_analyzer" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/secretmanager.secretAccessor",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.activity_analyzer.email}"
+}
+
+# Audit Alert
+resource "google_project_iam_member" "audit_alert" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/secretmanager.secretAccessor",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.audit_alert.email}"
+}
+
+# Eventarc
+resource "google_project_iam_member" "eventarc" {
+  for_each = toset([
+    "roles/eventarc.eventReceiver",
+    "roles/run.developer",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.eventarc.email}"
+}

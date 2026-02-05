@@ -44,3 +44,63 @@ resource "google_cloud_run_v2_job" "mitene_downloader" {
     ]
   }
 }
+
+resource "google_cloud_run_v2_job" "activity_analyzer" {
+  name     = "activity-analyzer"
+  location = "asia-northeast1"
+
+  template {
+    template {
+      containers {
+        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/activity-analyzer:latest"
+
+        env {
+          name = "SLACK_WEBHOOK"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.slack_webhook.secret_id
+              version = "latest"
+            }
+          }
+        }
+      }
+      service_account = google_service_account.activity_analyzer.email
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0]
+    ]
+  }
+}
+
+resource "google_cloud_run_v2_job" "audit_alert" {
+  name     = "audit-alert"
+  location = "asia-northeast1"
+
+  template {
+    template {
+      containers {
+        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/audit-alert:latest"
+
+        env {
+          name = "SLACK_WEBHOOK"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.slack_webhook.secret_id
+              version = "latest"
+            }
+          }
+        }
+      }
+      service_account = google_service_account.audit_alert.email
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0]
+    ]
+  }
+}

@@ -4,6 +4,24 @@ resource "google_service_account" "mitene_downloader" {
   description  = "Service Account for mitene downloader Cloud Run Job"
 }
 
+resource "google_service_account" "activity_analyzer" {
+  account_id   = "activity-analyzer"
+  display_name = "activity-analyzer"
+  description  = "Analyze unused service account"
+}
+
+resource "google_service_account" "audit_alert" {
+  account_id   = "audit-alert"
+  display_name = "audit-alert"
+  description  = "Service Account for Audit alert"
+}
+
+resource "google_service_account" "eventarc" {
+  account_id   = "eventarc"
+  display_name = "Eventarc Trigger"
+  description  = "Service Account for Eventarc triggers"
+}
+
 resource "google_service_account" "cloudbuild" {
   account_id   = "cloudbuild"
   display_name = "Cloud Build Service Account"
