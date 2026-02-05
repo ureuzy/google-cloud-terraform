@@ -53,10 +53,3 @@ resource "google_project" "common" {
   org_id          = data.google_organization.ureuzy.org_id
   billing_account = data.google_billing_account.account.id
 }
-
-resource "google_project" "wi_provider_mgmt" {
-  name            = "ureuzy-wi-provider-mgmt"
-  project_id      = "ureuzy-wi-provider-mgmt"
-  org_id          = data.google_organization.ureuzy.org_id
-  billing_account = data.google_billing_account.account.id
-}

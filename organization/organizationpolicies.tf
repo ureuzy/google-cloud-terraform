@@ -17,7 +17,7 @@ module "allowed_external_identity_providers" {
   policy_root_id   = data.google_organization.ureuzy.org_id
   constraint       = "constraints/iam.workloadIdentityPoolProviders"
   policy_type      = "list"
-  exclude_projects = [google_project.wi_provider_mgmt.project_id]
+  exclude_projects = [google_project.org_system.project_id]
   rules = [
     {
       enforcement = false
