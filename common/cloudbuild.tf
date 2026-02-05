@@ -27,3 +27,47 @@ resource "google_cloudbuild_trigger" "mitene_downloader" {
     _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.mitene_downloader.name
   }
 }
+
+resource "google_cloudbuild_trigger" "activity_analyzer" {
+  location        = "asia-northeast1"
+  name            = "activity-analyzer"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["activity-analyzer/**"]
+  filename       = "activity-analyzer/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "activity-analyzer"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.activity_analyzer.name
+  }
+}
+
+resource "google_cloudbuild_trigger" "audit_alert" {
+  location        = "asia-northeast1"
+  name            = "audit-alert"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["audit-alert/**"]
+  filename       = "audit-alert/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "audit-alert"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.audit_alert.name
+  }
+}
