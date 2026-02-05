@@ -45,27 +45,3 @@ resource "google_eventarc_trigger" "audit_alert" {
   timeouts {}
   service_account = google_service_account.eventarc.email
 }
-
-resource "google_eventarc_trigger" "mitene_downloader" {
-  project  = google_project.org_system.project_id
-  name     = "mitene-downloader"
-  location = "asia-northeast1"
-  matching_criteria {
-    attribute = "type"
-    value     = "google.cloud.pubsub.topic.v1.messagePublished"
-  }
-  destination {
-    cloud_run_service {
-      path    = "/"
-      region  = "asia-northeast1"
-      service = "mitene-downloader"
-    }
-  }
-  transport {
-    pubsub {
-      topic = google_pubsub_topic.mitene_downloader.id
-    }
-  }
-  timeouts {}
-  service_account = google_service_account.eventarc.email
-}

@@ -18,12 +18,7 @@ resource "google_service_account" "activity_analyzer" {
   description  = "Analyze unused service account"
 }
 
-resource "google_service_account" "mitene_downloader" {
-  project      = google_project.org_system.project_id
-  account_id   = "mitene-downloader"
-  display_name = "mitene-downloader"
-  description  = "Service Account for mitene downloader"
-}
+
 
 ### Workload Identity User for GitHub Actions
 resource "google_service_account" "gha" {
