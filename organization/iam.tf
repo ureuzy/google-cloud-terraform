@@ -58,30 +58,3 @@ resource "google_project_iam_member" "publisher" {
   role    = "roles/pubsub.publisher"
   member  = google_logging_project_sink.auditlogs_alert.writer_identity
 }
-
-
-### Workload Identity User for GitHub Actions
-resource "google_project_iam_member" "gha" {
-  for_each = toset([
-    "roles/cloudfunctions.developer",
-    "roles/run.developer"
-  ])
-
-  project = google_project.org_system.project_id
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.gha.email}"
-}
-
-data "google_iam_policy" "gha" {
-  binding {
-    role = "roles/iam.workloadIdentityUser"
-    members = [
-      "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.gha.name}/attribute.repository/ureuzy/cloud_functions",
-    ]
-  }
-}
-
-resource "google_service_account_iam_policy" "gha" {
-  service_account_id = google_service_account.gha.name
-  policy_data        = data.google_iam_policy.gha.policy_data
-}
