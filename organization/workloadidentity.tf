@@ -1,12 +1,12 @@
 resource "google_iam_workload_identity_pool" "gha" {
-  project                   = google_project.wi_provider_mgmt.project_id
+  project                   = google_project.org_system.project_id
   disabled                  = false
   display_name              = "github-actions"
   workload_identity_pool_id = "github-actions"
 }
 
 resource "google_iam_workload_identity_pool_provider" "gha" {
-  project                            = google_project.wi_provider_mgmt.project_id
+  project                            = google_project.org_system.project_id
   disabled                           = false
   display_name                       = "github"
   workload_identity_pool_id          = google_iam_workload_identity_pool.gha.workload_identity_pool_id
@@ -25,14 +25,14 @@ resource "google_iam_workload_identity_pool_provider" "gha" {
 }
 
 resource "google_iam_workload_identity_pool" "terraform" {
-  project                   = google_project.wi_provider_mgmt.project_id
+  project                   = google_project.org_system.project_id
   disabled                  = false
   display_name              = "terraform"
   workload_identity_pool_id = "terraform"
 }
 
 resource "google_iam_workload_identity_pool_provider" "terraform_cloud" {
-  project                            = google_project.wi_provider_mgmt.project_id
+  project                            = google_project.org_system.project_id
   disabled                           = false
   display_name                       = "terraform-cloud"
   workload_identity_pool_id          = google_iam_workload_identity_pool.terraform.workload_identity_pool_id
