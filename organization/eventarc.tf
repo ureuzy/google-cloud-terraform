@@ -1,1 +1,0 @@
-# Eventarc triggers moved to common project

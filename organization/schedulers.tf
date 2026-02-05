@@ -1,1 +1,0 @@
-# Scheduler jobs moved to common project
