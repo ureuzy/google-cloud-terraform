@@ -26,7 +26,8 @@ module "project-services" {
     "eventarc.googleapis.com",
     "cloudkms.googleapis.com",
     "policyanalyzer.googleapis.com",
-    "compute.googleapis.com"
+    "compute.googleapis.com",
+    "bigquery.googleapis.com"
   ]
 }
 
