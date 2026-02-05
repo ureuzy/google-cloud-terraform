@@ -87,6 +87,15 @@ resource "google_project_iam_member" "activity_analyzer" {
   member  = "serviceAccount:${google_service_account.activity_analyzer.email}"
 }
 
+data "google_iam_policy" "service_account_user" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+    members = [
+      "serviceAccount:${google_service_account.gha.email}"
+    ]
+  }
+}
+
 resource "google_service_account_iam_policy" "sa_account_binding" {
   for_each = toset([
     google_service_account.audit_alert_functions.name,
