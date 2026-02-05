@@ -75,14 +75,9 @@ resource "google_project_iam_member" "audit_alert" {
   member  = "serviceAccount:${google_service_account.audit_alert.email}"
 }
 
-# Eventarc
-resource "google_project_iam_member" "eventarc" {
-  for_each = toset([
-    "roles/eventarc.eventReceiver",
-    "roles/run.developer",
-    "roles/run.invoker",
-  ])
-  project = data.google_project.main.project_id
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.eventarc.email}"
+# Allow Pub/Sub to create tokens for audit-alert SA
+resource "google_service_account_iam_member" "pubsub_token_creator" {
+  service_account_id = google_service_account.audit_alert.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:service-${data.google_project.main.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }

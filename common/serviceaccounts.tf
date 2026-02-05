@@ -16,12 +16,6 @@ resource "google_service_account" "audit_alert" {
   description  = "Service Account for Audit alert"
 }
 
-resource "google_service_account" "eventarc" {
-  account_id   = "eventarc"
-  display_name = "Eventarc Trigger"
-  description  = "Service Account for Eventarc triggers"
-}
-
 resource "google_service_account" "cloudbuild" {
   account_id   = "cloudbuild"
   display_name = "Cloud Build Service Account"

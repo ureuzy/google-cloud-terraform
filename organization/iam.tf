@@ -59,16 +59,6 @@ resource "google_project_iam_member" "publisher" {
   member  = google_logging_project_sink.auditlogs_alert.writer_identity
 }
 
-resource "google_project_iam_member" "invoker" {
-  for_each = toset([
-    "roles/eventarc.eventReceiver",
-    "roles/run.invoker"
-  ])
-  project = google_project.org_system.id
-  role    = each.value
-  member  = "serviceAccount:eventarc@ureuzy-common.iam.gserviceaccount.com"
-}
-
 
 ### Workload Identity User for GitHub Actions
 resource "google_project_iam_member" "gha" {
