@@ -10,24 +10,6 @@ resource "google_tags_tag_value" "all_users_ingress" {
   description = "Allowed all users ingress"
 }
 
-module "allowed_external_identity_providers" {
-  source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
-
-  policy_root      = "organization"
-  policy_root_id   = data.google_organization.ureuzy.org_id
-  constraint       = "constraints/iam.workloadIdentityPoolProviders"
-  policy_type      = "list"
-  exclude_projects = [google_project.org_system.project_id]
-  rules = [
-    {
-      enforcement = false
-      allow       = []
-      deny        = []
-      conditions  = []
-    }
-  ]
-}
-
 module "cloudfunctions_allowed_ingress_settings" {
   source  = "terraform-google-modules/org-policy/google//modules/org_policy_v2"
 
