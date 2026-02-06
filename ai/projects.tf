@@ -8,5 +8,7 @@ module "project-services" {
   activate_apis = [
     "aiplatform.googleapis.com",
     "storage-component.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "serviceusage.googleapis.com",
   ]
 }
