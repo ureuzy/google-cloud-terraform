@@ -146,3 +146,60 @@ import {
   id = "projects/ureuzy-common/locations/asia-northeast1/services/audit-alert"
   to = google_cloud_run_v2_service.audit_alert
 }
+
+resource "google_cloud_run_v2_job" "ai_web_summarizer" {
+  name                = "ai-web-summarizer"
+  location            = "asia-northeast1"
+  deletion_protection = false
+
+  template {
+    template {
+      containers {
+        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/${google_artifact_registry_repository.common.repository_id}/ai-web-summarizer:latest"
+
+        env {
+          name = "SLACK_WEBHOOK"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.slack_webhook.secret_id
+              version = "latest"
+            }
+          }
+        }
+        env {
+          name  = "CHANNEL"
+          value = "#google_cloud"
+        }
+        env {
+          name  = "TARGET_URLS"
+          value = "https://example.com"
+        }
+        env {
+          name  = "PROJECT_ID"
+          value = data.google_project.main.project_id
+        }
+        env {
+          name  = "LOCATION"
+          value = "asia-northeast1"
+        }
+        env {
+          name  = "GEMINI_MODEL"
+          value = "gemini-1.5-flash"
+        }
+      }
+      service_account = google_service_account.ai_web_summarizer.email
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0]
+    ]
+  }
+}
+
+# define: https://github.com/ureuzy/cloud_functions/blob/main/ai-web-summarizer/job.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/jobs/ai-web-summarizer"
+  to = google_cloud_run_v2_job.ai_web_summarizer
+}
