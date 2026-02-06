@@ -46,6 +46,12 @@ resource "google_cloud_run_v2_job" "mitene_downloader" {
   }
 }
 
+# define: https://github.com/ureuzy/cloud_functions/blob/main/mitene-downloader/job.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/jobs/mitene-downloader"
+  to = google_cloud_run_v2_job.mitene_downloader
+}
+
 resource "google_cloud_run_v2_job" "activity_analyzer" {
   name     = "activity-analyzer"
   location = "asia-northeast1"
@@ -83,6 +89,12 @@ resource "google_cloud_run_v2_job" "activity_analyzer" {
       template[0]
     ]
   }
+}
+
+# define: https://github.com/ureuzy/cloud_functions/blob/main/activity-analyzer/job.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/jobs/activity-analyzer"
+  to = google_cloud_run_v2_job.activity_analyzer
 }
 
 resource "google_cloud_run_v2_service" "audit_alert" {
@@ -127,4 +139,10 @@ resource "google_cloud_run_v2_service" "audit_alert" {
       template[0]
     ]
   }
+}
+
+# define: https://github.com/ureuzy/cloud_functions/blob/main/audit-alert/service.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/services/audit-alert"
+  to = google_cloud_run_v2_service.audit_alert
 }
