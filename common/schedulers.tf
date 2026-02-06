@@ -31,4 +31,21 @@ resource "google_cloud_scheduler_job" "activity_analyzer" {
     }
   }
 }
+
+resource "google_cloud_scheduler_job" "ai_web_summarizer" {
+  name        = "ai-web-summarizer"
+  description = "Trigger ai-web-summarizer Cloud Run Job"
+  region      = "asia-northeast1"
+  schedule    = "0 0 * * *"
+  time_zone   = "Asia/Tokyo"
+
+  http_target {
+    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/ai-web-summarizer:run"
+    http_method = "POST"
+
+    oauth_token {
+      service_account_email = google_service_account.ai_web_summarizer.email
+    }
+  }
+}
 # 注: Cloud Run Job の起動には 'roles/run.developer' または 'roles/run.invoker' などの権限が SA に必要です。

@@ -71,3 +71,25 @@ resource "google_cloudbuild_trigger" "audit_alert" {
     _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.audit_alert.name
   }
 }
+
+resource "google_cloudbuild_trigger" "ai_web_summarizer" {
+  location        = "asia-northeast1"
+  name            = "ai-web-summarizer"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["ai-web-summarizer/**"]
+  filename       = "ai-web-summarizer/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "ai-web-summarizer"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.ai_web_summarizer.name
+  }
+}

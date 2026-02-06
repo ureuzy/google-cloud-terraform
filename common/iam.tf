@@ -74,6 +74,17 @@ resource "google_project_iam_member" "audit_alert" {
   member  = "serviceAccount:${google_service_account.audit_alert.email}"
 }
 
+# For AI Web Summarizer SA Permissions
+resource "google_project_iam_member" "ai_web_summarizer" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/secretmanager.secretAccessor",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.ai_web_summarizer.email}"
+}
+
 # Allow Pub/Sub to create tokens for audit-alert SA
 resource "google_service_account_iam_member" "pubsub_token_creator" {
   service_account_id = google_service_account.audit_alert.name
