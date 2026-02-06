@@ -16,6 +16,7 @@ module "project-services" {
     "iam.googleapis.com",
     "monitoring.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "serviceusage.googleapis.com"
+    "serviceusage.googleapis.com",
+    "policyanalyzer.googleapis.com"
   ]
 }
