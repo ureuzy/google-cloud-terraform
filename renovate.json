@@ -3,21 +3,22 @@
   "extends": [
     "config:base"
   ],
+  "dependencyDashboard": true,
   "packageRules": [
     {
-      "groupName": "google provider",
       "matchManagers": ["terraform"],
-      "matchPackagePatterns": ["google"]
+      "matchPackagePatterns": ["google"],
+      "groupName": "google provider"
     },
     {
-      "groupName": "terraform",
-      "matchManagers": ["asdf"],
-      "matchPackageNames": ["terraform"]
+      "matchManagers": ["terraform"],
+      "matchPackagePatterns": ["terraform-google-modules"],
+      "groupName": "google modules"
     },
     {
-      "groupName": "terraform",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["required_version"]
+      "matchManagers": ["asdf", "terraform-version"],
+      "matchPackageNames": ["terraform"],
+      "groupName": "terraform"
     }
   ]
 }
