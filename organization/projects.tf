@@ -27,7 +27,8 @@ module "project-services" {
     "cloudkms.googleapis.com",
     "policyanalyzer.googleapis.com",
     "compute.googleapis.com",
-    "bigquery.googleapis.com"
+    "bigquery.googleapis.com",
+    "bigquerydatatransfer.googleapis.com",
   ]
 }
 
