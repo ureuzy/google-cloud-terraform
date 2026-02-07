@@ -19,7 +19,7 @@ resource "google_cloud_scheduler_job" "billing_monitor" {
   name        = "billing-monitor"
   description = "Trigger billing-monitor Cloud Run Job"
   region      = "asia-northeast1"
-  schedule    = "0 0 1 * *"
+  schedule    = "0 0 * * *"
   time_zone   = "Asia/Tokyo"
 
   http_target {
