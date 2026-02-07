@@ -31,10 +31,10 @@ resource "google_cloud_run_v2_job" "billing_monitor" {
   }
 }
 # define: https://github.com/ureuzy/cloud_functions/blob/main/billing-monitor/job.yaml
-# import {
-#   id = "projects/ureuzy-common/locations/asia-northeast1/jobs/billing-monitor"
-#   to = google_cloud_run_v2_job.billing_monitor
-# }
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/jobs/billing-monitor"
+  to = google_cloud_run_v2_job.billing_monitor
+}
 
 resource "google_cloud_run_v2_job" "activity_analyzer" {
   name     = "activity-analyzer"
