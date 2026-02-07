@@ -29,6 +29,7 @@ module "project-services" {
     "compute.googleapis.com",
     "bigquery.googleapis.com",
     "bigquerydatatransfer.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
   ]
 }
 
