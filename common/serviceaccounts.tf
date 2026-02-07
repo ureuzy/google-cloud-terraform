@@ -4,6 +4,12 @@ resource "google_service_account" "mitene_downloader" {
   description  = "Service Account for mitene downloader Cloud Run Job"
 }
 
+resource "google_service_account" "billing_monitor" {
+  account_id   = "billing-monitor"
+  display_name = "billing-monitor"
+  description  = "Service Account for the billing-monitor Cloud Run Job"
+}
+
 resource "google_service_account" "activity_analyzer" {
   account_id   = "activity-analyzer"
   display_name = "activity-analyzer"

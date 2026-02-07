@@ -36,6 +36,17 @@ resource "google_project_iam_member" "mitene_downloader" {
   member  = "serviceAccount:${google_service_account.mitene_downloader.email}"
 }
 
+# For billing monitor SA Permissions
+resource "google_project_iam_member" "billing_monitor" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/secretmanager.secretAccessor",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.billing_monitor.email}"
+}
+
 resource "google_storage_bucket_iam_member" "mitene_downloader_photos" {
   bucket = google_storage_bucket.photos.name
   role   = "roles/storage.objectAdmin"

@@ -28,6 +28,28 @@ resource "google_cloudbuild_trigger" "mitene_downloader" {
   }
 }
 
+resource "google_cloudbuild_trigger" "billing_monitor" {
+  location        = "asia-northeast1"
+  name            = "billing-monitor"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["billing-monitor/**"]
+  filename       = "billing-monitor/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "billing-monitor"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.billing_monitor.name
+  }
+}
+
 resource "google_cloudbuild_trigger" "activity_analyzer" {
   location        = "asia-northeast1"
   name            = "activity-analyzer"

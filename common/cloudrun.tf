@@ -2,6 +2,9 @@ resource "google_cloud_run_v2_job" "mitene_downloader" {
   name     = "mitene-downloader"
   location = "asia-northeast1"
   deletion_protection = false
+  template {
+    template {}
+  }
   lifecycle {
     ignore_changes = [
       template[0]
@@ -14,10 +17,32 @@ import {
   to = google_cloud_run_v2_job.mitene_downloader
 }
 
+resource "google_cloud_run_v2_job" "billing_monitor" {
+  name     = "billing-monitor"
+  location = "asia-northeast1"
+  deletion_protection = false
+  template {
+    template {}
+  }
+  lifecycle {
+    ignore_changes = [
+      template[0]
+    ]
+  }
+}
+# define: https://github.com/ureuzy/cloud_functions/blob/main/billing-monitor/job.yaml
+# import {
+#   id = "projects/ureuzy-common/locations/asia-northeast1/jobs/billing-monitor"
+#   to = google_cloud_run_v2_job.billing_monitor
+# }
+
 resource "google_cloud_run_v2_job" "activity_analyzer" {
   name     = "activity-analyzer"
   location = "asia-northeast1"
   deletion_protection = false
+  template {
+    template {}
+  }
   lifecycle {
     ignore_changes = [
       template[0]
@@ -35,6 +60,7 @@ resource "google_cloud_run_v2_service" "audit_alert" {
   location = "asia-northeast1"
   ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
   deletion_protection = false
+  template {}
   lifecycle {
     ignore_changes = [
       client,
@@ -53,6 +79,9 @@ resource "google_cloud_run_v2_job" "ai_web_summarizer" {
   name                = "ai-web-summarizer"
   location            = "asia-northeast1"
   deletion_protection = false
+  template {
+    template {}
+  }
   lifecycle {
     ignore_changes = [
       template[0]
