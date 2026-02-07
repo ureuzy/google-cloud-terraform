@@ -59,3 +59,13 @@ resource "google_pubsub_topic_iam_member" "audit_alert_publisher" {
   role    = "roles/pubsub.publisher"
   member  = google_logging_project_sink.auditlogs_alert.writer_identity
 }
+
+### Billing Monitor
+resource "google_project_iam_member" "billing_monitor" {
+  for_each = toset([
+    "roles/bigquery.dataViewer",
+  ])
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${data.google_service_account.billing_monitor.email}"
+}
