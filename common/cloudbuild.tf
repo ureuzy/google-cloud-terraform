@@ -115,3 +115,25 @@ resource "google_cloudbuild_trigger" "ai_web_summarizer" {
     _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.ai_web_summarizer.name
   }
 }
+
+resource "google_cloudbuild_trigger" "common_api" {
+  location        = "asia-northeast1"
+  name            = "common-api"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["common-api/**"]
+  filename       = "common-api/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "common-api"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.common_api.name
+  }
+}

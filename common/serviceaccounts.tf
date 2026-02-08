@@ -28,6 +28,12 @@ resource "google_service_account" "ai_web_summarizer" {
   description  = "Service Account for the ai-web-summarizer Cloud Run Job"
 }
 
+resource "google_service_account" "common_api" {
+  account_id   = "common-api"
+  display_name = "common-api"
+  description  = "Service Account for the common-api Cloud Run Service"
+}
+
 resource "google_service_account" "cloudbuild" {
   account_id   = "cloudbuild"
   display_name = "Cloud Build Service Account"

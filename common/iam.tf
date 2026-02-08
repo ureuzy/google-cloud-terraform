@@ -96,6 +96,17 @@ resource "google_project_iam_member" "ai_web_summarizer" {
   member  = "serviceAccount:${google_service_account.ai_web_summarizer.email}"
 }
 
+# For common-api SA Permissions
+resource "google_project_iam_member" "common_api" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/viewer",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.common_api.email}"
+}
+
 # Allow Pub/Sub to create tokens for audit-alert SA
 resource "google_service_account_iam_member" "pubsub_token_creator" {
   service_account_id = google_service_account.audit_alert.name

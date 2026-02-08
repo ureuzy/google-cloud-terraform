@@ -126,3 +126,28 @@ resource "google_clouddeploy_target" "ai_web_summarizer" {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
   }
 }
+
+resource "google_clouddeploy_delivery_pipeline" "common_api" {
+  location    = "asia-northeast1"
+  name        = "common-api-pipeline"
+  description = "Delivery pipeline for common-api Cloud Run Service"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.common_api.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "common_api" {
+  location    = "asia-northeast1"
+  name        = "common-api-target"
+  description = "Target for common-api Cloud Run Service"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.clouddeploy.email
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}
