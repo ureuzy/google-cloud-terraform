@@ -75,25 +75,25 @@ import {
   to = google_cloud_run_v2_service.audit_alert
 }
 
-# resource "google_cloud_run_v2_service" "common_api" {
-#   name                = "common-api"
-#   location            = "asia-northeast1"
-#   ingress             = "INGRESS_TRAFFIC_INTERNAL_ONLY"
-#   deletion_protection = false
-#   template {}
-#   lifecycle {
-#     ignore_changes = [
-#       client,
-#       client_version,
-#       template[0]
-#     ]
-#   }
-# }
-# # define: https://github.com/ureuzy/cloud_functions/blob/main/common-api/service.yaml
-# import {
-#   id = "projects/ureuzy-common/locations/asia-northeast1/services/common-api"
-#   to = google_cloud_run_v2_service.common_api
-# }
+resource "google_cloud_run_v2_service" "common_api" {
+  name                = "common-api"
+  location            = "asia-northeast1"
+  ingress             = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  deletion_protection = false
+  template {}
+  lifecycle {
+    ignore_changes = [
+      client,
+      client_version,
+      template[0]
+    ]
+  }
+}
+# define: https://github.com/ureuzy/cloud_functions/blob/main/common-api/service.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/services/common-api"
+  to = google_cloud_run_v2_service.common_api
+}
 
 resource "google_cloud_run_v2_job" "ai_web_summarizer" {
   name                = "ai-web-summarizer"
