@@ -78,7 +78,7 @@ import {
 resource "google_cloud_run_v2_service" "common_api" {
   name                = "common-api"
   location            = "asia-northeast1"
-  ingress             = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  ingress             = "INGRESS_TRAFFIC_ALL"
   deletion_protection = false
   template {}
   lifecycle {

@@ -101,6 +101,7 @@ resource "google_project_iam_member" "common_api" {
   for_each = toset([
     "roles/run.invoker",
     "roles/viewer",
+    "roles/cloudscheduler.admin",
   ])
   project = data.google_project.main.project_id
   role    = each.value
