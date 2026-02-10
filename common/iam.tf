@@ -90,6 +90,8 @@ resource "google_project_iam_member" "ai_web_summarizer" {
   for_each = toset([
     "roles/run.invoker",
     "roles/secretmanager.secretAccessor",
+    "roles/bigquery.dataViewer",
+    "roles/bigquery.user",
   ])
   project = data.google_project.main.project_id
   role    = each.value
