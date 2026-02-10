@@ -17,6 +17,7 @@ module "project-services" {
     "monitoring.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
-    "policyanalyzer.googleapis.com"
+    "policyanalyzer.googleapis.com",
+    "bigquery.googleapis.com",
   ]
 }
