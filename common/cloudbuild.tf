@@ -116,6 +116,50 @@ resource "google_cloudbuild_trigger" "ai_reporter" {
   }
 }
 
+resource "google_cloudbuild_trigger" "ai_sensei_daily_poster" {
+  location        = "asia-northeast1"
+  name            = "ai-sensei-daily-poster"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["ai-sensei/daily-poster/**"]
+  filename       = "ai-sensei/daily-poster/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "ai-sensei-daily-poster"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.ai_sensei_daily_poster.name
+  }
+}
+
+resource "google_cloudbuild_trigger" "ai_sensei_event_handler" {
+  location        = "asia-northeast1"
+  name            = "ai-sensei-event-handler"
+  service_account = google_service_account.cloudbuild.id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["ai-sensei/event-handler/**"]
+  filename       = "ai-sensei/event-handler/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "ai-sensei-event-handler"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.ai_sensei_event_handler.name
+  }
+}
+
 resource "google_cloudbuild_trigger" "common_api" {
   location        = "asia-northeast1"
   name            = "common-api"

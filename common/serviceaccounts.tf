@@ -28,6 +28,12 @@ resource "google_service_account" "ai_reporter" {
   description  = "Service Account for the ai-reporter Cloud Run Job"
 }
 
+resource "google_service_account" "ai_sensei" {
+  account_id   = "ai-sensei"
+  display_name = "ai-sensei"
+  description  = "Service Account for the ai-sensei services (daily-poster and event-handler)"
+}
+
 resource "google_service_account" "common_api" {
   account_id   = "common-api"
   display_name = "common-api"

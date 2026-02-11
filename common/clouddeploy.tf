@@ -121,7 +121,59 @@ resource "google_clouddeploy_target" "ai_reporter" {
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
     service_account = google_service_account.clouddeploy.email
-  }  
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}
+
+# AI Sensei Daily Poster
+resource "google_clouddeploy_delivery_pipeline" "ai_sensei_daily_poster" {
+  location    = "asia-northeast1"
+  name        = "ai-sensei-daily-poster-job-pipeline"
+  description = "Delivery pipeline for ai-sensei-daily-poster Cloud Run Job"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.ai_sensei_daily_poster.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "ai_sensei_daily_poster" {
+  location    = "asia-northeast1"
+  name        = "ai-sensei-daily-poster-job-target"
+  description = "Target for ai-sensei-daily-poster Cloud Run Job"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.clouddeploy.email
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}
+
+# AI Sensei Event Handler
+resource "google_clouddeploy_delivery_pipeline" "ai_sensei_event_handler" {
+  location    = "asia-northeast1"
+  name        = "ai-sensei-event-handler-pipeline"
+  description = "Delivery pipeline for ai-sensei-event-handler Cloud Run Service"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.ai_sensei_event_handler.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "ai_sensei_event_handler" {
+  location    = "asia-northeast1"
+  name        = "ai-sensei-event-handler-target"
+  description = "Target for ai-sensei-event-handler Cloud Run Service"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.clouddeploy.email
+  }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
   }

@@ -98,6 +98,17 @@ resource "google_project_iam_member" "ai_reporter" {
   member  = "serviceAccount:${google_service_account.ai_reporter.email}"
 }
 
+# For AI Sensei SA Permissions
+resource "google_project_iam_member" "ai_sensei" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/secretmanager.secretAccessor",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.ai_sensei.email}"
+}
+
 # For common-api SA Permissions
 resource "google_project_iam_member" "common_api" {
   for_each = toset([
