@@ -85,8 +85,8 @@ resource "google_project_iam_member" "audit_alert" {
   member  = "serviceAccount:${google_service_account.audit_alert.email}"
 }
 
-# For AI Web Summarizer SA Permissions
-resource "google_project_iam_member" "ai_web_summarizer" {
+# For AI Reporter SA Permissions
+resource "google_project_iam_member" "ai_reporter" {
   for_each = toset([
     "roles/run.invoker",
     "roles/secretmanager.secretAccessor",
@@ -95,7 +95,7 @@ resource "google_project_iam_member" "ai_web_summarizer" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.ai_web_summarizer.email}"
+  member  = "serviceAccount:${google_service_account.ai_reporter.email}"
 }
 
 # For common-api SA Permissions

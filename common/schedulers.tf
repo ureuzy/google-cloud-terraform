@@ -49,19 +49,19 @@ resource "google_cloud_scheduler_job" "activity_analyzer" {
   }
 }
 
-resource "google_cloud_scheduler_job" "ai_web_summarizer" {
-  name        = "ai-web-summarizer"
-  description = "Trigger ai-web-summarizer Cloud Run Job"
+resource "google_cloud_scheduler_job" "ai_reporter" {
+  name        = "ai-reporter"
+  description = "Trigger ai-reporter Cloud Run Job"
   region      = "asia-northeast1"
   schedule    = "0 0 * * *"
   time_zone   = "Asia/Tokyo"
 
   http_target {
-    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/ai-web-summarizer:run"
     http_method = "POST"
+    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/ai-reporter:run"
 
     oauth_token {
-      service_account_email = google_service_account.ai_web_summarizer.email
+      service_account_email = google_service_account.ai_reporter.email
     }
   }
 }

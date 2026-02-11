@@ -1,4 +1,4 @@
-data "google_service_account" "ai_web_summarizer" {
+data "google_service_account" "ai_reporter" {
   project = "ureuzy-common"
-  account_id = "ai-web-summarizer"
+  account_id = "ai-reporter"
 }

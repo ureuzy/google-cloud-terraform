@@ -22,10 +22,10 @@ resource "google_service_account" "audit_alert" {
   description  = "Service Account for Audit alert"
 }
 
-resource "google_service_account" "ai_web_summarizer" {
-  account_id   = "ai-web-summarizer"
-  display_name = "ai-web-summarizer"
-  description  = "Service Account for the ai-web-summarizer Cloud Run Job"
+resource "google_service_account" "ai_reporter" {
+  account_id   = "ai-reporter"
+  display_name = "ai-reporter"
+  description  = "Service Account for the ai-reporter Cloud Run Job"
 }
 
 resource "google_service_account" "common_api" {

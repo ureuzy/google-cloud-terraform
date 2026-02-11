@@ -102,26 +102,26 @@ resource "google_clouddeploy_target" "audit_alert" {
   }
 }
 
-resource "google_clouddeploy_delivery_pipeline" "ai_web_summarizer" {
-  location    = "asia-northeast1"
-  name        = "ai-web-summarizer-job-pipeline"
-  description = "Delivery pipeline for ai-web-summarizer Cloud Run Job"
+resource "google_clouddeploy_delivery_pipeline" "ai_reporter" {
+  location = "asia-northeast1"
+  name     = "ai-reporter-job-pipeline"
+  description = "Delivery pipeline for ai-reporter Cloud Run Job"
 
   serial_pipeline {
     stages {
-      target_id = google_clouddeploy_target.ai_web_summarizer.name
+      target_id = google_clouddeploy_target.ai_reporter.name
     }
   }
 }
 
-resource "google_clouddeploy_target" "ai_web_summarizer" {
-  location    = "asia-northeast1"
-  name        = "ai-web-summarizer-job-target"
-  description = "Target for ai-web-summarizer Cloud Run Job"
+resource "google_clouddeploy_target" "ai_reporter" {
+  location = "asia-northeast1"
+  name     = "ai-reporter-job-target"
+  description = "Target for ai-reporter Cloud Run Job"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
     service_account = google_service_account.clouddeploy.email
-  }
+  }  
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
   }
