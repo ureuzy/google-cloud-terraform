@@ -19,6 +19,13 @@ resource "google_secret_manager_secret" "slack_sensei_bot" {
   }
 }
 
+resource "google_secret_manager_secret" "slack_sensei_signing_secret" {
+  secret_id = "slack-sensei-signing-secret"
+  replication {
+    auto {}
+  }
+}
+
 resource "google_secret_manager_secret" "mitene_url" {
   secret_id = "mitene-url"
   replication {
