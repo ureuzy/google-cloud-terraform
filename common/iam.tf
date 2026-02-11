@@ -128,3 +128,18 @@ resource "google_service_account_iam_member" "pubsub_token_creator" {
   member             = "serviceAccount:service-${data.google_project.main.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
 
+# Allow public access to Cloud Run Services
+resource "google_cloud_run_v2_service_iam_member" "common_api_public_access" {
+  name     = google_cloud_run_v2_service.common_api.name
+  location = google_cloud_run_v2_service.common_api.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "ai_sensei_event_handler_public_access" {
+  name     = google_cloud_run_v2_service.ai_sensei_event_handler.name
+  location = google_cloud_run_v2_service.ai_sensei_event_handler.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+

@@ -121,41 +121,41 @@ import {
   to = google_cloud_run_v2_job.ai_reporter
 }
 
-# resource "google_cloud_run_v2_job" "ai_sensei_daily_poster" {
-#   name                = "ai-sensei-daily-poster"
-#   location            = "asia-northeast1"
-#   deletion_protection = false
-#   template {
-#     template {}
-#   }
-#   lifecycle {
-#     ignore_changes = [
-#       template[0]
-#     ]
-#   }
-# }
-# # define: https://github.com/ureuzy/cloud_functions/blob/main/ai-sensei/daily-poster/job.yaml
-# import {
-#   id = "projects/ureuzy-common/locations/asia-northeast1/jobs/ai-sensei-daily-poster"
-#   to = google_cloud_run_v2_job.ai_sensei_daily_poster
-# }
+resource "google_cloud_run_v2_job" "ai_sensei_daily_poster" {
+  name                = "ai-sensei-daily-poster"
+  location            = "asia-northeast1"
+  deletion_protection = false
+  template {
+    template {}
+  }
+  lifecycle {
+    ignore_changes = [
+      template[0]
+    ]
+  }
+}
+# define: https://github.com/ureuzy/cloud_functions/blob/main/ai-sensei/daily-poster/job.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/jobs/ai-sensei-daily-poster"
+  to = google_cloud_run_v2_job.ai_sensei_daily_poster
+}
 
-# resource "google_cloud_run_v2_service" "ai_sensei_event_handler" {
-#   name                = "ai-sensei-event-handler"
-#   location            = "asia-northeast1"
-#   ingress             = "INGRESS_TRAFFIC_ALL"
-#   deletion_protection = false
-#   template {}
-#   lifecycle {
-#     ignore_changes = [
-#       client,
-#       client_version,
-#       template[0]
-#     ]
-#   }
-# }
-# # define: https://github.com/ureuzy/cloud_functions/blob/main/ai-sensei/event-handler/service.yaml
-# import {
-#   id = "projects/ureuzy-common/locations/asia-northeast1/services/ai-sensei-event-handler"
-#   to = google_cloud_run_v2_service.ai_sensei_event_handler
-# }
+resource "google_cloud_run_v2_service" "ai_sensei_event_handler" {
+  name                = "ai-sensei-event-handler"
+  location            = "asia-northeast1"
+  ingress             = "INGRESS_TRAFFIC_ALL"
+  deletion_protection = false
+  template {}
+  lifecycle {
+    ignore_changes = [
+      client,
+      client_version,
+      template[0]
+    ]
+  }
+}
+# define: https://github.com/ureuzy/cloud_functions/blob/main/ai-sensei/event-handler/service.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/services/ai-sensei-event-handler"
+  to = google_cloud_run_v2_service.ai_sensei_event_handler
+}
