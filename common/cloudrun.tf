@@ -95,28 +95,28 @@ import {
   to = google_cloud_run_v2_service.common_api
 }
 
-# resource "google_cloud_run_v2_job" "ai_reporter" {
-#   name                = "ai-reporter"
-#   location            = "asia-northeast1"
-#   deletion_protection = false
+resource "google_cloud_run_v2_job" "ai_reporter" {
+  name                = "ai-reporter"
+  location            = "asia-northeast1"
+  deletion_protection = false
 
-#   template {
-#     template {
-#       containers {
-#         image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/cloud-run-source-deploy/ai-reporter:latest"
-#       }
-#     }
-#   }
+  template {
+    template {
+      containers {
+        image = "asia-northeast1-docker.pkg.dev/${data.google_project.main.project_id}/cloud-run-source-deploy/ai-reporter:latest"
+      }
+    }
+  }
 
-#   lifecycle {
-#     ignore_changes = [
-#       template[0].template[0].containers[0].image,
-#     ]
-#   }
-# }
+  lifecycle {
+    ignore_changes = [
+      template[0].template[0].containers[0].image,
+    ]
+  }
+}
 
-# # define: https://github.com/ureuzy/cloud_functions/blob/main/ai-reporter/job.yaml
-# import {
-#   id = "projects/ureuzy-common/locations/asia-northeast1/jobs/ai-reporter"
-#   to = google_cloud_run_v2_job.ai_reporter
-# }
+# define: https://github.com/ureuzy/cloud_functions/blob/main/ai-reporter/job.yaml
+import {
+  id = "projects/ureuzy-common/locations/asia-northeast1/jobs/ai-reporter"
+  to = google_cloud_run_v2_job.ai_reporter
+}
