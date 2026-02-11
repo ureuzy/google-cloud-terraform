@@ -17,5 +17,5 @@ resource "google_project_iam_member" "ai_sensei" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${data.google_service_account.ai_reporter.email}"
+  member  = "serviceAccount:${data.google_service_account.ai_sensei.email}"
 }
