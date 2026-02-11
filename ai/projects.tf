@@ -10,5 +10,6 @@ module "project-services" {
     "storage-component.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
+    "firestore.googleapis.com",
   ]
 }
