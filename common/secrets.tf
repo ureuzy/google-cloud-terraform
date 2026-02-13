@@ -33,3 +33,9 @@ resource "google_secret_manager_secret" "mitene_url" {
   }
 }
 
+resource "google_secret_manager_secret" "claude_sensei_secret" {
+  secret_id = "claude-sensei-secret"
+  replication {
+    auto {}
+  }
+}
