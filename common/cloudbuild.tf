@@ -18,6 +18,7 @@ resource "google_cloudbuild_trigger" "mitene_downloader" {
     }
   }
   included_files = ["mitene-downloader/**"]
+  ignored_files  = ["mitene-downloader/**/*.md"]
   filename       = "mitene-downloader/cloudbuild.yaml"
 
   substitutions = {
@@ -40,6 +41,7 @@ resource "google_cloudbuild_trigger" "billing_monitor" {
     }
   }
   included_files = ["billing-monitor/**"]
+  ignored_files  = ["billing-monitor/**/*.md"]
   filename       = "billing-monitor/cloudbuild.yaml"
 
   substitutions = {
@@ -62,6 +64,7 @@ resource "google_cloudbuild_trigger" "activity_analyzer" {
     }
   }
   included_files = ["activity-analyzer/**"]
+  ignored_files  = ["activity-analyzer/**/*.md"]
   filename       = "activity-analyzer/cloudbuild.yaml"
 
   substitutions = {
@@ -84,6 +87,7 @@ resource "google_cloudbuild_trigger" "audit_alert" {
     }
   }
   included_files = ["audit-alert/**"]
+  ignored_files  = ["audit-alert/**/*.md"]
   filename       = "audit-alert/cloudbuild.yaml"
 
   substitutions = {
@@ -106,6 +110,7 @@ resource "google_cloudbuild_trigger" "ai_reporter" {
     }
   }
   included_files = ["ai-reporter/**"]
+  ignored_files  = ["ai-reporter/**/*.md"]
   filename       = "ai-reporter/cloudbuild.yaml"
 
   substitutions = {
@@ -128,6 +133,7 @@ resource "google_cloudbuild_trigger" "ai_sensei_daily_poster" {
     }
   }
   included_files = ["ai-sensei/daily-poster/**"]
+  ignored_files  = ["ai-sensei/daily-poster/**/*.md"]
   filename       = "ai-sensei/daily-poster/cloudbuild.yaml"
 
   substitutions = {
@@ -150,6 +156,7 @@ resource "google_cloudbuild_trigger" "ai_sensei_event_handler" {
     }
   }
   included_files = ["ai-sensei/event-handler/**"]
+  ignored_files  = ["ai-sensei/event-handler/**/*.md"]
   filename       = "ai-sensei/event-handler/cloudbuild.yaml"
 
   substitutions = {
@@ -172,6 +179,7 @@ resource "google_cloudbuild_trigger" "common_api" {
     }
   }
   included_files = ["common-api/**"]
+  ignored_files  = ["common-api/**/*.md"]
   filename       = "common-api/cloudbuild.yaml"
 
   substitutions = {
