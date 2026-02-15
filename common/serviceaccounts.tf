@@ -40,6 +40,12 @@ resource "google_service_account" "common_api" {
   description  = "Service Account for the common-api Cloud Run Service"
 }
 
+resource "google_service_account" "gke_common" {
+  account_id   = "gke-common"
+  display_name = "gke-common"
+  description  = "Service Account for GKE Autopilot cluster"
+}
+
 resource "google_service_account" "cloudbuild" {
   account_id   = "cloudbuild"
   display_name = "Cloud Build Service Account"
