@@ -17,7 +17,7 @@ resource "google_clouddeploy_target" "mitene_downloader" {
   description = "Target for Cloud Run Jobs in common project"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -43,7 +43,7 @@ resource "google_clouddeploy_target" "billing_monitor" {
   description = "Target for billing-monitor Cloud Run Job"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -69,7 +69,7 @@ resource "google_clouddeploy_target" "activity_analyzer" {
   description = "Target for activity-analyzer Cloud Run Job"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -95,7 +95,7 @@ resource "google_clouddeploy_target" "audit_alert" {
   description = "Target for audit-alert Cloud Run Service"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -120,7 +120,7 @@ resource "google_clouddeploy_target" "ai_reporter" {
   description = "Target for ai-reporter Cloud Run Job"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -146,7 +146,7 @@ resource "google_clouddeploy_target" "ai_sensei_daily_poster" {
   description = "Target for ai-sensei-daily-poster Cloud Run Job"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -172,7 +172,7 @@ resource "google_clouddeploy_target" "ai_sensei_event_handler" {
   description = "Target for ai-sensei-event-handler Cloud Run Service"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
@@ -197,7 +197,7 @@ resource "google_clouddeploy_target" "common_api" {
   description = "Target for common-api Cloud Run Service"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]
-    service_account = google_service_account.clouddeploy.email
+    service_account = google_service_account.service_accounts["clouddeploy"].email
   }
   run {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"

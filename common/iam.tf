@@ -8,7 +8,7 @@ resource "google_project_iam_member" "cloudbuild" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.cloudbuild.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["cloudbuild"].email}"
 }
 
 # For Cloud Deploy execution using custom Service Account
@@ -22,7 +22,7 @@ resource "google_project_iam_member" "clouddeploy" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.clouddeploy.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["clouddeploy"].email}"
 
 }
 
@@ -33,7 +33,7 @@ resource "google_project_iam_member" "mitene_downloader" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.mitene_downloader.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
 }
 
 # For billing monitor SA Permissions
@@ -44,23 +44,23 @@ resource "google_project_iam_member" "billing_monitor" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.billing_monitor.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["billing-monitor"].email}"
 }
 
 resource "google_storage_bucket_iam_member" "mitene_downloader_photos" {
   bucket = google_storage_bucket.photos.name
   role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.mitene_downloader.email}"
+  member = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
 }
 
 resource "google_secret_manager_secret_iam_member" "mitene_downloader_secrets" {
   for_each = toset([
-    google_secret_manager_secret.slack_webhook.secret_id,
-    google_secret_manager_secret.mitene_url.secret_id,
+    google_secret_manager_secret.secrets["slack-webhook"].secret_id,
+    google_secret_manager_secret.secrets["mitene-url"].secret_id,
   ])
   secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.mitene_downloader.email}"
+  member    = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
 }
 
 # For Activity Analyzer SA Permissions
@@ -71,7 +71,7 @@ resource "google_project_iam_member" "activity_analyzer" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.activity_analyzer.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["activity-analyzer"].email}"
 }
 
 # For Audit Alert SA Permissions
@@ -82,7 +82,7 @@ resource "google_project_iam_member" "audit_alert" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.audit_alert.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["audit-alert"].email}"
 }
 
 # For AI Reporter SA Permissions
@@ -95,7 +95,7 @@ resource "google_project_iam_member" "ai_reporter" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.ai_reporter.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["ai-reporter"].email}"
 }
 
 # For AI Sensei SA Permissions
@@ -106,7 +106,7 @@ resource "google_project_iam_member" "ai_sensei" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.ai_sensei.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["ai-sensei"].email}"
 }
 
 # For common-api SA Permissions
@@ -118,12 +118,12 @@ resource "google_project_iam_member" "common_api" {
   ])
   project = data.google_project.main.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.common_api.email}"
+  member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
 # Allow Pub/Sub to create tokens for audit-alert SA
 resource "google_service_account_iam_member" "pubsub_token_creator" {
-  service_account_id = google_service_account.audit_alert.name
+  service_account_id = google_service_account.service_accounts["audit-alert"].name
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:service-${data.google_project.main.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }

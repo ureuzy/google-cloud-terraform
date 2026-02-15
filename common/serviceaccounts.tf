@@ -1,59 +1,21 @@
-resource "google_service_account" "mitene_downloader" {
-  account_id   = "mitene-downloader"
-  display_name = "mitene-downloader"
-  description  = "Service Account for mitene downloader Cloud Run Job"
+locals {
+  service_accounts = {
+    "mitene-downloader" = "Service Account for mitene downloader Cloud Run Job"
+    "billing-monitor"   = "Service Account for the billing-monitor Cloud Run Job"
+    "activity-analyzer" = "Analyze unused service account"
+    "audit-alert"       = "Service Account for Audit alert"
+    "ai-reporter"       = "Service Account for the ai-reporter Cloud Run Job"
+    "ai-sensei"         = "Service Account for the ai-sensei services (daily-poster and event-handler)"
+    "common-api"        = "Service Account for the common-api Cloud Run Service"
+    "gke-common"        = "Service Account for GKE Autopilot cluster"
+    "cloudbuild"        = "Custom Service Account for Cloud Build triggers"
+    "clouddeploy"       = "Custom Service Account for Cloud Deploy operations"
+  }
 }
 
-resource "google_service_account" "billing_monitor" {
-  account_id   = "billing-monitor"
-  display_name = "billing-monitor"
-  description  = "Service Account for the billing-monitor Cloud Run Job"
-}
-
-resource "google_service_account" "activity_analyzer" {
-  account_id   = "activity-analyzer"
-  display_name = "activity-analyzer"
-  description  = "Analyze unused service account"
-}
-
-resource "google_service_account" "audit_alert" {
-  account_id   = "audit-alert"
-  display_name = "audit-alert"
-  description  = "Service Account for Audit alert"
-}
-
-resource "google_service_account" "ai_reporter" {
-  account_id   = "ai-reporter"
-  display_name = "ai-reporter"
-  description  = "Service Account for the ai-reporter Cloud Run Job"
-}
-
-resource "google_service_account" "ai_sensei" {
-  account_id   = "ai-sensei"
-  display_name = "ai-sensei"
-  description  = "Service Account for the ai-sensei services (daily-poster and event-handler)"
-}
-
-resource "google_service_account" "common_api" {
-  account_id   = "common-api"
-  display_name = "common-api"
-  description  = "Service Account for the common-api Cloud Run Service"
-}
-
-resource "google_service_account" "gke_common" {
-  account_id   = "gke-common"
-  display_name = "gke-common"
-  description  = "Service Account for GKE Autopilot cluster"
-}
-
-resource "google_service_account" "cloudbuild" {
-  account_id   = "cloudbuild"
-  display_name = "Cloud Build Service Account"
-  description  = "Custom Service Account for Cloud Build triggers"
-}
-
-resource "google_service_account" "clouddeploy" {
-  account_id   = "clouddeploy"
-  display_name = "Cloud Deploy Execution Service Account"
-  description  = "Custom Service Account for Cloud Deploy operations"
+resource "google_service_account" "service_accounts" {
+  for_each     = local.service_accounts
+  account_id   = each.key
+  display_name = each.key
+  description  = each.value
 }

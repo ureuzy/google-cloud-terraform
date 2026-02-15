@@ -1,40 +1,17 @@
-resource "google_secret_manager_secret" "slack_webhook" {
-  secret_id = "slack-webhook"
-  replication {
-    auto {}
-  }
+locals {
+  secrets = [
+    "slack-webhook",
+    "slack-ai-bot",
+    "slack-sensei-bot",
+    "slack-sensei-signing-secret",
+    "mitene-url",
+    "claude-sensei-secret",
+  ]
 }
 
-resource "google_secret_manager_secret" "slack_ai_bot" {
-  secret_id = "slack-ai-bot"
-  replication {
-    auto {}
-  }
-}
-
-resource "google_secret_manager_secret" "slack_sensei_bot" {
-  secret_id = "slack-sensei-bot"
-  replication {
-    auto {}
-  }
-}
-
-resource "google_secret_manager_secret" "slack_sensei_signing_secret" {
-  secret_id = "slack-sensei-signing-secret"
-  replication {
-    auto {}
-  }
-}
-
-resource "google_secret_manager_secret" "mitene_url" {
-  secret_id = "mitene-url"
-  replication {
-    auto {}
-  }
-}
-
-resource "google_secret_manager_secret" "claude_sensei_secret" {
-  secret_id = "claude-sensei-secret"
+resource "google_secret_manager_secret" "secrets" {
+  for_each  = toset(local.secrets)
+  secret_id = each.value
   replication {
     auto {}
   }

@@ -10,7 +10,7 @@ resource "google_cloud_scheduler_job" "mitene_downloader" {
     http_method = "POST"
 
     oauth_token {
-      service_account_email = google_service_account.mitene_downloader.email
+      service_account_email = google_service_account.service_accounts["mitene-downloader"].email
     }
   }
 }
@@ -27,7 +27,7 @@ resource "google_cloud_scheduler_job" "billing_monitor" {
     http_method = "POST"
 
     oauth_token {
-      service_account_email = google_service_account.billing_monitor.email
+      service_account_email = google_service_account.service_accounts["billing-monitor"].email
     }
   }
 }
@@ -44,7 +44,7 @@ resource "google_cloud_scheduler_job" "activity_analyzer" {
     http_method = "POST"
 
     oauth_token {
-      service_account_email = google_service_account.activity_analyzer.email
+      service_account_email = google_service_account.service_accounts["activity-analyzer"].email
     }
   }
 }
@@ -61,7 +61,7 @@ resource "google_cloud_scheduler_job" "ai_reporter" {
     uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/ai-reporter:run"
 
     oauth_token {
-      service_account_email = google_service_account.ai_reporter.email
+      service_account_email = google_service_account.service_accounts["ai-reporter"].email
     }
   }
 }
@@ -78,7 +78,7 @@ resource "google_cloud_scheduler_job" "ai_sensei_daily_poster" {
     uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/ai-sensei-daily-poster:run"
 
     oauth_token {
-      service_account_email = google_service_account.ai_sensei.email
+      service_account_email = google_service_account.service_accounts["ai-sensei"].email
     }
   }
 }

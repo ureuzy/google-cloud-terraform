@@ -9,7 +9,7 @@ resource "google_cloudbuildv2_repository" "cloud_functions" {
 resource "google_cloudbuild_trigger" "mitene_downloader" {
   location        = "asia-northeast1"
   name            = "mitene-downloader"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -32,7 +32,7 @@ resource "google_cloudbuild_trigger" "mitene_downloader" {
 resource "google_cloudbuild_trigger" "billing_monitor" {
   location        = "asia-northeast1"
   name            = "billing-monitor"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -55,7 +55,7 @@ resource "google_cloudbuild_trigger" "billing_monitor" {
 resource "google_cloudbuild_trigger" "activity_analyzer" {
   location        = "asia-northeast1"
   name            = "activity-analyzer"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -78,7 +78,7 @@ resource "google_cloudbuild_trigger" "activity_analyzer" {
 resource "google_cloudbuild_trigger" "audit_alert" {
   location        = "asia-northeast1"
   name            = "audit-alert"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -101,7 +101,7 @@ resource "google_cloudbuild_trigger" "audit_alert" {
 resource "google_cloudbuild_trigger" "ai_reporter" {
   location        = "asia-northeast1"
   name            = "ai-reporter"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -124,7 +124,7 @@ resource "google_cloudbuild_trigger" "ai_reporter" {
 resource "google_cloudbuild_trigger" "ai_sensei_daily_poster" {
   location        = "asia-northeast1"
   name            = "ai-sensei-daily-poster"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -147,7 +147,7 @@ resource "google_cloudbuild_trigger" "ai_sensei_daily_poster" {
 resource "google_cloudbuild_trigger" "ai_sensei_event_handler" {
   location        = "asia-northeast1"
   name            = "ai-sensei-event-handler"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id
@@ -170,7 +170,7 @@ resource "google_cloudbuild_trigger" "ai_sensei_event_handler" {
 resource "google_cloudbuild_trigger" "common_api" {
   location        = "asia-northeast1"
   name            = "common-api"
-  service_account = google_service_account.cloudbuild.id
+  service_account = google_service_account.service_accounts["cloudbuild"].id
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.cloud_functions.id

@@ -10,7 +10,7 @@ resource "google_pubsub_subscription" "audit_alert" {
   push_config {
     push_endpoint = "${google_cloud_run_v2_service.audit_alert.uri}/"
     oidc_token {
-      service_account_email = google_service_account.audit_alert.email
+      service_account_email = google_service_account.service_accounts["audit-alert"].email
     }
   }
 }
