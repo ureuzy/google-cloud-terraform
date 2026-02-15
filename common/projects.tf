@@ -19,5 +19,6 @@ module "project-services" {
     "serviceusage.googleapis.com",
     "policyanalyzer.googleapis.com",
     "bigquery.googleapis.com",
+    "container.googleapis.com",
   ]
 }
