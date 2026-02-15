@@ -121,6 +121,16 @@ resource "google_project_iam_member" "common_api" {
   member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
+# For GKE Autopilot node SA Permissions
+resource "google_project_iam_member" "gke_common" {
+  for_each = toset([
+    "roles/container.defaultNodeServiceAccount",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.service_accounts["gke-common"].email}"
+}
+
 # Allow Pub/Sub to create tokens for audit-alert SA
 resource "google_service_account_iam_member" "pubsub_token_creator" {
   service_account_id = google_service_account.service_accounts["audit-alert"].name
