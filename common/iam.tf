@@ -115,10 +115,23 @@ resource "google_project_iam_member" "common_api" {
     "roles/run.invoker",
     "roles/viewer",
     "roles/cloudscheduler.admin",
+    "roles/datastore.user",
   ])
   project = data.google_project.main.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "common_api_lifecost_bucket" {
+  bucket = google_storage_bucket.lifecost.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "common_api_lifecost_secret" {
+  secret_id = google_secret_manager_secret.secrets["claude-lifecost-secret"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
 # For GKE Autopilot node SA Permissions
