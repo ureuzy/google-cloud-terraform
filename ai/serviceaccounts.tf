@@ -7,3 +7,8 @@ data "google_service_account" "ai_sensei" {
   project = "ureuzy-common"
   account_id = "ai-sensei"
 }
+
+data "google_service_account" "common_api" {
+  account_id = "common-api"
+  project    = "ureuzy-common"
+}

@@ -19,3 +19,13 @@ resource "google_project_iam_member" "ai_sensei" {
   role    = each.value
   member  = "serviceAccount:${data.google_service_account.ai_sensei.email}"
 }
+
+# For common-api SA Permissions (おでかけ提案で Gemini を使う)
+resource "google_project_iam_member" "common_api" {
+  for_each = toset([
+    "roles/aiplatform.user",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${data.google_service_account.common_api.email}"
+}
