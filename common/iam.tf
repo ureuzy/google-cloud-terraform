@@ -121,6 +121,20 @@ resource "google_project_iam_member" "common_api" {
   member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
+# common-api が写真の一覧と署名付き URL を返すため
+resource "google_storage_bucket_iam_member" "common_api_photos" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+# 鍵ファイルを持たずに署名付き URL を作るため、自身の SA で signBlob できるようにする
+resource "google_service_account_iam_member" "common_api_self_token_creator" {
+  service_account_id = google_service_account.service_accounts["common-api"].name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
 # For GKE Autopilot node SA Permissions
 resource "google_project_iam_member" "gke_common" {
   for_each = toset([

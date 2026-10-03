@@ -14,6 +14,7 @@ module "project-services" {
     "cloudscheduler.googleapis.com",
     "storage.googleapis.com",
     "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
     "monitoring.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
