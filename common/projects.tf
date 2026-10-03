@@ -15,6 +15,8 @@ module "project-services" {
     "storage.googleapis.com",
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
+    "apikeys.googleapis.com",
+    "maps-backend.googleapis.com",
     "monitoring.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
