@@ -4,7 +4,8 @@ resource "google_firestore_database" "default" {
   location_id = "asia-northeast1"
   type        = "FIRESTORE_NATIVE"
 
-  delete_protection_state = "DELETE_PROTECTION_ENABLED"
+  delete_protection_state = "DELETE_PROTECTION_DISABLED"
+  deletion_policy         = "DELETE"
 
   depends_on = [module.project-services]
 }
