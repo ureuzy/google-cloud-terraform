@@ -135,13 +135,11 @@ resource "google_service_account_iam_member" "common_api_self_token_creator" {
   member             = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
-# common-api のおでかけ提案のため
-# - Places API / Routes API をサービスアカウントの OAuth で呼ぶ (API キーを持たない)
-# - Gemini を Vertex AI 経由で呼ぶ
+# common-api のおでかけ提案で、Places API / Routes API をサービスアカウントの OAuth で呼ぶため (API キーを持たない)
+# Gemini は ureuzy-ai プロジェクトの Vertex AI を使う (ai/iam.tf)
 resource "google_project_iam_member" "common_api_odekake" {
   for_each = toset([
     "roles/serviceusage.serviceUsageConsumer",
-    "roles/aiplatform.user",
   ])
   project = data.google_project.main.project_id
   role    = each.value
