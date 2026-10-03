@@ -6,6 +6,7 @@ locals {
     "slack-sensei-signing-secret",
     "mitene-url",
     "claude-sensei-secret",
+    "youtube-api-key",
   ]
 }
 

@@ -40,3 +40,24 @@ resource "google_service_usage_consumer_quota_override" "maps_daily_loads" {
 
   depends_on = [module.project-services]
 }
+
+# おでかけ提案で、施設の雰囲気が分かる短い動画を YouTube から探すためのキー
+# YouTube Data API はサービスアカウントで呼べないのでキーを使う。サーバーからだけ使い、YouTube Data API 以外には使えない
+resource "google_apikeys_key" "youtube_server" {
+  name         = "youtube-server"
+  display_name = "YouTube Data API (common-api)"
+  project      = data.google_project.main.project_id
+
+  restrictions {
+    api_targets {
+      service = "youtube.googleapis.com"
+    }
+  }
+
+  depends_on = [module.project-services]
+}
+
+resource "google_secret_manager_secret_version" "youtube_api_key" {
+  secret      = google_secret_manager_secret.secrets["youtube-api-key"].id
+  secret_data = google_apikeys_key.youtube_server.key_string
+}

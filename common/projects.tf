@@ -19,6 +19,7 @@ module "project-services" {
     "maps-backend.googleapis.com",
     "places.googleapis.com",
     "routes.googleapis.com",
+    "youtube.googleapis.com",
     "monitoring.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",

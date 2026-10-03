@@ -146,6 +146,12 @@ resource "google_project_iam_member" "common_api_odekake" {
   member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
+resource "google_secret_manager_secret_iam_member" "common_api_youtube_key" {
+  secret_id = google_secret_manager_secret.secrets["youtube-api-key"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
 resource "google_storage_bucket_iam_member" "common_api_odekake_cache" {
   bucket = google_storage_bucket.odekake_cache.name
   role   = "roles/storage.objectAdmin"
