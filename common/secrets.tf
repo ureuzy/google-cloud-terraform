@@ -6,7 +6,6 @@ locals {
     "slack-sensei-signing-secret",
     "mitene-url",
     "claude-sensei-secret",
-    "claude-lifecost-secret",
   ]
 }
 

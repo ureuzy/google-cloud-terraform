@@ -20,6 +20,5 @@ module "project-services" {
     "policyanalyzer.googleapis.com",
     "bigquery.googleapis.com",
     "container.googleapis.com",
-    "firestore.googleapis.com",
   ]
 }
