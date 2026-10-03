@@ -135,6 +135,25 @@ resource "google_service_account_iam_member" "common_api_self_token_creator" {
   member             = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
+# common-api のおでかけ提案のため
+# - Places API / Routes API をサービスアカウントの OAuth で呼ぶ (API キーを持たない)
+# - Gemini を Vertex AI 経由で呼ぶ
+resource "google_project_iam_member" "common_api_odekake" {
+  for_each = toset([
+    "roles/serviceusage.serviceUsageConsumer",
+    "roles/aiplatform.user",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "common_api_odekake_cache" {
+  bucket = google_storage_bucket.odekake_cache.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
 # For GKE Autopilot node SA Permissions
 resource "google_project_iam_member" "gke_common" {
   for_each = toset([
