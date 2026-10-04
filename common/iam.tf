@@ -133,8 +133,9 @@ resource "google_storage_bucket_iam_member" "common_api_photos" {
 # - uploads/, uploads-thumbs/     画面からアップロードした写真とサムネイル
 # - mitene/, mitene-thumbs/       画面から消すとき (書き込みは mitene-downloader だけがする)
 # - photo-deletions/              消したみてねの写真の印 (mitene-downloader が取り直さないように)
+# - photo-places/                 行った場所 (写真の位置から調べた施設名・家族が直した名前)
 locals {
-  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/"]
+  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/", "photo-places/"]
 }
 
 resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {
@@ -144,7 +145,7 @@ resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {
 
   condition {
     title       = "console writes"
-    description = "AI加工・アップロード・削除で使う場所だけを書き込み・削除できる"
+    description = "AI加工・アップロード・削除・行った場所で使う場所だけを書き込み・削除できる"
     expression = join(" || ", [
       for p in local.common_api_photo_write_prefixes :
       "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/${p}\")"
