@@ -18,6 +18,29 @@ resource "google_storage_bucket" "photos" {
     response_header = ["Content-Type", "Content-Length", "Range"]
     max_age_seconds = 3600
   }
+
+  # 写真の AI加工 (ai-edits/)。「破棄」「削除」した画像が古い版として残らないよう、古い版は 1 日で消す
+  # (common-api も消すときに古い版まで消しているので、これは消し忘れたとき用)
+  lifecycle_rule {
+    condition {
+      days_since_noncurrent_time = 1
+      matches_prefix             = ["ai-edits/"]
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  # 加工した直後の画像は、保存も破棄もされなければ 1 日で消す
+  lifecycle_rule {
+    condition {
+      age            = 1
+      matches_prefix = ["ai-edits/pending/"]
+    }
+    action {
+      type = "Delete"
+    }
+  }
 }
 
 # おでかけ提案のデータの置き場所

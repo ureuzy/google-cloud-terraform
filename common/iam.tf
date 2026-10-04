@@ -128,6 +128,19 @@ resource "google_storage_bucket_iam_member" "common_api_photos" {
   member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
+# common-api が写真の AI加工の画像を置く・消すため。書けるのは ai-edits/ 以下だけで、元の写真 (mitene/) は読むだけ
+resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectUser"
+  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+
+  condition {
+    title       = "ai-edits only"
+    description = "AI加工の画像だけを書き込み・削除できる"
+    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/ai-edits/\")"
+  }
+}
+
 # 鍵ファイルを持たずに署名付き URL を作るため、自身の SA で signBlob できるようにする
 resource "google_service_account_iam_member" "common_api_self_token_creator" {
   service_account_id = google_service_account.service_accounts["common-api"].name
