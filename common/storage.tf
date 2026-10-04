@@ -10,13 +10,36 @@ resource "google_storage_bucket" "photos" {
     enabled = true
   }
 
-  # コンソール (Flutter Web) が署名付き URL の画像を fetch で読むため。
+  # コンソール (Flutter Web) が署名付き URL の画像を fetch で読み、アップロードするファイルを PUT するため。
   # アクセスは署名で制御しているので、オリジンは絞らない
   cors {
     origin          = ["*"]
-    method          = ["GET", "HEAD"]
+    method          = ["GET", "HEAD", "PUT"]
     response_header = ["Content-Type", "Content-Length", "Range"]
     max_age_seconds = 3600
+  }
+
+  # 画面から消した写真 (みてね・アップロード) は古い版として残るので、30 日たったら消す。
+  # それまでは間違えて消しても GCS から戻せる
+  lifecycle_rule {
+    condition {
+      days_since_noncurrent_time = 30
+      matches_prefix             = ["mitene/", "mitene-thumbs/", "uploads/", "uploads-thumbs/"]
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  # アップロードの途中で止まったファイル (受け取り前) は 1 日で消す
+  lifecycle_rule {
+    condition {
+      age            = 1
+      matches_prefix = ["uploads/incoming/"]
+    }
+    action {
+      type = "Delete"
+    }
   }
 
   # 写真の AI加工 (ai-edits/)。「破棄」「削除」した画像が古い版として残らないよう、古い版は 1 日で消す
