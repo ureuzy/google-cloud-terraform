@@ -64,6 +64,17 @@ resource "google_storage_bucket" "photos" {
       type = "Delete"
     }
   }
+
+  # 行った場所 (photo-places/)。書き直すたびに古い版ができるので 7 日で消す (それまでは間違えて書き換えても戻せる)
+  lifecycle_rule {
+    condition {
+      days_since_noncurrent_time = 7
+      matches_prefix             = ["photo-places/"]
+    }
+    action {
+      type = "Delete"
+    }
+  }
 }
 
 # おでかけ提案のデータの置き場所
