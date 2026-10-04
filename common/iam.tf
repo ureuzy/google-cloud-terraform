@@ -128,16 +128,27 @@ resource "google_storage_bucket_iam_member" "common_api_photos" {
   member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
-# common-api が写真の AI加工の画像を置く・消すため。書けるのは ai-edits/ 以下だけで、元の写真 (mitene/) は読むだけ
+# common-api が写真のバケットに書き込む・消す場所
+# - ai-edits/                     写真の AI加工
+# - uploads/, uploads-thumbs/     画面からアップロードした写真とサムネイル
+# - mitene/, mitene-thumbs/       画面から消すとき (書き込みは mitene-downloader だけがする)
+# - photo-deletions/              消したみてねの写真の印 (mitene-downloader が取り直さないように)
+locals {
+  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/"]
+}
+
 resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {
   bucket = google_storage_bucket.photos.name
   role   = "roles/storage.objectUser"
   member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 
   condition {
-    title       = "ai-edits only"
-    description = "AI加工の画像だけを書き込み・削除できる"
-    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/ai-edits/\")"
+    title       = "console writes"
+    description = "AI加工・アップロード・削除で使う場所だけを書き込み・削除できる"
+    expression = join(" || ", [
+      for p in local.common_api_photo_write_prefixes :
+      "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/${p}\")"
+    ])
   }
 }
 
