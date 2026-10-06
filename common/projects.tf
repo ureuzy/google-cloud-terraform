@@ -20,6 +20,8 @@ module "project-services" {
     "places.googleapis.com",
     "routes.googleapis.com",
     "youtube.googleapis.com",
+    # 行きたいリスト: Google Takeout の書き出し (保存済みのリスト) をドライブから読む
+    "drive.googleapis.com",
     "monitoring.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
