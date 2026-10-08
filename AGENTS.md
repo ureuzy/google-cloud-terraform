@@ -20,7 +20,7 @@ Instructions for coding agents working in this repository. The full conventions 
 - Put each resource in the project whose role it matches. See the project table in "Where things go" in `DEVELOPMENT.md`. In short:
   - `ureuzy-org-system`: org-wide governance (Workload Identity, aggregated logs, billing export)
   - `ureuzy-common`: everything that runs code, plus every service account
-  - `ureuzy-ai`: Vertex AI (Gemini) and Firestore
+  - `ureuzy-ai`: Vertex AI (Gemini)
 
   Apps run in `ureuzy-common` and get roles in other projects through their service accounts. Grant those roles in the workspace that owns the target project.
 - IAM: use `*_iam_member` only, never `*_iam_binding` or `*_iam_policy`. Grant the narrowest scope (a bucket, secret, or condition) rather than a project-wide role.

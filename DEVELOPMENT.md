@@ -34,7 +34,7 @@ Each project has one role. Put a new resource in the project whose role it match
 |---------|-----------|------|----------|-----------------|
 | `ureuzy-org-system` | `organization/` | Governance shared by the whole organization | Workload Identity pools, aggregated audit logs and log sinks, billing export (BigQuery), KMS keys for org-level services | Application workloads or application data |
 | `ureuzy-common` | `common/` | Runs the applications | Cloud Run jobs and services, Cloud Build / Cloud Deploy / Artifact Registry, Cloud Scheduler, Pub/Sub, app data in GCS, Secret Manager, API keys, monitoring alerts, **every service account** | AI model usage, org-level settings |
-| `ureuzy-ai` | `ai/` | Generative AI usage and the data of the AI apps | Vertex AI (Gemini) usage and its settings, Firestore | Workloads that run code (Cloud Run, builds) or service accounts |
+| `ureuzy-ai` | `ai/` | Generative AI usage | Vertex AI (Gemini) usage and its settings | Workloads that run code (Cloud Run, builds) or service accounts |
 | `ureuzy` | `organization/` (project only) | Firebase | Nothing else is managed in Terraform | |
 
 Organization-level resources that are not in a project (org IAM, org policies, audit log config, the org log sink, billing budgets) go in `organization/`.
@@ -43,7 +43,7 @@ Rules that follow from these roles:
 
 - **Code runs in `ureuzy-common`; other projects provide services to it.** When an app needs something in another project, its service account (created in `common/`) gets a role in that project. Grant the role in the workspace that owns the target project, for example `aiplatform.user` on `ureuzy-ai` in `ai/iam.tf`, or `bigquery.dataViewer` on `ureuzy-org-system` in `organization/iam.tf`.
 - **Calls to Gemini go to `ureuzy-ai`**, even from apps in `ureuzy-common`. This keeps AI costs and settings, such as the disabled cache, in one place. Other Google APIs (Maps, Places, Routes, YouTube, Drive) are enabled and billed in `ureuzy-common`, the project of the app that calls them.
-- **Data stays next to the app that owns it.** App files go in GCS in `ureuzy-common`. Data of the AI apps goes in Firestore in `ureuzy-ai`. Logs and billing data collected from the whole organization go in `ureuzy-org-system`.
+- **Data stays next to the app that owns it.** App files go in GCS in `ureuzy-common`. Logs and billing data collected from the whole organization go in `ureuzy-org-system`.
 - **A new project** needs a clear role that none of the existing projects covers. Create it in `organization/projects.tf`. If it needs resources of its own, add a new workspace directory with the same files as the others (`backend.tf`, `provider.tf`, `versions.tf`, `variables.tf`, `projects.tf`, `README.md`), and add it to the Structure table and the diagram in `README.md`.
 
 ### Files
