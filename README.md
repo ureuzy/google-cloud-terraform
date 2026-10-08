@@ -6,7 +6,7 @@ Google Cloud Platform infrastructure managed with Terraform, using Terraform Clo
 
 | Directory | Workspace | GCP Project | Purpose |
 |-----------|-----------|-------------|---------|
-| [organization/](organization/) | `google-cloud-terraform` | `ureuzy-org-system` | Org policies, projects, billing, logging, workload identity |
+| [organization/](organization/) | `google-cloud-terraform-organization` | `ureuzy-org-system` | Org policies, projects, billing, logging, workload identity |
 | [common/](common/) | `google-cloud-terraform-common` | `ureuzy-common` | Cloud Run, Cloud Build/Deploy, GKE, secrets, storage |
 | [ai/](ai/) | `google-cloud-terraform-ai` | `ureuzy-ai` | Firestore, AI Platform permissions |
 
