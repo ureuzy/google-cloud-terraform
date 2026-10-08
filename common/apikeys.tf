@@ -1,9 +1,9 @@
-# コンソール (ureuzy.io) の地図表示に使う Maps JavaScript API のキー
+# 家族のアプリ (home.ureuzy.io) の地図表示に使う Maps JavaScript API のキー
 # ブラウザに埋め込むキーなので、使える API と呼び出し元のサイトを絞る
 # ローカル開発は flutter run -d chrome --web-port 8000 で起動する (ポートにワイルドカードは使えない)
 resource "google_apikeys_key" "maps_browser" {
   name         = "maps-browser"
-  display_name = "Maps JavaScript API (ureuzy.io console)"
+  display_name = "Maps JavaScript API (home.ureuzy.io)"
   project      = data.google_project.main.project_id
 
   restrictions {
@@ -11,7 +11,9 @@ resource "google_apikeys_key" "maps_browser" {
       service = "maps-backend.googleapis.com"
     }
     browser_key_restrictions {
+      # アプリは home.ureuzy.io に移した。移し終わるまでは、前の ureuzy.io も許す
       allowed_referrers = [
+        "https://home.ureuzy.io/*",
         "https://ureuzy.io/*",
         "http://localhost:8000/*",
       ]
