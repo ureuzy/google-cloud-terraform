@@ -121,6 +121,13 @@ resource "google_project_iam_member" "common_api" {
   member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
+# common-api が、設定の「データの更新」でデータを作り直す Job (common-api-datasets) を、引数を付けて動かすため
+resource "google_project_iam_member" "common_api_datasets_job" {
+  project = data.google_project.main.project_id
+  role    = "roles/run.jobsExecutorWithOverrides"
+  member  = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
 # common-api が写真の一覧と署名付き URL を返すため
 resource "google_storage_bucket_iam_member" "common_api_photos" {
   bucket = google_storage_bucket.photos.name

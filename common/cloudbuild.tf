@@ -187,5 +187,7 @@ resource "google_cloudbuild_trigger" "common_api" {
     _CONTAINER_NAME = "common-api"
     _REPOSITORY     = google_artifact_registry_repository.common.name
     _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.common_api.name
+    # データを作り直す Job (common-api-datasets) も、同じイメージで配備する
+    _JOB_PIPELINE_NAME = google_clouddeploy_delivery_pipeline.common_api_datasets.name
   }
 }
