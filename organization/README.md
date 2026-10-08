@@ -3,7 +3,7 @@
 Organization-level resources for GCP.
 
 - **Project**: `ureuzy-org-system`
-- **Workspace**: `google-cloud-terraform`
+- **Workspace**: `google-cloud-terraform-organization`
 
 ## Resources
 

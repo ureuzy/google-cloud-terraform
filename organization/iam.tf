@@ -61,9 +61,12 @@ resource "google_pubsub_topic_iam_member" "audit_alert_publisher" {
 }
 
 ### Billing Monitor
+# billing-monitor は ureuzy-org-system をクォータプロジェクトにして、このプロジェクトでクエリジョブを実行する
 resource "google_project_iam_member" "billing_monitor" {
   for_each = toset([
     "roles/bigquery.dataViewer",
+    "roles/bigquery.jobUser",
+    "roles/serviceusage.serviceUsageConsumer",
   ])
   project = google_project.org_system.project_id
   role    = each.value

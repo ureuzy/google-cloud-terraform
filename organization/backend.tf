@@ -3,7 +3,7 @@ terraform {
     organization = "ureuzy"
     hostname     = "app.terraform.io"
     workspaces {
-      name = "google-cloud-terraform"
+      name = "google-cloud-terraform-organization"
     }
   }
 }
