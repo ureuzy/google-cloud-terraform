@@ -11,10 +11,8 @@ resource "google_apikeys_key" "maps_browser" {
       service = "maps-backend.googleapis.com"
     }
     browser_key_restrictions {
-      # アプリは home.ureuzy.io に移した。移し終わるまでは、前の ureuzy.io も許す
       allowed_referrers = [
         "https://home.ureuzy.io/*",
-        "https://ureuzy.io/*",
         "http://localhost:8000/*",
       ]
     }
