@@ -17,7 +17,12 @@ Instructions for coding agents working in this repository. The full conventions 
   - `DEVELOPMENT.md` and this file when a convention changes
 
   Check that every Mermaid diagram you edit renders (`npx -y @mermaid-js/mermaid-cli -i <file>.mmd -o <file>.png`).
-- Put each resource in the workspace and file that already own that kind of resource. See "Where things go" in `DEVELOPMENT.md`.
+- Put each resource in the project whose role it matches. See the project table in "Where things go" in `DEVELOPMENT.md`. In short:
+  - `ureuzy-org-system`: org-wide governance (Workload Identity, aggregated logs, billing export)
+  - `ureuzy-common`: everything that runs code, plus every service account
+  - `ureuzy-ai`: Vertex AI (Gemini) and Firestore
+
+  Apps run in `ureuzy-common` and get roles in other projects through their service accounts. Grant those roles in the workspace that owns the target project.
 - IAM: use `*_iam_member` only, never `*_iam_binding` or `*_iam_policy`. Grant the narrowest scope (a bucket, secret, or condition) rather than a project-wide role.
 - Create service accounts and secrets by adding entries to `local.service_accounts` and `local.secrets` in `common/`. Never create service account keys.
 - New buckets: uniform access, `public_access_prevention = "enforced"`, `force_destroy = false`, and lifecycle rules with comments.
