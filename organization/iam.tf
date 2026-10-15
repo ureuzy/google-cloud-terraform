@@ -72,3 +72,11 @@ resource "google_project_iam_member" "billing_monitor" {
   role    = each.value
   member  = "serviceAccount:${data.google_service_account.billing_monitor.email}"
 }
+
+### common-api
+# 管理者だけの API (べんり) で、アプリと同じく Firestore の allowed_users の role を読むため
+resource "google_project_iam_member" "common_api_firestore" {
+  project = google_project.ureuzy.project_id
+  role    = "roles/datastore.viewer"
+  member  = "serviceAccount:${data.google_service_account.common_api.email}"
+}

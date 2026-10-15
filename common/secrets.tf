@@ -7,6 +7,9 @@ locals {
     "mitene-url",
     "claude-sensei-secret",
     "youtube-api-key",
+    # べんりの Netflix のコード: Gmail の Apps Script の URL と合言葉 (値は gcloud で入れる。cloud_functions の common-api/tools/netflix)
+    "netflix-script-url",
+    "netflix-script-key",
   ]
 }
 
