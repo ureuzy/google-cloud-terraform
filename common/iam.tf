@@ -57,6 +57,7 @@ resource "google_secret_manager_secret_iam_member" "mitene_downloader_secrets" {
   for_each = toset([
     google_secret_manager_secret.secrets["slack-webhook"].secret_id,
     google_secret_manager_secret.secrets["mitene-url"].secret_id,
+    google_secret_manager_secret.secrets["mitene-password"].secret_id,
   ])
   secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
