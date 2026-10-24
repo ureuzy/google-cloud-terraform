@@ -39,7 +39,7 @@ flowchart TB
   tfc & gha -->|OIDC| sys
   audit -->|all projects' audit logs| sys
   sys -->|SetIamPolicy logs<br/>to Pub/Sub audit-alert| common
-  common -->|billing-monitor<br/>reads billing export| sys
+  common -->|billing-monitor, common-api<br/>read billing export| sys
   common -->|app SAs use<br/>Vertex AI / Firestore| ai
   billing -->|export| sys
 ```

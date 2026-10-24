@@ -80,3 +80,22 @@ resource "google_project_iam_member" "common_api_firestore" {
   role    = "roles/datastore.viewer"
   member  = "serviceAccount:${data.google_service_account.common_api.email}"
 }
+
+# システム管理の「外部サービスの使用量」で、今月の料金と Google マップの回数を請求データから読むため。
+# 読むのは請求データのデータセットだけ。クエリは billing-monitor と同じく、このプロジェクトで実行する
+resource "google_bigquery_dataset_iam_member" "common_api_billing_export" {
+  project    = google_project.org_system.project_id
+  dataset_id = google_bigquery_dataset.billing_export.dataset_id
+  role       = "roles/bigquery.dataViewer"
+  member     = "serviceAccount:${data.google_service_account.common_api.email}"
+}
+
+resource "google_project_iam_member" "common_api_billing_query" {
+  for_each = toset([
+    "roles/bigquery.jobUser",
+    "roles/serviceusage.serviceUsageConsumer",
+  ])
+  project = google_project.org_system.project_id
+  role    = each.value
+  member  = "serviceAccount:${data.google_service_account.common_api.email}"
+}
