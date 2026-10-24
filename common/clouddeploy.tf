@@ -203,3 +203,29 @@ resource "google_clouddeploy_target" "common_api" {
     location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
   }
 }
+
+# 買い物情報の Job (common-api と同じイメージ。cloud_functions の common-api/sales-job.yaml)
+resource "google_clouddeploy_delivery_pipeline" "shopping_sales" {
+  location    = "asia-northeast1"
+  name        = "shopping-sales-job-pipeline"
+  description = "Delivery pipeline for shopping-sales Cloud Run Job (common-api image)"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.shopping_sales.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "shopping_sales" {
+  location    = "asia-northeast1"
+  name        = "shopping-sales-job-target"
+  description = "Target for the shopping-sales Cloud Run Job"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.service_accounts["clouddeploy"].email
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}

@@ -83,3 +83,21 @@ resource "google_cloud_scheduler_job" "ai_sensei_daily_poster" {
   }
 }
 # 注: Cloud Run Job の起動には 'roles/run.developer' または 'roles/run.invoker' などの権限が SA に必要です。
+
+# べんりの買い物情報: 毎週月曜の朝に、家の近くのセールを調べる (アプリの「今すぐ調べ直す」もこれを動かす)
+resource "google_cloud_scheduler_job" "shopping_sales" {
+  name        = "shopping-sales"
+  description = "Trigger shopping-sales Cloud Run Job (weekly sales around home)"
+  region      = "asia-northeast1"
+  schedule    = "0 7 * * 1"
+  time_zone   = "Asia/Tokyo"
+
+  http_target {
+    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/shopping-sales:run"
+    http_method = "POST"
+
+    oauth_token {
+      service_account_email = google_service_account.service_accounts["common-api"].email
+    }
+  }
+}
