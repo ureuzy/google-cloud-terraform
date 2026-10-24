@@ -7,6 +7,8 @@ locals {
     "mitene-url",
     # みてねの共有ページのパスワード (2026-09 から必須。値は gcloud で入れる。cloud_functions の mitene-downloader)
     "mitene-password",
+    # Google AI Studio の Gemini API の無料枠のキー (べんりの買い物情報だけで使う。値は gcloud で入れる)
+    "gemini-free-api-key",
     "claude-sensei-secret",
     "youtube-api-key",
     # べんりの Netflix のコード: Gmail の Apps Script の URL と合言葉 (値は gcloud で入れる。cloud_functions の common-api/tools/netflix)
