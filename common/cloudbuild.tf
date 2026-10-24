@@ -187,7 +187,5 @@ resource "google_cloudbuild_trigger" "common_api" {
     _CONTAINER_NAME = "common-api"
     _REPOSITORY     = google_artifact_registry_repository.common.name
     _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.common_api.name
-    # 同じイメージで、買い物情報の Job にもデプロイする
-    _SALES_JOB_PIPELINE_NAME = google_clouddeploy_delivery_pipeline.shopping_sales.name
   }
 }
