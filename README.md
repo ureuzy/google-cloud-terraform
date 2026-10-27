@@ -41,6 +41,7 @@ flowchart TB
   sys -->|SetIamPolicy logs<br/>to Pub/Sub audit-alert| common
   common -->|billing-monitor, common-api<br/>read billing export| sys
   common -->|app SAs use<br/>Vertex AI / Firestore| ai
+  common -->|common-api reads allowed_users<br/>and sends FCM push| ureuzy
   billing -->|export| sys
 ```
 
