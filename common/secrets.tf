@@ -14,6 +14,8 @@ locals {
     # べんりの Netflix のコード: Gmail の Apps Script の URL と合言葉 (値は gcloud で入れる。cloud_functions の common-api/tools/netflix)
     "netflix-script-url",
     "netflix-script-key",
+    # アプリの地図 (Mapbox) の公開用トークン。common-api がログインした家族にだけ返す (値は gcloud で入れる)
+    "mapbox-token",
   ]
 }
 
