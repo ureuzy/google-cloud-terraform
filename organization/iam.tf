@@ -81,6 +81,13 @@ resource "google_project_iam_member" "common_api_firestore" {
   member  = "serviceAccount:${data.google_service_account.common_api.email}"
 }
 
+# 見守りカメラ: カメラ役のスマホが子どもの泣き声・声を聞いたら、家族のスマホにプッシュ通知を送るため (Firebase Cloud Messaging)
+resource "google_project_iam_member" "common_api_fcm" {
+  project = google_project.ureuzy.project_id
+  role    = "roles/firebasecloudmessaging.admin"
+  member  = "serviceAccount:${data.google_service_account.common_api.email}"
+}
+
 # システム管理の「外部サービスの使用量」で、今月の料金と Google マップの回数を請求データから読むため。
 # 読むのは請求データのデータセットだけ。クエリは billing-monitor と同じく、このプロジェクトで実行する
 resource "google_bigquery_dataset_iam_member" "common_api_billing_export" {
