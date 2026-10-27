@@ -18,6 +18,8 @@ locals {
     "mapbox-token",
     # photo-tagger が写真の中身を見てもらう Cloudflare Workers AI のトークン (cloudflare-terraform で作り、値は terraform output から入れる)
     "cloudflare-workers-ai-token",
+    # common-api の「外部サービスの使用量」で Workers AI の使用量を読む Cloudflare のトークン (cloudflare-terraform で作り、値は terraform output から入れる)
+    "cloudflare-analytics-token",
   ]
 }
 

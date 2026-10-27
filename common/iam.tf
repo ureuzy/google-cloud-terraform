@@ -220,7 +220,7 @@ resource "google_secret_manager_secret_iam_member" "common_api_youtube_key" {
 }
 
 resource "google_secret_manager_secret_iam_member" "common_api_netflix" {
-  for_each  = toset(["netflix-script-url", "netflix-script-key", "gemini-free-api-key", "mapbox-token"])
+  for_each  = toset(["netflix-script-url", "netflix-script-key", "gemini-free-api-key", "mapbox-token", "cloudflare-analytics-token"])
   secret_id = google_secret_manager_secret.secrets[each.value].secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
