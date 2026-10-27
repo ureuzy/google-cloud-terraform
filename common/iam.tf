@@ -36,7 +36,7 @@ resource "google_project_iam_member" "mitene_downloader" {
   member  = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
 }
 
-# photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) を photo-tags/ に書く。Workers AI のトークンを読む
+# photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) を photo-tags/ に書く。結果は Slack に知らせる
 resource "google_project_iam_member" "photo_tagger" {
   for_each = toset([
     "roles/run.invoker",
@@ -64,8 +64,13 @@ resource "google_storage_bucket_iam_member" "photo_tagger_write" {
   }
 }
 
-resource "google_secret_manager_secret_iam_member" "photo_tagger_workers_ai" {
-  secret_id = google_secret_manager_secret.secrets["cloudflare-workers-ai-token"].secret_id
+# Workers AI のトークンと、結果を Slack に知らせる webhook (mitene-downloader と同じ)
+resource "google_secret_manager_secret_iam_member" "photo_tagger_secrets" {
+  for_each = toset([
+    google_secret_manager_secret.secrets["cloudflare-workers-ai-token"].secret_id,
+    google_secret_manager_secret.secrets["slack-webhook"].secret_id,
+  ])
+  secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
 }
