@@ -29,6 +29,29 @@ resource "google_cloudbuild_trigger" "mitene_downloader" {
   }
 }
 
+resource "google_cloudbuild_trigger" "photo_tagger" {
+  location        = "asia-northeast1"
+  name            = "photo-tagger"
+  service_account = google_service_account.service_accounts["cloudbuild"].id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["photo-tagger/**"]
+  ignored_files  = ["photo-tagger/**/*.md"]
+  filename       = "photo-tagger/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "photo-tagger"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.photo_tagger.name
+  }
+}
+
 resource "google_cloudbuild_trigger" "billing_monitor" {
   location        = "asia-northeast1"
   name            = "billing-monitor"

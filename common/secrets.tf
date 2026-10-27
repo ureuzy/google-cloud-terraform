@@ -16,6 +16,8 @@ locals {
     "netflix-script-key",
     # アプリの地図 (Mapbox) の公開用トークン。common-api がログインした家族にだけ返す (値は gcloud で入れる)
     "mapbox-token",
+    # photo-tagger が写真の中身を見てもらう Cloudflare Workers AI のトークン (cloudflare-terraform で作り、値は terraform output から入れる)
+    "cloudflare-workers-ai-token",
   ]
 }
 

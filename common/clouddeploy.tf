@@ -24,6 +24,32 @@ resource "google_clouddeploy_target" "mitene_downloader" {
   }
 }
 
+# Photo Tagger
+resource "google_clouddeploy_delivery_pipeline" "photo_tagger" {
+  location    = "asia-northeast1"
+  name        = "photo-tagger-job-pipeline"
+  description = "Delivery pipeline for photo-tagger Cloud Run Job"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.photo_tagger.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "photo_tagger" {
+  location    = "asia-northeast1"
+  name        = "photo-tagger-job-target"
+  description = "Target for photo-tagger Cloud Run Job"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.service_accounts["clouddeploy"].email
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}
+
 # Billing Monitor
 resource "google_clouddeploy_delivery_pipeline" "billing_monitor" {
   location    = "asia-northeast1"
@@ -103,8 +129,8 @@ resource "google_clouddeploy_target" "audit_alert" {
 }
 
 resource "google_clouddeploy_delivery_pipeline" "ai_reporter" {
-  location = "asia-northeast1"
-  name     = "ai-reporter-job-pipeline"
+  location    = "asia-northeast1"
+  name        = "ai-reporter-job-pipeline"
   description = "Delivery pipeline for ai-reporter Cloud Run Job"
 
   serial_pipeline {
@@ -115,8 +141,8 @@ resource "google_clouddeploy_delivery_pipeline" "ai_reporter" {
 }
 
 resource "google_clouddeploy_target" "ai_reporter" {
-  location = "asia-northeast1"
-  name     = "ai-reporter-job-target"
+  location    = "asia-northeast1"
+  name        = "ai-reporter-job-target"
   description = "Target for ai-reporter Cloud Run Job"
   execution_configs {
     usages          = ["RENDER", "DEPLOY"]

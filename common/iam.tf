@@ -36,6 +36,45 @@ resource "google_project_iam_member" "mitene_downloader" {
   member  = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
 }
 
+# photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) を photo-tags/ に書く。結果は Slack に知らせる
+resource "google_project_iam_member" "photo_tagger" {
+  for_each = toset([
+    "roles/run.invoker",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "photo_tagger_read" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "photo_tagger_write" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectUser"
+  member = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
+
+  condition {
+    title       = "photo tags"
+    description = "写真に写っているもの (photo-tags/) だけを書き込める"
+    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/photo-tags/\")"
+  }
+}
+
+# Workers AI のトークンと、結果を Slack に知らせる webhook (mitene-downloader と同じ)
+resource "google_secret_manager_secret_iam_member" "photo_tagger_secrets" {
+  for_each = toset([
+    google_secret_manager_secret.secrets["cloudflare-workers-ai-token"].secret_id,
+    google_secret_manager_secret.secrets["slack-webhook"].secret_id,
+  ])
+  secret_id = each.value
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
+}
+
 # For billing monitor SA Permissions
 resource "google_project_iam_member" "billing_monitor" {
   for_each = toset([
@@ -136,8 +175,9 @@ resource "google_storage_bucket_iam_member" "common_api_photos" {
 # - photo-deletions/              消したみてねの写真の印 (mitene-downloader が取り直さないように)
 # - photo-places/                 行った場所 (写真の位置から調べた施設名・家族が直した名前)
 # - wishlist/                     行きたいリスト (Google マップの保存済みリストから取り込んだ場所と、家族が足した場所)
+# - photo-tags/                   写真に写っているもの (photo-tagger が書く。家族が違うタグを消す)
 locals {
-  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/", "photo-places/", "wishlist/"]
+  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/", "photo-places/", "wishlist/", "photo-tags/"]
 }
 
 resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {

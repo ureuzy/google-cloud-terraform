@@ -29,6 +29,7 @@ Common infrastructure resources for application workloads.
 |------|------|-----------|
 | mitene-downloader | Job | Daily 0:00 JST |
 | billing-monitor | Job | Daily 0:00 JST |
+| photo-tagger | Job | Daily 1:00 JST |
 | activity-analyzer | Job | Weekly Mon 0:00 JST |
 | ai-reporter | Job | Daily 0:00 JST |
 | ai-sensei-daily-poster | Job | Daily 9:00 JST |
@@ -43,6 +44,7 @@ Common infrastructure resources for application workloads.
 ```mermaid
 flowchart TB
   user(["Browser<br/>home.ureuzy.io"])
+  cfai(["Cloudflare Workers AI<br/>(cloudflare-terraform)"])
   slack(["Slack"])
 
   subgraph org["Organization: ureuzy.io"]
@@ -61,6 +63,7 @@ flowchart TB
       subgraph jobs["Cloud Run Jobs"]
         mitene["mitene-downloader<br/>daily 0:00"]
         billing["billing-monitor<br/>daily 0:00"]
+        tagger["photo-tagger<br/>daily 1:00"]
         activity["activity-analyzer<br/>weekly Mon 0:00"]
         reporter["ai-reporter<br/>daily 0:00"]
         poster["ai-sensei-daily-poster<br/>daily 9:00"]
@@ -86,6 +89,8 @@ flowchart TB
 
   billing -->|read| bq
   mitene -->|write| photos
+  tagger -->|thumbnails / photo-tags| photos
+  tagger -->|thumbnails| cfai
   reporter & poster --> vertex
   handler --> vertex & fs
   api --> photos & cache & gapis & vertex

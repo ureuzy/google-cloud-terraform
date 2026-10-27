@@ -15,6 +15,25 @@ resource "google_cloud_scheduler_job" "mitene_downloader" {
   }
 }
 
+# 写真の中身を見るのは毎日 1 回、mitene-downloader (0:00) が新しい写真を取り込んだあと。
+# 1 回で Workers AI の無料枠 (1 日 10,000 ニューロン) に収まる枚数まで見る (枚数は photo-tagger の job.yaml)
+resource "google_cloud_scheduler_job" "photo_tagger" {
+  name        = "photo-tagger"
+  description = "Trigger photo-tagger Cloud Run Job"
+  region      = "asia-northeast1"
+  schedule    = "0 1 * * *"
+  time_zone   = "Asia/Tokyo"
+
+  http_target {
+    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/photo-tagger:run"
+    http_method = "POST"
+
+    oauth_token {
+      service_account_email = google_service_account.service_accounts["photo-tagger"].email
+    }
+  }
+}
+
 resource "google_cloud_scheduler_job" "billing_monitor" {
   name        = "billing-monitor"
   description = "Trigger billing-monitor Cloud Run Job"
