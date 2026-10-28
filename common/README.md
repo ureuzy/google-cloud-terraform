@@ -30,7 +30,7 @@ Common infrastructure resources for application workloads.
 | mitene-downloader | Job | Daily 0:00 JST |
 | billing-monitor | Job | Daily 0:00 JST |
 | photo-tagger | Job | Daily 1:00 JST |
-| face-indexer | Job | Daily 2:00 JST |
+| face-indexer | Job | Daily 1:00 JST |
 | activity-analyzer | Job | Weekly Mon 0:00 JST |
 | ai-reporter | Job | Daily 0:00 JST |
 | ai-sensei-daily-poster | Job | Daily 9:00 JST |
@@ -65,7 +65,7 @@ flowchart TB
         mitene["mitene-downloader<br/>daily 0:00"]
         billing["billing-monitor<br/>daily 0:00"]
         tagger["photo-tagger<br/>daily 1:00"]
-        faces["face-indexer<br/>daily 2:00"]
+        faces["face-indexer<br/>daily 1:00"]
         activity["activity-analyzer<br/>weekly Mon 0:00"]
         reporter["ai-reporter<br/>daily 0:00"]
         poster["ai-sensei-daily-poster<br/>daily 9:00"]

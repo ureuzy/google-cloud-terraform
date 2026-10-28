@@ -34,12 +34,14 @@ resource "google_cloud_scheduler_job" "photo_tagger" {
   }
 }
 
-# 写真の顔を見つけるのは毎日 1 回、photo-tagger (1:00) のあと。外の AI サービスは使わず Job の中で見る
+# 写真の顔を見つけるのは毎日 1 回、mitene-downloader (0:00) が新しい写真を取り込んだあと。外の AI サービスは使わず Job の中で見る。
+# photo-tagger と同じ時間でよい (書くファイルも、使う計算の場所も別でぶつからない)。
+# これまでの写真を見終わって新しい写真だけになったら、アップロードした写真もすぐ見られるよう、1 時間ごとにしてもよい
 resource "google_cloud_scheduler_job" "face_indexer" {
   name        = "face-indexer"
   description = "Trigger face-indexer Cloud Run Job"
   region      = "asia-northeast1"
-  schedule    = "0 2 * * *"
+  schedule    = "0 1 * * *"
   time_zone   = "Asia/Tokyo"
 
   http_target {
