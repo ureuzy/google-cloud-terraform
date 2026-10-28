@@ -34,6 +34,24 @@ resource "google_cloud_scheduler_job" "photo_tagger" {
   }
 }
 
+# 写真の顔を見つけるのは毎日 1 回、photo-tagger (1:00) のあと。外の AI サービスは使わず Job の中で見る
+resource "google_cloud_scheduler_job" "face_indexer" {
+  name        = "face-indexer"
+  description = "Trigger face-indexer Cloud Run Job"
+  region      = "asia-northeast1"
+  schedule    = "0 2 * * *"
+  time_zone   = "Asia/Tokyo"
+
+  http_target {
+    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/face-indexer:run"
+    http_method = "POST"
+
+    oauth_token {
+      service_account_email = google_service_account.service_accounts["face-indexer"].email
+    }
+  }
+}
+
 resource "google_cloud_scheduler_job" "billing_monitor" {
   name        = "billing-monitor"
   description = "Trigger billing-monitor Cloud Run Job"

@@ -52,6 +52,29 @@ resource "google_cloudbuild_trigger" "photo_tagger" {
   }
 }
 
+resource "google_cloudbuild_trigger" "face_indexer" {
+  location        = "asia-northeast1"
+  name            = "face-indexer"
+  service_account = google_service_account.service_accounts["cloudbuild"].id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["face-indexer/**"]
+  ignored_files  = ["face-indexer/**/*.md"]
+  filename       = "face-indexer/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "face-indexer"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.face_indexer.name
+  }
+}
+
 resource "google_cloudbuild_trigger" "billing_monitor" {
   location        = "asia-northeast1"
   name            = "billing-monitor"

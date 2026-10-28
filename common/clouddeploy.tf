@@ -50,6 +50,32 @@ resource "google_clouddeploy_target" "photo_tagger" {
   }
 }
 
+# Face Indexer
+resource "google_clouddeploy_delivery_pipeline" "face_indexer" {
+  location    = "asia-northeast1"
+  name        = "face-indexer-job-pipeline"
+  description = "Delivery pipeline for face-indexer Cloud Run Job"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.face_indexer.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "face_indexer" {
+  location    = "asia-northeast1"
+  name        = "face-indexer-job-target"
+  description = "Target for face-indexer Cloud Run Job"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.service_accounts["clouddeploy"].email
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}
+
 # Billing Monitor
 resource "google_clouddeploy_delivery_pipeline" "billing_monitor" {
   location    = "asia-northeast1"
