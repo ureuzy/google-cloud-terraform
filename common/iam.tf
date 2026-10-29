@@ -109,6 +109,25 @@ resource "google_secret_manager_secret_iam_member" "face_indexer_slack" {
   member    = "serviceAccount:${google_service_account.service_accounts["face-indexer"].email}"
 }
 
+# growth-video: 写っている人の成長の動画を作る (common-api が動かす)。写真を読み、動画と進み具合を growth/ に書く
+resource "google_storage_bucket_iam_member" "growth_video_read" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.service_accounts["growth-video"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "growth_video_write" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectUser"
+  member = "serviceAccount:${google_service_account.service_accounts["growth-video"].email}"
+
+  condition {
+    title       = "growth"
+    description = "成長の動画 (growth/) だけを書き込める"
+    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/growth/\")"
+  }
+}
+
 # For billing monitor SA Permissions
 resource "google_project_iam_member" "billing_monitor" {
   for_each = toset([
@@ -213,8 +232,9 @@ resource "google_storage_bucket_iam_member" "common_api_photos" {
 # - wishlist/                     行きたいリスト (Google マップの保存済みリストから取り込んだ場所と、家族が足した場所)
 # - photo-tags/                   写真に写っているもの (photo-tagger が書く。家族が違うタグを消す)
 # - faces/                        写真の顔 (face-indexer が書く。家族が教えた顔・知らない人)
+# - growth/                       成長の動画 (作る内容を置き、growth-video が動画を書く。消す・フォトに入れる)
 locals {
-  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/", "photo-places/", "wishlist/", "photo-tags/", "faces/"]
+  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/", "photo-places/", "wishlist/", "photo-tags/", "faces/", "growth/"]
 }
 
 resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {

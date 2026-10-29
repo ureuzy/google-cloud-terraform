@@ -75,6 +75,29 @@ resource "google_cloudbuild_trigger" "face_indexer" {
   }
 }
 
+resource "google_cloudbuild_trigger" "growth_video" {
+  location        = "asia-northeast1"
+  name            = "growth-video"
+  service_account = google_service_account.service_accounts["cloudbuild"].id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["growth-video/**"]
+  ignored_files  = ["growth-video/**/*.md"]
+  filename       = "growth-video/cloudbuild.yaml"
+
+  substitutions = {
+    _REGION         = "asia-northeast1"
+    _CONTAINER_NAME = "growth-video"
+    _REPOSITORY     = google_artifact_registry_repository.common.name
+    _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.growth_video.name
+  }
+}
+
 resource "google_cloudbuild_trigger" "billing_monitor" {
   location        = "asia-northeast1"
   name            = "billing-monitor"

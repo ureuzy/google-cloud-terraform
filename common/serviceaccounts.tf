@@ -4,6 +4,7 @@ locals {
     "billing-monitor"   = "Service Account for the billing-monitor Cloud Run Job"
     "photo-tagger"      = "Service Account for the photo-tagger Cloud Run Job"
     "face-indexer"      = "Service Account for the face-indexer Cloud Run Job"
+    "growth-video"      = "Service Account for the growth-video Cloud Run Job"
     "activity-analyzer" = "Analyze unused service account"
     "audit-alert"       = "Service Account for Audit alert"
     "ai-reporter"       = "Service Account for the ai-reporter Cloud Run Job"
