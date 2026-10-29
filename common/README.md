@@ -21,7 +21,7 @@ Common infrastructure resources for application workloads.
 | artifactregistry.tf | Artifact Registry (Docker) with cleanup policy |
 | storage.tf | Cloud Storage buckets |
 | pubsub.tf | Pub/Sub topics and subscriptions |
-| monitoring.tf | Monitoring and alerting |
+| monitoring.tf | Monitoring and alerting, and the common-api dashboard (`dashboards/common-api.json`) |
 
 ## Cloud Run Services
 

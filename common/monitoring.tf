@@ -19,3 +19,8 @@ resource "google_monitoring_alert_policy" "run_job" {
   enabled  = true
   severity = "ERROR"
 }
+# common-api のダッシュボード: リクエスト・応答時間・起動の遅さ・CPU とメモリ・写真のバケット・エラーのログ。
+# 載せるのは Cloud Run と Cloud Storage が最初から記録している数字だけ (料金はかからない)。API ごとの時間は Cloud Trace で見る
+resource "google_monitoring_dashboard" "common_api" {
+  dashboard_json = file("${path.module}/dashboards/common-api.json")
+}
