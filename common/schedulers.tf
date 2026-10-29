@@ -111,6 +111,8 @@ resource "google_cloud_scheduler_job" "ai_sensei_daily_poster" {
   region      = "asia-northeast1"
   schedule    = "0 9 * * *"
   time_zone   = "Asia/Tokyo"
+  # 止めている (google プロバイダ 8.4.0 から、書かないと「止めていない」になり、apply のたびに動き出す)
+  paused = true
 
   http_target {
     http_method = "POST"

@@ -1,8 +1,5 @@
 {
   "displayName": "common-api",
-  "dashboardFilters": [],
-  "description": "",
-  "labels": {},
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
@@ -11,19 +8,10 @@
         "width": 48,
         "widget": {
           "title": "common-api",
-          "id": "",
           "text": {
             "content": "家族のアプリ (home) の API。**どの API のどこに時間がかかっているか**は [Trace エクスプローラ](https://console.cloud.google.com/traces/explorer?project=ureuzy-common) で見る (サービス common-api)。止まっていたあとの最初のリクエストは、写真の一覧などを読み込むので遅い (起動時間・インスタンス数を見る)。",
             "format": "MARKDOWN",
-            "style": {
-              "backgroundColor": "",
-              "fontSize": "FONT_SIZE_UNSPECIFIED",
-              "horizontalAlignment": "HORIZONTAL_ALIGNMENT_UNSPECIFIED",
-              "padding": "PADDING_SIZE_UNSPECIFIED",
-              "pointerLocation": "POINTER_LOCATION_UNSPECIFIED",
-              "textColor": "",
-              "verticalAlignment": "VERTICAL_ALIGNMENT_UNSPECIFIED"
-            }
+            "style": {}
           }
         }
       },
@@ -33,27 +21,19 @@
         "width": 12,
         "widget": {
           "title": "リクエスト (1 時間)",
-          "id": "",
           "scorecard": {
-            "breakdowns": [],
-            "dimensions": [],
-            "measures": [],
             "sparkChartView": {
               "sparkChartType": "SPARK_LINE"
             },
-            "thresholds": [],
             "timeSeriesQuery": {
-              "outputFullDuration": false,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "3600s",
                   "crossSeriesReducer": "REDUCE_SUM",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_SUM"
                 },
                 "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-              },
-              "unitOverride": ""
+              }
             }
           }
         }
@@ -65,27 +45,19 @@
         "width": 12,
         "widget": {
           "title": "エラー 5xx (1 時間)",
-          "id": "",
           "scorecard": {
-            "breakdowns": [],
-            "dimensions": [],
-            "measures": [],
             "sparkChartView": {
               "sparkChartType": "SPARK_LINE"
             },
-            "thresholds": [],
             "timeSeriesQuery": {
-              "outputFullDuration": false,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "3600s",
                   "crossSeriesReducer": "REDUCE_SUM",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_SUM"
                 },
                 "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\" AND metric.label.\"response_code_class\"=\"5xx\""
-              },
-              "unitOverride": ""
+              }
             }
           }
         }
@@ -97,27 +69,19 @@
         "width": 12,
         "widget": {
           "title": "応答時間 p95 (ms・1 時間)",
-          "id": "",
           "scorecard": {
-            "breakdowns": [],
-            "dimensions": [],
-            "measures": [],
             "sparkChartView": {
               "sparkChartType": "SPARK_LINE"
             },
-            "thresholds": [],
             "timeSeriesQuery": {
-              "outputFullDuration": false,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "3600s",
                   "crossSeriesReducer": "REDUCE_PERCENTILE_95",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_DELTA"
                 },
                 "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-              },
-              "unitOverride": ""
+              }
             }
           }
         }
@@ -129,27 +93,19 @@
         "width": 12,
         "widget": {
           "title": "インスタンス (今)",
-          "id": "",
           "scorecard": {
-            "breakdowns": [],
-            "dimensions": [],
-            "measures": [],
             "sparkChartView": {
               "sparkChartType": "SPARK_LINE"
             },
-            "thresholds": [],
             "timeSeriesQuery": {
-              "outputFullDuration": false,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "60s",
                   "crossSeriesReducer": "REDUCE_SUM",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_MAX"
                 },
                 "filter": "metric.type=\"run.googleapis.com/container/instance_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-              },
-              "unitOverride": ""
+              }
             }
           }
         }
@@ -160,82 +116,57 @@
         "width": 24,
         "widget": {
           "title": "応答時間 (ms)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p50",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_50",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p95",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_95",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p99",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_99",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
               "label": "ms",
@@ -251,24 +182,16 @@
         "width": 24,
         "widget": {
           "title": "リクエスト (応答の種類ごと)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "${metric.labels.response_code_class}",
-                "measures": [],
                 "plotType": "STACKED_BAR",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
@@ -279,12 +202,10 @@
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
               "label": "回/秒",
@@ -299,24 +220,16 @@
         "width": 24,
         "widget": {
           "title": "インスタンス (動いている・待っている)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "${metric.labels.state}",
-                "measures": [],
                 "plotType": "STACKED_AREA",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
@@ -327,15 +240,12 @@
                       "perSeriesAligner": "ALIGN_MAX"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/instance_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
-              "label": "",
               "scale": "LINEAR"
             }
           }
@@ -348,60 +258,42 @@
         "width": 24,
         "widget": {
           "title": "起動にかかった時間 (ms。止まっていたあとの最初のリクエスト)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p95",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "300s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_95",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p50",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "300s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_50",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
               "label": "ms",
@@ -416,63 +308,44 @@
         "width": 16,
         "widget": {
           "title": "CPU 使用率",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p95",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_95",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/cpu/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p50",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_50",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/cpu/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
-              "label": "",
               "scale": "LINEAR"
             }
           }
@@ -485,63 +358,44 @@
         "width": 16,
         "widget": {
           "title": "メモリ使用率 (上限 512 MiB)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p99",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_99",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/memory/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "p50",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_PERCENTILE_50",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/memory/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
-              "label": "",
               "scale": "LINEAR"
             }
           }
@@ -554,41 +408,29 @@
         "width": 16,
         "widget": {
           "title": "課金されるインスタンス時間 (秒/秒)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "billable",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"run.googleapis.com/container/billable_instance_time\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
-              "label": "",
               "scale": "LINEAR"
             }
           }
@@ -600,24 +442,16 @@
         "width": 24,
         "widget": {
           "title": "写真のバケット: API リクエスト (種類ごと)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "${metric.labels.method}",
-                "measures": [],
                 "plotType": "STACKED_BAR",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
@@ -628,12 +462,10 @@
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"storage.googleapis.com/api/request_count\" AND resource.type=\"gcs_bucket\" AND resource.label.\"bucket_name\"=\"ureuzy-family-photos\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
               "label": "回/秒",
@@ -649,38 +481,27 @@
         "width": 24,
         "widget": {
           "title": "写真のバケット: 外へ送った量 (写真の表示など)",
-          "id": "",
           "xyChart": {
             "chartOptions": {
-              "displayHorizontal": false,
-              "mode": "COLOR",
-              "showLegend": false
+              "mode": "COLOR"
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "sent",
-                "measures": [],
                 "plotType": "LINE",
-                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "outputFullDuration": false,
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"storage.googleapis.com/network/sent_bytes_count\" AND resource.type=\"gcs_bucket\" AND resource.label.\"bucket_name\"=\"ureuzy-family-photos\""
-                  },
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "thresholds": [],
             "timeshiftDuration": "0s",
             "yAxis": {
               "label": "bytes/秒",
@@ -695,7 +516,6 @@
         "width": 48,
         "widget": {
           "title": "エラーのログ",
-          "id": "",
           "logsPanel": {
             "filter": "resource.type=\"cloud_run_revision\"\nresource.labels.service_name=\"common-api\"\nseverity>=ERROR",
             "resourceNames": [
@@ -710,26 +530,16 @@
         "width": 24,
         "widget": {
           "title": "API ごとの応答時間（グラフ：横は start_time、縦は ms の 95 パーセンタイル、分け方は name）",
-          "id": "",
           "timeSeriesTable": {
-            "columnSettings": [],
             "dataSets": [
               {
-                "tableTemplate": "",
                 "timeSeriesQuery": {
                   "opsAnalyticsQuery": {
-                    "queryExecutionRules": {
-                      "useReservedSlots": false
-                    },
-                    "savedQueryId": "",
                     "sql": "SELECT start_time, trace_id, name, duration_nano / 1e6 AS ms\nFROM `ureuzy-common.us._Trace.Spans._AllSpans`\nWHERE JSON_VALUE(attributes, '$.\"service.name\"') = 'common-api'\n  AND kind = 2  -- リクエスト (サーバー) のスパン"
-                  },
-                  "outputFullDuration": false,
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "displayColumnType": false,
             "metricVisualization": "NUMBER"
           }
         }
@@ -741,26 +551,16 @@
         "width": 24,
         "widget": {
           "title": "時間がかかっている処理の順位（テーブル、または棒グラフ）",
-          "id": "",
           "timeSeriesTable": {
-            "columnSettings": [],
             "dataSets": [
               {
-                "tableTemplate": "",
                 "timeSeriesQuery": {
                   "opsAnalyticsQuery": {
-                    "queryExecutionRules": {
-                      "useReservedSlots": false
-                    },
-                    "savedQueryId": "",
                     "sql": "SELECT name,\n  COUNT(*) AS n,\n  ROUND(SUM(duration_nano) / 1e9, 1) AS total_s,\n  ROUND(APPROX_QUANTILES(duration_nano, 100)[OFFSET(95)] / 1e6) AS p95_ms\nFROM `ureuzy-common.us._Trace.Spans._AllSpans`\nWHERE JSON_VALUE(attributes, '$.\"service.name\"') = 'common-api'\n  AND kind != 2\nGROUP BY name\nORDER BY total_s DESC\nLIMIT 15"
-                  },
-                  "outputFullDuration": false,
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "displayColumnType": false,
             "metricVisualization": "NUMBER"
           }
         }
@@ -771,26 +571,16 @@
         "width": 24,
         "widget": {
           "title": "遅かったリクエスト（1 秒以上）（テーブル）",
-          "id": "",
           "timeSeriesTable": {
-            "columnSettings": [],
             "dataSets": [
               {
-                "tableTemplate": "",
                 "timeSeriesQuery": {
                   "opsAnalyticsQuery": {
-                    "queryExecutionRules": {
-                      "useReservedSlots": false
-                    },
-                    "savedQueryId": "",
                     "sql": "SELECT start_time, name, ROUND(duration_nano / 1e6) AS ms, trace_id\nFROM `ureuzy-common.us._Trace.Spans._AllSpans`\nWHERE JSON_VALUE(attributes, '$.\"service.name\"') = 'common-api'\n  AND kind = 2\n  AND duration_nano > 1e9\nORDER BY start_time DESC\nLIMIT 50"
-                  },
-                  "outputFullDuration": false,
-                  "unitOverride": ""
+                  }
                 }
               }
             ],
-            "displayColumnType": false,
             "metricVisualization": "NUMBER"
           }
         }
