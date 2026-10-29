@@ -184,11 +184,13 @@ resource "google_project_iam_member" "ai_sensei" {
 }
 
 # For common-api SA Permissions
+# cloudtrace.agent: どの API のどこに時間がかかっているかを Cloud Trace に送るため (OpenTelemetry)
 resource "google_project_iam_member" "common_api" {
   for_each = toset([
     "roles/run.invoker",
     "roles/viewer",
     "roles/cloudscheduler.admin",
+    "roles/cloudtrace.agent",
   ])
   project = data.google_project.main.project_id
   role    = each.value
