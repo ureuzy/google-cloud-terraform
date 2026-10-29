@@ -128,6 +128,16 @@ resource "google_storage_bucket_iam_member" "growth_video_write" {
   }
 }
 
+# common-api が growth-video を動かす (アプリで「成長の動画を作る」を押したとき、作る動画の ID を GROWTH_ID で渡す)。
+# Job は Cloud Deploy が作るので、Job ができてから、その Job にだけ付ける
+resource "google_cloud_run_v2_job_iam_member" "common_api_growth_video" {
+  project  = data.google_project.main.project_id
+  location = "asia-northeast1"
+  name     = "growth-video"
+  role     = "roles/run.jobsExecutorWithOverrides"
+  member   = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
 # For billing monitor SA Permissions
 resource "google_project_iam_member" "billing_monitor" {
   for_each = toset([
