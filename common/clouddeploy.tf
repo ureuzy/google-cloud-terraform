@@ -76,6 +76,32 @@ resource "google_clouddeploy_target" "face_indexer" {
   }
 }
 
+# Growth Video
+resource "google_clouddeploy_delivery_pipeline" "growth_video" {
+  location    = "asia-northeast1"
+  name        = "growth-video-job-pipeline"
+  description = "Delivery pipeline for growth-video Cloud Run Job"
+
+  serial_pipeline {
+    stages {
+      target_id = google_clouddeploy_target.growth_video.name
+    }
+  }
+}
+
+resource "google_clouddeploy_target" "growth_video" {
+  location    = "asia-northeast1"
+  name        = "growth-video-job-target"
+  description = "Target for growth-video Cloud Run Job"
+  execution_configs {
+    usages          = ["RENDER", "DEPLOY"]
+    service_account = google_service_account.service_accounts["clouddeploy"].email
+  }
+  run {
+    location = "projects/${data.google_project.main.project_id}/locations/asia-northeast1"
+  }
+}
+
 # Billing Monitor
 resource "google_clouddeploy_delivery_pipeline" "billing_monitor" {
   location    = "asia-northeast1"

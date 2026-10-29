@@ -31,6 +31,7 @@ Common infrastructure resources for application workloads.
 | billing-monitor | Job | Daily 0:00 JST |
 | photo-tagger | Job | Daily 1:00 JST |
 | face-indexer | Job | Daily 1:00 JST |
+| growth-video | Job | Run by common-api (growth videos) |
 | activity-analyzer | Job | Weekly Mon 0:00 JST |
 | ai-reporter | Job | Daily 0:00 JST |
 | ai-sensei-daily-poster | Job | Daily 9:00 JST |
@@ -66,6 +67,7 @@ flowchart TB
         billing["billing-monitor<br/>daily 0:00"]
         tagger["photo-tagger<br/>daily 1:00"]
         faces["face-indexer<br/>daily 1:00"]
+        growth["growth-video<br/>run by common-api"]
         activity["activity-analyzer<br/>weekly Mon 0:00"]
         reporter["ai-reporter<br/>daily 0:00"]
         poster["ai-sensei-daily-poster<br/>daily 9:00"]
@@ -94,6 +96,8 @@ flowchart TB
   tagger -->|thumbnails / photo-tags| photos
   tagger -->|thumbnails| cfai
   faces -->|photos / faces| photos
+  growth -->|photos / growth| photos
+  api -->|run| growth
   reporter & poster --> vertex
   handler --> vertex & fs
   api --> photos & cache & gapis & vertex
