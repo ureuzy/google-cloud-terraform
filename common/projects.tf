@@ -23,6 +23,9 @@ module "project-services" {
     # 行きたいリスト: Google Takeout の書き出し (保存済みのリスト) をドライブから読む
     "drive.googleapis.com",
     "monitoring.googleapis.com",
+    # common-api のトレース (Cloud Trace) と、それを SQL で読んでダッシュボードのグラフにする (Observability Analytics)
+    "cloudtrace.googleapis.com",
+    "observability.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
     "policyanalyzer.googleapis.com",

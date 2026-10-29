@@ -1,0 +1,521 @@
+{
+  "displayName": "common-api",
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "xPos": 0,
+        "yPos": 0,
+        "width": 48,
+        "height": 4,
+        "widget": {
+          "title": "common-api",
+          "text": {
+            "format": "MARKDOWN",
+            "content": "家族のアプリ (home) の API。**どの API のどこに時間がかかっているか**は [Trace エクスプローラ](https://console.cloud.google.com/traces/explorer?project=ureuzy-common) で見る (サービス common-api)。止まっていたあとの最初のリクエストは、写真の一覧などを読み込むので遅い (起動時間・インスタンス数を見る)。"
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 4,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "リクエスト (1 時間)",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                "aggregation": {
+                  "alignmentPeriod": "3600s",
+                  "perSeriesAligner": "ALIGN_SUM",
+                  "crossSeriesReducer": "REDUCE_SUM"
+                }
+              }
+            },
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 12,
+        "yPos": 4,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "エラー 5xx (1 時間)",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\" AND metric.label.\"response_code_class\"=\"5xx\"",
+                "aggregation": {
+                  "alignmentPeriod": "3600s",
+                  "perSeriesAligner": "ALIGN_SUM",
+                  "crossSeriesReducer": "REDUCE_SUM"
+                }
+              }
+            },
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 4,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "応答時間 p95 (ms・1 時間)",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                "aggregation": {
+                  "alignmentPeriod": "3600s",
+                  "perSeriesAligner": "ALIGN_DELTA",
+                  "crossSeriesReducer": "REDUCE_PERCENTILE_95"
+                }
+              }
+            },
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 4,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "インスタンス (今)",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"run.googleapis.com/container/instance_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                "aggregation": {
+                  "alignmentPeriod": "60s",
+                  "perSeriesAligner": "ALIGN_MAX",
+                  "crossSeriesReducer": "REDUCE_SUM"
+                }
+              }
+            },
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 12,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "応答時間 (ms)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p50"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p95"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p99"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "ms"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 12,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "リクエスト (応答の種類ごと)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"response_code_class\""
+                      ]
+                    }
+                  }
+                },
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "legendTemplate": "${metric.labels.response_code_class}"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "回/秒"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 28,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "インスタンス (動いている・待っている)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/instance_count\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MAX",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"state\""
+                      ]
+                    }
+                  }
+                },
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "legendTemplate": "${metric.labels.state}"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 28,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "起動にかかった時間 (ms。止まっていたあとの最初のリクエスト)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "300s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p95"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "300s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p50"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "ms"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 44,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "CPU 使用率",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/cpu/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p95"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/cpu/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p50"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 44,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "メモリ使用率 (上限 512 MiB)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/memory/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p99"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/memory/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "p50"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 44,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "課金されるインスタンス時間 (秒/秒)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"run.googleapis.com/container/billable_instance_time\" AND resource.type=\"cloud_run_revision\" AND resource.label.\"service_name\"=\"common-api\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "billable"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 60,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "写真のバケット: API リクエスト (種類ごと)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"storage.googleapis.com/api/request_count\" AND resource.type=\"gcs_bucket\" AND resource.label.\"bucket_name\"=\"ureuzy-family-photos\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"method\""
+                      ]
+                    }
+                  }
+                },
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "legendTemplate": "${metric.labels.method}"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "回/秒"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 60,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "写真のバケット: 外へ送った量 (写真の表示など)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"storage.googleapis.com/network/sent_bytes_count\" AND resource.type=\"gcs_bucket\" AND resource.label.\"bucket_name\"=\"ureuzy-family-photos\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": []
+                    }
+                  }
+                },
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "sent"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "bytes/秒"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 76,
+        "width": 48,
+        "height": 20,
+        "widget": {
+          "title": "エラーのログ",
+          "logsPanel": {
+            "filter": "resource.type=\"cloud_run_revision\"\nresource.labels.service_name=\"common-api\"\nseverity>=ERROR",
+            "resourceNames": [
+              "projects/ureuzy-common"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "labels": {}
+}
