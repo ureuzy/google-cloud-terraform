@@ -14,7 +14,8 @@ Common infrastructure resources for application workloads.
 | cloudbuild.tf | Cloud Build triggers (GitHub push to main) |
 | clouddeploy.tf | Cloud Deploy pipelines and targets |
 | gke.tf | GKE Autopilot cluster |
-| schedulers.tf | Cloud Scheduler jobs for periodic Cloud Run execution |
+| schedulers.tf | Cloud Scheduler jobs for periodic Cloud Run and workflow execution |
+| workflows.tf | Workflows (`photo-pipeline`: runs the photo jobs in order, source in `workflows/`) |
 | serviceaccounts.tf | Service accounts (managed via `for_each`) |
 | iam.tf | IAM bindings and public access settings |
 | secrets.tf | Secret Manager secrets (managed via `for_each`) |
@@ -27,10 +28,10 @@ Common infrastructure resources for application workloads.
 
 | Name | Type | Scheduler |
 |------|------|-----------|
-| mitene-downloader | Job | Daily 0:00 JST |
+| mitene-downloader | Job | photo-pipeline workflow (daily 0:00 JST) |
 | billing-monitor | Job | Daily 0:00 JST |
-| photo-tagger | Job | Daily 1:00 JST |
-| face-indexer | Job | Daily 1:00 JST |
+| photo-tagger | Job | photo-pipeline workflow, after mitene-downloader |
+| face-indexer | Job | photo-pipeline workflow, after mitene-downloader |
 | growth-video | Job | Run by common-api (growth videos) |
 | activity-analyzer | Job | Weekly Mon 0:00 JST |
 | ai-reporter | Job | Daily 0:00 JST |
@@ -61,12 +62,13 @@ flowchart TB
 
     subgraph common["ureuzy-common"]
       sched["Cloud Scheduler"]
+      wf["Workflows<br/>photo-pipeline daily 0:00"]
       pubsub["Pub/Sub<br/>audit-alert"]
       subgraph jobs["Cloud Run Jobs"]
-        mitene["mitene-downloader<br/>daily 0:00"]
+        mitene["mitene-downloader<br/>photo-pipeline 1st"]
         billing["billing-monitor<br/>daily 0:00"]
-        tagger["photo-tagger<br/>daily 1:00"]
-        faces["face-indexer<br/>daily 1:00"]
+        tagger["photo-tagger<br/>photo-pipeline 2nd"]
+        faces["face-indexer<br/>photo-pipeline 2nd"]
         growth["growth-video<br/>run by common-api"]
         activity["activity-analyzer<br/>weekly Mon 0:00"]
         reporter["ai-reporter<br/>daily 0:00"]
@@ -90,6 +92,8 @@ flowchart TB
 
   orgsink --> logs --> iamsink --> pubsub -->|push| audit
   sched --> jobs
+  sched --> wf -->|run in order| mitene & tagger & faces
+  api -->|run| wf
 
   billing -->|read| bq
   mitene -->|write| photos

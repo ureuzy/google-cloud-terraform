@@ -36,6 +36,24 @@ resource "google_project_iam_member" "mitene_downloader" {
   member  = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
 }
 
+# For photo-pipeline SA Permissions
+# 写真の取り込みと解析のワークフローの実行と、それを 0:00 に起こす Scheduler に使う。
+# - run.invoker: 3 つの Job を動かす (run.jobs.run)
+# - run.viewer: Job が終わるまで待つ (動かしたときの長い処理を読む run.operations.get)
+# - workflows.invoker: Scheduler がワークフローを起こす
+# - logging.logWriter: 失敗したステップをログに残す (call_log_level)
+resource "google_project_iam_member" "photo_pipeline" {
+  for_each = toset([
+    "roles/run.invoker",
+    "roles/run.viewer",
+    "roles/workflows.invoker",
+    "roles/logging.logWriter",
+  ])
+  project = data.google_project.main.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.service_accounts["photo-pipeline"].email}"
+}
+
 # photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) を photo-tags/ に書く。結果は Slack に知らせる
 resource "google_project_iam_member" "photo_tagger" {
   for_each = toset([
@@ -220,6 +238,8 @@ resource "google_project_iam_member" "common_api" {
     "roles/viewer",
     "roles/cloudscheduler.admin",
     "roles/cloudtrace.agent",
+    # アプリのシステム管理から、写真の取り込みと解析のワークフローを動かす (見るのは roles/viewer で足りる)
+    "roles/workflows.invoker",
   ])
   project = data.google_project.main.project_id
   role    = each.value

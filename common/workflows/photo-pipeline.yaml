@@ -1,0 +1,53 @@
+# 写真の取り込みと解析: みてねから取り込み (mitene-downloader)、終わったらすぐ、写っているもの (photo-tagger) と顔 (face-indexer) を同時に調べる。
+# 前は時刻をずらして動かしていたが、取り込みの長さによって待ちすぎたり、追い越したりしたため。
+#
+# - 取り込みが一部失敗しても、保存できた写真はあるので、解析は動かす (最後にワークフローを失敗にする)
+# - 2 つの解析は書くファイルも計算する場所も別なので、同時に動かしてよい。片方が失敗しても、もう片方は最後まで動かす
+# - Job が終わるのを待つ間の問い合わせは 1 回ずつステップとして数えられる (無料枠は月 5,000)。
+#   最初の設定 (最大 60 秒ごと) では月の無料枠を超えることがあるので、最大 5 分ごとにする
+# - common-api (システム管理の画面) は、main の上から順のステップごとに Job の名前を読み、同じステップの Job を「同時に」として出す
+main:
+  params: [args]
+  steps:
+    - init:
+        assign:
+          - parent: ${"projects/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/locations/asia-northeast1/jobs/"}
+          - wait:
+              timeout: 10800
+              polling_policy:
+                initial_delay: 10
+                multiplier: 2
+                max_delay: 300
+          - downloadError: null
+    - download:
+        try:
+          call: googleapis.run.v2.projects.locations.jobs.run
+          args:
+            name: ${parent + "mitene-downloader"}
+            connector_params: ${wait}
+        except:
+          as: e
+          assign:
+            - downloadError: ${e}
+    - analyze:
+        parallel:
+          exception_policy: continueAll
+          branches:
+            - tags:
+                steps:
+                  - photo_tagger:
+                      call: googleapis.run.v2.projects.locations.jobs.run
+                      args:
+                        name: ${parent + "photo-tagger"}
+                        connector_params: ${wait}
+            - faces:
+                steps:
+                  - face_indexer:
+                      call: googleapis.run.v2.projects.locations.jobs.run
+                      args:
+                        name: ${parent + "face-indexer"}
+                        connector_params: ${wait}
+    - finish:
+        switch:
+          - condition: ${downloadError != null}
+            raise: ${downloadError}
