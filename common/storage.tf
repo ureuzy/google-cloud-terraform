@@ -1,3 +1,8 @@
+# バケットの使い分け (何をどこに置くか) は cloud_functions の STORAGE.md に書いてある。足すときはそちらも直す
+# - ureuzy-family-photos  写真・動画・画像だけ
+# - ureuzy-family-data    消えたら困るデータ (家族が入れたもの、夜の Job の結果、設定)
+# - ureuzy-cache          消えても作り直せるもの
+
 resource "google_storage_bucket" "photos" {
   name                        = "ureuzy-family-photos"
   location                    = "ASIA"
@@ -82,6 +87,63 @@ resource "google_storage_bucket" "photos" {
 # - settings.json  家族構成とジャンル (画面から編集する)。消さない
 resource "google_storage_bucket" "odekake_cache" {
   name                        = "ureuzy-odekake-cache"
+  location                    = "ASIA-NORTHEAST1"
+  storage_class               = "STANDARD"
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+  force_destroy               = false
+
+  lifecycle_rule {
+    condition {
+      age            = 30
+      matches_prefix = ["places/"]
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
+# 消えたら困るデータ (家族が入れたもの・直したもの、夜の Job の結果、設定、Job の受け渡し)。
+# 写真のバケットと分け、Cloud Run と同じ東京に置く (読むのが速く、操作の料金も安い)。
+# 書き直すたびに古い版ができるので 7 日で消す (それまでは間違えて書き換えても戻せる)
+resource "google_storage_bucket" "data" {
+  name                        = "ureuzy-family-data"
+  location                    = "ASIA-NORTHEAST1"
+  storage_class               = "STANDARD"
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+  force_destroy               = false
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    condition {
+      days_since_noncurrent_time = 7
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  # 写真の取り込みと解析のワークフローの、Job ごとの結果 (Slack に送ったあとは見返すだけ)
+  lifecycle_rule {
+    condition {
+      age            = 7
+      matches_prefix = ["photo-pipeline/"]
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
+# 消えても作り直せるもの (外の API の答え、集計、計算を速くするためのもの)。古い版は残さない
+# - places/  AI が調べた入場料・駐車場料金など。料金は変わるので 30 日で消し、次に提案するときに調べ直す
+resource "google_storage_bucket" "cache" {
+  name                        = "ureuzy-cache"
   location                    = "ASIA-NORTHEAST1"
   storage_class               = "STANDARD"
   uniform_bucket_level_access = true
