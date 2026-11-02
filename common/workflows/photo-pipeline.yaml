@@ -7,7 +7,7 @@
 #   最初の設定 (最大 60 秒ごと) では月の無料枠を超えることがあるので、最大 5 分ごとにする
 # - common-api (システム管理の画面) は、main の上から順のステップごとに Job の名前を読み、同じステップの Job を「同時に」として出す
 # - 結果は Job ごとに Slack に送らず、データのバケットの photo-pipeline/{実行 ID}/{Job}.json に書いてもらう (環境変数 REPORT_OBJECT)。
-#   最後に 1 つの投稿 (Job ごとに 1 行) にまとめ、Job ごとの詳しい結果をスレッドに返信する (notify)。
+#   最後に 1 つの投稿 (Job ごとに名前と結果) にまとめ、Job ごとの詳しい結果をスレッドに返信する (notify)。
 #   送れなくてもワークフローは失敗にしない (写真の取り込みと解析はできているため)
 main:
   params: [args]
@@ -112,9 +112,12 @@ main:
           - condition: ${faceError != null}
             raise: ${faceError}
 
-# notify は、3 つの Job の結果を Slack (#google_cloud) にまとめる。本文に Job ごとの 1 行、スレッドに Job ごとの詳しい結果 (Job が書いた囲み)。
+# notify は、3 つの Job の結果を Slack (#google_cloud) にまとめる (Block Kit)。
+# - 本文: 見出し、結果 (✅・⚠️・❌)・始めた時刻・かかった時間、Job ごとに名前 (太字) と結果の行。途中でやめた・エラーは、その下に 1 行ずつ (Job が書いた notes)
+# - スレッド: Job ごとに 1 件。名前と Job の名前・かかった時間、Job が書いた囲み
 # 結果のファイルがない (Job ごと落ちた) ときは「結果なし」とし、ワークフローが受け取ったエラーを返信に出す。
-# トークンは billing-monitor と同じボット (slack-ai-bot)。Webhook ではスレッドに返信できないため
+# トークンは billing-monitor と同じボット (slack-ai-bot)。Webhook ではスレッドに返信できないため。
+# 名前とアイコン (username・icon_emoji) を変えるので、ボットに chat:write.customize が要る
 notify:
   params: [reports, started, errors]
   steps:
@@ -122,16 +125,16 @@ notify:
         assign:
           - jobs:
               - id: mitene-downloader
-                label: 📥 みてね
-                title: みてね取り込み（mitene-downloader）
+                name: 📥 みてね
+                title: 📥 みてね取り込み
               - id: photo-tagger
-                label: 🏷️ 写っているもの
-                title: 写っているもの（photo-tagger）
+                name: 🏷️ 写っているもの
+                title: 🏷️ 写っているもの
               - id: face-indexer
-                label: 🙂 顔
-                title: 顔（face-indexer）
+                name: 🙂 顔
+                title: 🙂 顔
           - results: {}
-          - lines: ""
+          - sections: []
           - failed: false
           - stopped: false
           - channel: "#google_cloud"
@@ -160,17 +163,42 @@ notify:
             - keep_report:
                 assign:
                   - results[job.id]: ${raw}
-            - add_line:
+            - job_line:
                 switch:
                   - condition: ${raw == null}
                     assign:
-                      - lines: ${lines + "\n" + job.label + "　*Job が失敗（結果なし）*"}
+                      - line: ${"*" + job.name + "*\n❌ Job が失敗（結果なし）"}
                       - failed: true
                   - condition: true
                     assign:
-                      - lines: ${lines + "\n" + job.label + "　" + raw.summary}
+                      - line: ${"*" + job.name + "*\n" + raw.summary}
                       - failed: ${failed or raw.status == "error" or errors[job.id] != null}
                       - stopped: ${stopped or raw.status == "warning"}
+            # and が先で止まるとは限らないので、結果がないときに raw の中を見ないよう、分けて確かめる
+            - job_notes:
+                switch:
+                  - condition: ${raw != null}
+                    steps:
+                      - has_notes:
+                          switch:
+                            - condition: ${"notes" in raw}
+                              steps:
+                                - add_notes:
+                                    for:
+                                      value: note
+                                      in: ${raw.notes}
+                                      steps:
+                                        - add_note:
+                                            assign:
+                                              - line: ${line + "\n" + note}
+            - add_section:
+                assign:
+                  - section:
+                      type: section
+                      text:
+                        type: mrkdwn
+                        text: ${line}
+                  - sections: ${list.concat(sections, section)}
     - headline:
         switch:
           - condition: ${failed}
@@ -182,6 +210,40 @@ notify:
           - condition: true
             assign:
               - mark: ✅ ぜんぶ成功
+    # 始めた時刻は「0:00」の形 (時の先頭の 0 は付けない)。かかった時間は 1 分未満なら秒
+    - when:
+        assign:
+          - startedAt: ${time.format(started, "Asia/Tokyo")}
+          - startedText: ${string(int(text.substring(startedAt, 11, 13))) + ":" + text.substring(startedAt, 14, 16)}
+          - took: ${sys.now() - started}
+    - took_text:
+        switch:
+          - condition: ${took < 60}
+            assign:
+              - tookText: ${string(int(took)) + " 秒"}
+          - condition: true
+            assign:
+              - tookText: ${string(int(took / 60)) + " 分"}
+    - build_blocks:
+        assign:
+          - blocks:
+              - type: header
+                text:
+                  type: plain_text
+                  text: 📷 写真の取り込みと解析
+              - type: context
+                elements:
+                  - type: mrkdwn
+                    text: ${mark + "　·　" + startedText + " 開始　·　" + tookText}
+              - type: divider
+    - add_sections:
+        for:
+          value: section
+          in: ${sections}
+          steps:
+            - add_block:
+                assign:
+                  - blocks: ${list.concat(blocks, section)}
     - token:
         call: googleapis.secretmanager.v1.projects.secrets.versions.accessString
         args:
@@ -199,7 +261,9 @@ notify:
             channel: ${channel}
             username: Photo Pipeline
             icon_emoji: ":camera:"
-            text: ${"*写真の取り込みと解析*　" + mark + "（" + text.substring(time.format(started, "Asia/Tokyo"), 11, 16) + " 開始・" + string(int((sys.now() - started) / 60)) + " 分）" + lines}
+            # 知らせ (スマホの通知) に出る文
+            text: ${"写真の取り込みと解析　" + mark}
+            blocks: ${blocks}
         result: posted
     - check_post:
         switch:
@@ -214,15 +278,19 @@ notify:
                 switch:
                   - condition: ${results[job.id] == null}
                     assign:
-                      - title: ${"*" + job.title + "*"}
+                      - context: ${"`" + job.id + "`"}
                       - error: ${json.encode_to_string(errors[job.id])}
                       - attachments:
                           - color: danger
                             title: Job が失敗（結果なし）
                             text: ${text.substring(error, 0, math.min(len(error), 1500))}
+                  - condition: ${results[job.id].seconds < 60}
+                    assign:
+                      - context: ${"`" + job.id + "`　·　" + string(results[job.id].seconds) + " 秒"}
+                      - attachments: ${results[job.id].attachments}
                   - condition: true
                     assign:
-                      - title: ${"*" + job.title + "*　" + string(int(results[job.id].seconds / 60)) + " 分"}
+                      - context: ${"`" + job.id + "`　·　" + string(int(results[job.id].seconds / 60)) + " 分"}
                       - attachments: ${results[job.id].attachments}
             - reply:
                 call: http.post
@@ -236,5 +304,14 @@ notify:
                     thread_ts: ${posted.body.ts}
                     username: Photo Pipeline
                     icon_emoji: ":camera:"
-                    text: ${title}
+                    text: ${job.title}
+                    blocks:
+                      - type: section
+                        text:
+                          type: mrkdwn
+                          text: ${"*" + job.title + "*"}
+                      - type: context
+                        elements:
+                          - type: mrkdwn
+                            text: ${context}
                     attachments: ${attachments}
