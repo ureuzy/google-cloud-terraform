@@ -63,7 +63,7 @@ resource "google_secret_manager_secret_iam_member" "photo_pipeline_slack" {
   member    = "serviceAccount:${google_service_account.service_accounts["photo-pipeline"].email}"
 }
 
-# photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) を photo-tags/ に書く。結果は Slack に知らせる
+# photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) をデータのバケットの photo-tags/ に書く (権限は下の jobs_data_write)
 resource "google_project_iam_member" "photo_tagger" {
   for_each = toset([
     "roles/run.invoker",
@@ -79,18 +79,6 @@ resource "google_storage_bucket_iam_member" "photo_tagger_read" {
   member = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
 }
 
-resource "google_storage_bucket_iam_member" "photo_tagger_write" {
-  bucket = google_storage_bucket.photos.name
-  role   = "roles/storage.objectUser"
-  member = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
-
-  condition {
-    title       = "photo tags"
-    description = "写真に写っているもの (photo-tags/) だけを書き込める"
-    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/photo-tags/\")"
-  }
-}
-
 # Workers AI のトークンと、結果を Slack に知らせる webhook (mitene-downloader と同じ)
 resource "google_secret_manager_secret_iam_member" "photo_tagger_secrets" {
   for_each = toset([
@@ -102,7 +90,7 @@ resource "google_secret_manager_secret_iam_member" "photo_tagger_secrets" {
   member    = "serviceAccount:${google_service_account.service_accounts["photo-tagger"].email}"
 }
 
-# face-indexer: 写真を読み、見つけた顔 (数字の並びと切り抜き) を faces/ に書く。結果は Slack に知らせる
+# face-indexer: 写真を読み、顔の切り抜きを写真のバケットの faces/crops/ に、顔の一覧をデータのバケットの faces/index.json に書く
 resource "google_project_iam_member" "face_indexer" {
   for_each = toset([
     "roles/run.invoker",
@@ -124,9 +112,9 @@ resource "google_storage_bucket_iam_member" "face_indexer_write" {
   member = "serviceAccount:${google_service_account.service_accounts["face-indexer"].email}"
 
   condition {
-    title       = "faces"
-    description = "写真の顔 (faces/) だけを書き込める"
-    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/faces/\")"
+    title       = "face crops"
+    description = "顔の切り抜き (faces/crops/) だけを書き込める"
+    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/faces/crops/\")"
   }
 }
 
@@ -136,7 +124,7 @@ resource "google_secret_manager_secret_iam_member" "face_indexer_slack" {
   member    = "serviceAccount:${google_service_account.service_accounts["face-indexer"].email}"
 }
 
-# growth-video: 写っている人の成長の動画を作る (common-api が動かす)。写真を読み、動画と進み具合を growth/ に書く
+# growth-video: 写っている人の成長の動画を作る (common-api が動かす)。写真を読み、動画を写真のバケットの growth/ に、進み具合をデータのバケットの growth/ に書く
 resource "google_storage_bucket_iam_member" "growth_video_read" {
   bucket = google_storage_bucket.photos.name
   role   = "roles/storage.objectViewer"
@@ -176,10 +164,20 @@ resource "google_project_iam_member" "billing_monitor" {
   member  = "serviceAccount:${google_service_account.service_accounts["billing-monitor"].email}"
 }
 
+# mitene-downloader は、みてねの写真とサムネイル (mitene/, mitene-thumbs/) だけを読み書きする。一覧を取るのはバケットに対する操作なので、バケットそのものも入れる
 resource "google_storage_bucket_iam_member" "mitene_downloader_photos" {
   bucket = google_storage_bucket.photos.name
-  role   = "roles/storage.objectAdmin"
+  role   = "roles/storage.objectUser"
   member = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
+
+  condition {
+    title       = "mitene photos"
+    description = "みてねの写真とサムネイル (mitene/, mitene-thumbs/) だけを読み書きできる"
+    expression = join(" || ", concat(
+      ["resource.name == \"projects/_/buckets/${google_storage_bucket.photos.name}\""],
+      [for p in ["mitene/", "mitene-thumbs/"] : "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/${p}\")"],
+    ))
+  }
 }
 
 resource "google_secret_manager_secret_iam_member" "mitene_downloader_secrets" {
@@ -262,18 +260,13 @@ resource "google_storage_bucket_iam_member" "common_api_photos" {
   member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
-# common-api が写真のバケットに書き込む・消す場所
+# common-api が写真のバケットに書き込む・消す場所 (写真・動画・画像だけ。データはデータのバケットに置く)
 # - ai-edits/                     写真の AI加工
 # - uploads/, uploads-thumbs/     画面からアップロードした写真とサムネイル
 # - mitene/, mitene-thumbs/       画面から消すとき (書き込みは mitene-downloader だけがする)
-# - photo-deletions/              消したみてねの写真の印 (mitene-downloader が取り直さないように)
-# - photo-places/                 行った場所 (写真の位置から調べた施設名・家族が直した名前)
-# - wishlist/                     行きたいリスト (Google マップの保存済みリストから取り込んだ場所と、家族が足した場所)
-# - photo-tags/                   写真に写っているもの (photo-tagger が書く。家族が違うタグを消す)
-# - faces/                        写真の顔 (face-indexer が書く。家族が教えた顔・知らない人)
-# - growth/                       成長の動画 (作る内容を置き、growth-video が動画を書く。消す・フォトに入れる)
+# - growth/                       成長の動画 (growth-video が書く。消す・フォトに入れる)
 locals {
-  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "photo-deletions/", "photo-places/", "wishlist/", "photo-tags/", "faces/", "growth/"]
+  common_api_photo_write_prefixes = ["ai-edits/", "uploads/", "uploads-thumbs/", "mitene/", "mitene-thumbs/", "growth/"]
 }
 
 resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {
@@ -283,7 +276,7 @@ resource "google_storage_bucket_iam_member" "common_api_photos_ai_edits" {
 
   condition {
     title       = "console writes"
-    description = "AI加工・アップロード・削除・行った場所・行きたいリストで使う場所だけを書き込み・削除できる"
+    description = "AI加工・アップロード・削除・成長の動画で使う場所だけを書き込み・削除できる"
     expression = join(" || ", [
       for p in local.common_api_photo_write_prefixes :
       "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/${p}\")"
@@ -322,11 +315,6 @@ resource "google_secret_manager_secret_iam_member" "common_api_netflix" {
   member    = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
 }
 
-resource "google_storage_bucket_iam_member" "common_api_odekake_cache" {
-  bucket = google_storage_bucket.odekake_cache.name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
-}
 
 # For GKE Autopilot node SA Permissions
 resource "google_project_iam_member" "gke_common" {
