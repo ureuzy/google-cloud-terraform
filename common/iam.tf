@@ -351,3 +351,66 @@ resource "google_cloud_run_v2_service_iam_member" "ai_sensei_event_handler_publi
   member   = "allUsers"
 }
 
+
+# データのバケット (ureuzy-family-data) とキャッシュのバケット (ureuzy-cache) の権限。
+# Job は、書く場所 (フォルダ) だけに絞る。一覧を取る (objects.list) のはバケットに対する操作なので、一覧が要る Job はバケットそのものも条件に入れる
+locals {
+  data_objects = "projects/_/buckets/${google_storage_bucket.data.name}/objects/"
+  # Job ごとに読み書きできる場所。photo-pipeline/ はワークフローに渡す結果 (Job の名前のファイル)
+  data_job_writes = {
+    "mitene-downloader" = ["photo-index/", "photo-pipeline/"]
+    "photo-tagger"      = ["photo-tags/", "photo-pipeline/"]
+    "face-indexer"      = ["faces/index.json", "photo-pipeline/"]
+    "growth-video"      = ["growth/"]
+  }
+}
+
+resource "google_storage_bucket_iam_member" "common_api_data" {
+  bucket = google_storage_bucket.data.name
+  role   = "roles/storage.objectUser"
+  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "common_api_cache" {
+  bucket = google_storage_bucket.cache.name
+  role   = "roles/storage.objectUser"
+  member = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+resource "google_storage_bucket_iam_member" "jobs_data_write" {
+  for_each = local.data_job_writes
+  bucket   = google_storage_bucket.data.name
+  role     = "roles/storage.objectUser"
+  member   = "serviceAccount:${google_service_account.service_accounts[each.key].email}"
+  condition {
+    title       = "${each.key} data"
+    description = "${join(", ", each.value)} だけを読み書きできる"
+    expression = join(" || ", [
+      for p in each.value : "resource.name.startsWith(\"${local.data_objects}${p}\")"
+    ])
+  }
+}
+
+# mitene-downloader は、画面から消した写真の印 (photo-deletions/) の一覧を読んで、取り直さないようにする
+resource "google_storage_bucket_iam_member" "mitene_downloader_data_deletions" {
+  bucket = google_storage_bucket.data.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.service_accounts["mitene-downloader"].email}"
+  condition {
+    title       = "photo deletions"
+    description = "消した写真の印 (photo-deletions/) の一覧と中身だけを読める"
+    expression  = "resource.name == \"projects/_/buckets/${google_storage_bucket.data.name}\" || resource.name.startsWith(\"${local.data_objects}photo-deletions/\")"
+  }
+}
+
+# ワークフローは、各 Job が書いた結果 (photo-pipeline/) を読んで Slack に送る
+resource "google_storage_bucket_iam_member" "photo_pipeline_data" {
+  bucket = google_storage_bucket.data.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.service_accounts["photo-pipeline"].email}"
+  condition {
+    title       = "photo pipeline reports"
+    description = "Job の結果 (photo-pipeline/) だけを読める"
+    expression  = "resource.name.startsWith(\"${local.data_objects}photo-pipeline/\")"
+  }
+}
