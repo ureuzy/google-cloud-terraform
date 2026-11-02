@@ -31,5 +31,8 @@ module "project-services" {
     "policyanalyzer.googleapis.com",
     "bigquery.googleapis.com",
     "container.googleapis.com",
+    # 写真の取り込みと解析のワークフロー (Cloud Run Job を順に動かす)
+    "workflows.googleapis.com",
+    "workflowexecutions.googleapis.com",
   ]
 }

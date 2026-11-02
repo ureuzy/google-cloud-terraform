@@ -5,6 +5,7 @@ locals {
     "photo-tagger"      = "Service Account for the photo-tagger Cloud Run Job"
     "face-indexer"      = "Service Account for the face-indexer Cloud Run Job"
     "growth-video"      = "Service Account for the growth-video Cloud Run Job"
+    "photo-pipeline"    = "Service Account for the photo-pipeline workflow (runs mitene-downloader, photo-tagger and face-indexer in order)"
     "activity-analyzer" = "Analyze unused service account"
     "audit-alert"       = "Service Account for Audit alert"
     "ai-reporter"       = "Service Account for the ai-reporter Cloud Run Job"

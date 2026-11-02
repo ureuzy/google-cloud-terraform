@@ -1,55 +1,19 @@
-resource "google_cloud_scheduler_job" "mitene_downloader" {
-  name        = "mitene-downloader"
-  description = "Trigger mitene-downloader Cloud Run Job"
+# 写真の取り込みと解析のワークフロー (みてねの取り込み → 写っているもの・顔) を毎日 0:00 に起こす。
+# 前は mitene-downloader (0:00)・photo-tagger と face-indexer (1:00) をそれぞれ時刻で動かしていた。3 つの Job はワークフローからだけ動く。
+# photo-tagger は 1 回で Workers AI の無料枠 (1 日 10,000 ニューロン) に収まる枚数まで見る (枚数は photo-tagger の job.yaml)
+resource "google_cloud_scheduler_job" "photo_pipeline" {
+  name        = "photo-pipeline"
+  description = "Trigger the photo-pipeline workflow"
   region      = "asia-northeast1"
   schedule    = "0 0 * * *"
   time_zone   = "Asia/Tokyo"
 
   http_target {
-    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/mitene-downloader:run"
+    uri         = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.photo_pipeline.id}/executions"
     http_method = "POST"
 
     oauth_token {
-      service_account_email = google_service_account.service_accounts["mitene-downloader"].email
-    }
-  }
-}
-
-# 写真の中身を見るのは毎日 1 回、mitene-downloader (0:00) が新しい写真を取り込んだあと。
-# 1 回で Workers AI の無料枠 (1 日 10,000 ニューロン) に収まる枚数まで見る (枚数は photo-tagger の job.yaml)
-resource "google_cloud_scheduler_job" "photo_tagger" {
-  name        = "photo-tagger"
-  description = "Trigger photo-tagger Cloud Run Job"
-  region      = "asia-northeast1"
-  schedule    = "0 1 * * *"
-  time_zone   = "Asia/Tokyo"
-
-  http_target {
-    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/photo-tagger:run"
-    http_method = "POST"
-
-    oauth_token {
-      service_account_email = google_service_account.service_accounts["photo-tagger"].email
-    }
-  }
-}
-
-# 写真の顔を見つけるのは毎日 1 回、mitene-downloader (0:00) が新しい写真を取り込んだあと。外の AI サービスは使わず Job の中で見る。
-# photo-tagger と同じ時間でよい (書くファイルも、使う計算の場所も別でぶつからない)。
-# これまでの写真を見終わって新しい写真だけになったら、アップロードした写真もすぐ見られるよう、1 時間ごとにしてもよい
-resource "google_cloud_scheduler_job" "face_indexer" {
-  name        = "face-indexer"
-  description = "Trigger face-indexer Cloud Run Job"
-  region      = "asia-northeast1"
-  schedule    = "0 1 * * *"
-  time_zone   = "Asia/Tokyo"
-
-  http_target {
-    uri         = "https://asia-northeast1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_project.main.project_id}/jobs/face-indexer:run"
-    http_method = "POST"
-
-    oauth_token {
-      service_account_email = google_service_account.service_accounts["face-indexer"].email
+      service_account_email = google_service_account.service_accounts["photo-pipeline"].email
     }
   }
 }
