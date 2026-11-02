@@ -42,16 +42,25 @@ resource "google_project_iam_member" "mitene_downloader" {
 # - run.viewer: Job が終わるまで待つ (動かしたときの長い処理を読む run.operations.get)
 # - workflows.invoker: Scheduler がワークフローを起こす
 # - logging.logWriter: 失敗したステップをログに残す (call_log_level)
+# - run.jobsExecutorWithOverrides: Job に結果を書く場所 (環境変数 REPORT_OBJECT) を渡して動かす
 resource "google_project_iam_member" "photo_pipeline" {
   for_each = toset([
     "roles/run.invoker",
     "roles/run.viewer",
+    "roles/run.jobsExecutorWithOverrides",
     "roles/workflows.invoker",
     "roles/logging.logWriter",
   ])
   project = data.google_project.main.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.service_accounts["photo-pipeline"].email}"
+}
+
+# 3 つの Job の結果を、1 つの投稿とスレッドにまとめて Slack に送る (billing-monitor と同じボット。Webhook ではスレッドに返信できない)
+resource "google_secret_manager_secret_iam_member" "photo_pipeline_slack" {
+  secret_id = google_secret_manager_secret.secrets["slack-ai-bot"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_accounts["photo-pipeline"].email}"
 }
 
 # photo-tagger: 写真のサムネイルを読み、写っているもの (タグ・説明) を photo-tags/ に書く。結果は Slack に知らせる

@@ -77,6 +77,7 @@ Rules that follow from these roles:
 
 ### Storage
 
+- Which bucket holds what is written in [cloud_functions/STORAGE.md](https://github.com/ureuzy/cloud_functions/blob/main/STORAGE.md): photos, videos and images in `ureuzy-family-photos`, data that must not be lost in `ureuzy-family-data`, and things that can be rebuilt in `ureuzy-cache`. Follow it when adding a prefix or a bucket, and update it in the same change.
 - Buckets set `uniform_bucket_level_access = true`, `public_access_prevention = "enforced"` and `force_destroy = false`.
 - Add a lifecycle rule for every prefix that holds temporary or old-version data, with a comment saying why the retention period was chosen.
 
