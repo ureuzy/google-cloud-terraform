@@ -70,38 +70,6 @@ resource "google_storage_bucket" "photos" {
     }
   }
 
-  # 行った場所 (photo-places/)・行きたいリスト (wishlist/)。書き直すたびに古い版ができるので 7 日で消す (それまでは間違えて書き換えても戻せる)
-  lifecycle_rule {
-    condition {
-      days_since_noncurrent_time = 7
-      matches_prefix             = ["photo-places/", "wishlist/"]
-    }
-    action {
-      type = "Delete"
-    }
-  }
-}
-
-# おでかけ提案のデータの置き場所
-# - places/   AI が調べた入場料・駐車場料金など。料金は変わるので 30 日で消し、次に提案するときに調べ直す
-# - settings.json  家族構成とジャンル (画面から編集する)。消さない
-resource "google_storage_bucket" "odekake_cache" {
-  name                        = "ureuzy-odekake-cache"
-  location                    = "ASIA-NORTHEAST1"
-  storage_class               = "STANDARD"
-  uniform_bucket_level_access = true
-  public_access_prevention    = "enforced"
-  force_destroy               = false
-
-  lifecycle_rule {
-    condition {
-      age            = 30
-      matches_prefix = ["places/"]
-    }
-    action {
-      type = "Delete"
-    }
-  }
 }
 
 # 消えたら困るデータ (家族が入れたもの・直したもの、夜の Job の結果、設定、Job の受け渡し)。
