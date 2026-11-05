@@ -9,6 +9,9 @@
 # - 結果は Job ごとに Slack に送らず、データのバケットの photo-pipeline/{実行 ID}/{Job}.json に書いてもらう (環境変数 REPORT_OBJECT)。
 #   最後に 1 つの投稿 (Job ごとに名前と結果) にまとめ、Job ごとの詳しい結果をスレッドに返信する (notify)。
 #   送れなくてもワークフローは失敗にしない (写真の取り込みと解析はできているため)
+# - Job を動かすときに Cloud Run の API に届かなかった (ConnectionError) ときは、少し待ってやり直す (unreachable)。
+#   2026-11-05 0:00 に一度届かず、mitene-downloader が動かないまま失敗になった。Job の中で起きたエラーはやり直さない。
+#   Job が始まったあとに届かなくなってやり直しても、3 つの Job は続きからやるので、同じ写真を 2 回扱わない
 main:
   params: [args]
   steps:
@@ -38,6 +41,13 @@ main:
                       - name: REPORT_OBJECT
                         value: ${reports + "mitene-downloader.json"}
             connector_params: ${wait}
+        retry:
+          predicate: ${unreachable}
+          max_retries: 3
+          backoff:
+            initial_delay: 10
+            max_delay: 60
+            multiplier: 2
         except:
           as: e
           assign:
@@ -61,6 +71,13 @@ main:
                                     - name: REPORT_OBJECT
                                       value: ${reports + "photo-tagger.json"}
                           connector_params: ${wait}
+                      retry:
+                        predicate: ${unreachable}
+                        max_retries: 3
+                        backoff:
+                          initial_delay: 10
+                          max_delay: 60
+                          multiplier: 2
                       except:
                         as: e
                         assign:
@@ -79,6 +96,13 @@ main:
                                     - name: REPORT_OBJECT
                                       value: ${reports + "face-indexer.json"}
                           connector_params: ${wait}
+                      retry:
+                        predicate: ${unreachable}
+                        max_retries: 3
+                        backoff:
+                          initial_delay: 10
+                          max_delay: 60
+                          multiplier: 2
                       except:
                         as: e
                         assign:
@@ -315,3 +339,18 @@ notify:
                           - type: mrkdwn
                             text: ${context}
                     attachments: ${attachments}
+
+# unreachable は、Cloud Run の API に届かなかったエラーか (やり直してよい)。Job の中で起きたエラー (Job の失敗) は false
+unreachable:
+  params: [e]
+  steps:
+    - has_tags:
+        switch:
+          - condition: ${not ("tags" in e)}
+            return: false
+    - connection:
+        switch:
+          - condition: ${"ConnectionError" in e.tags or "ConnectionFailedError" in e.tags}
+            return: true
+    - other:
+        return: false
