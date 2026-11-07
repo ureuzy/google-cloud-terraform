@@ -447,3 +447,17 @@ resource "google_storage_bucket_iam_member" "photo_pipeline_data" {
     expression  = "resource.name.startsWith(\"${local.data_objects}photo-pipeline/\")"
   }
 }
+
+# Cloud Build が、Go の組み立ての途中のもの (ダウンロードしたライブラリ・組み立てた結果) をキャッシュのバケットに置いて、次のビルドで使い回す。
+# 置くのは build-cache/ の下だけ。消えても次のビルドが遅くなるだけ (cloud_functions の STORAGE.md)
+resource "google_storage_bucket_iam_member" "cloudbuild_build_cache" {
+  bucket = google_storage_bucket.cache.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.service_accounts["cloudbuild"].email}"
+
+  condition {
+    title       = "build cache"
+    description = "Only the build cache under build-cache/"
+    expression  = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.cache.name}/objects/build-cache/\")"
+  }
+}
