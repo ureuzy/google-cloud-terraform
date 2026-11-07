@@ -20,6 +20,13 @@ locals {
     "cloudflare-workers-ai-token",
     # common-api の「外部サービスの使用量」で Workers AI の使用量を読む Cloudflare のトークン (cloudflare-terraform で作り、値は terraform output から入れる)
     "cloudflare-analytics-token",
+    # 写真を小さくして配る Cloudflare Worker (cloud_functions の photo-cdn)。
+    # - photo-cdn-gcs-hmac: Worker が写真のバケットを読む HMAC キー (terraform が作って入れる。storage.tf)
+    # - photo-cdn-signing-key: common-api が写真の URL に付ける署名の鍵。Worker が確かめる (terraform が作って入れる)
+    # - cloudflare-photo-cdn-token: Cloud Build が Worker をデプロイする Cloudflare のトークン (cloudflare-terraform で作り、値は terraform output から入れる)
+    "photo-cdn-gcs-hmac",
+    "photo-cdn-signing-key",
+    "cloudflare-photo-cdn-token",
   ]
 }
 
@@ -35,4 +42,15 @@ resource "google_secret_manager_secret" "secrets" {
 import {
   id = "projects/ureuzy-common/secrets/mitene-password"
   to = google_secret_manager_secret.secrets["mitene-password"]
+}
+
+# common-api が写真の URL に付ける署名 (HMAC-SHA256) の鍵。Worker (photo-cdn) と common-api だけが読む
+resource "random_password" "photo_cdn_signing_key" {
+  length  = 64
+  special = false
+}
+
+resource "google_secret_manager_secret_version" "photo_cdn_signing_key" {
+  secret      = google_secret_manager_secret.secrets["photo-cdn-signing-key"].id
+  secret_data = random_password.photo_cdn_signing_key.result
 }

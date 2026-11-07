@@ -67,6 +67,7 @@ Rules that follow from these roles:
 - Group the roles for one principal into one resource with `for_each = toset([...])` and a `# For <name> SA Permissions` comment, following `common/iam.tf`.
 - Grant the narrowest scope that works: a bucket, secret, or service account rather than the project. Use IAM conditions to limit a role to object prefixes (see `common_api_photos_ai_edits`).
 - Do not create service account keys. Terraform Cloud and GitHub Actions authenticate with Workload Identity Federation. Signed URLs use `signBlob` on the account itself.
+  - One exception: the `photo-cdn` Cloudflare Worker reads photos with an HMAC key (`google_storage_hmac_key.photo_cdn`), because Cloudflare cannot use Workload Identity Federation. Its account can only read the photo prefixes the app shows (`photo_cdn_photos`). Do not add more keys like it without the owner's approval.
 - Give Cloud Run public access (`allUsers` → `roles/run.invoker`) only to services that need it, and set `ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"` on services that only receive internal traffic.
 
 ### Service accounts and secrets

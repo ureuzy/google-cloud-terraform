@@ -316,6 +316,42 @@ resource "google_secret_manager_secret_iam_member" "common_api_netflix" {
 }
 
 
+# common-api が写真の URL に付ける署名の鍵 (photo-cdn)
+resource "google_secret_manager_secret_iam_member" "common_api_photo_cdn" {
+  secret_id = google_secret_manager_secret.secrets["photo-cdn-signing-key"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_accounts["common-api"].email}"
+}
+
+# photo-cdn (Cloudflare Worker) が読める写真。画面に出す写真とサムネイルだけで、読むだけ (一覧も取れない)。
+# アップロードの受け取り途中 (uploads/incoming/) は読ませない
+locals {
+  photo_cdn_read_prefixes = ["mitene/", "mitene-thumbs/", "uploads/", "uploads-thumbs/"]
+}
+
+resource "google_storage_bucket_iam_member" "photo_cdn_photos" {
+  bucket = google_storage_bucket.photos.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.service_accounts["photo-cdn"].email}"
+
+  condition {
+    title       = "photos shown in the app"
+    description = "Only the photos and thumbnails the app shows, not uploads in progress"
+    expression = join(" && ", [
+      "(${join(" || ", [for p in local.photo_cdn_read_prefixes : "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/${p}\")"])})",
+      "!resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.photos.name}/objects/uploads/incoming/\")",
+    ])
+  }
+}
+
+# Cloud Build が photo-cdn (Cloudflare Worker) をデプロイするときに読む: Cloudflare のトークンと、Worker に入れる秘密の値
+resource "google_secret_manager_secret_iam_member" "cloudbuild_photo_cdn" {
+  for_each  = toset(["cloudflare-photo-cdn-token", "photo-cdn-gcs-hmac", "photo-cdn-signing-key"])
+  secret_id = google_secret_manager_secret.secrets[each.value].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_accounts["cloudbuild"].email}"
+}
+
 # For GKE Autopilot node SA Permissions
 resource "google_project_iam_member" "gke_common" {
   for_each = toset([
