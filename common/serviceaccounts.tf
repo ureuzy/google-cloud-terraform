@@ -11,6 +11,7 @@ locals {
     "ai-reporter"       = "Service Account for the ai-reporter Cloud Run Job"
     "ai-sensei"         = "Service Account for the ai-sensei services (daily-poster and event-handler)"
     "common-api"        = "Service Account for the common-api Cloud Run Service"
+    "photo-cdn"         = "Service Account for the photo-cdn Cloudflare Worker (reads photos to resize them; HMAC key only)"
     "gke-common"        = "Service Account for GKE Autopilot cluster"
     "cloudbuild"        = "Custom Service Account for Cloud Build triggers"
     "clouddeploy"       = "Custom Service Account for Cloud Deploy operations"

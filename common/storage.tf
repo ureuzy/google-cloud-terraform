@@ -128,3 +128,19 @@ resource "google_storage_bucket" "cache" {
     }
   }
 }
+
+# 写真を小さくして配る Cloudflare Worker (cloud_functions の photo-cdn) が、写真のバケットを読むための HMAC キー。
+# Cloudflare から Google Cloud には Workload Identity Federation で入れないので、サービスアカウントの鍵を作らない決まりの例外として、
+# 読むだけ・写真の場所だけに絞ったサービスアカウント (photo-cdn) の HMAC キーにする (iam.tf の photo_cdn_photos)。
+# 値は Secret Manager に入れ、Cloud Build が Worker をデプロイするときに Worker の秘密の値にする
+resource "google_storage_hmac_key" "photo_cdn" {
+  service_account_email = google_service_account.service_accounts["photo-cdn"].email
+}
+
+resource "google_secret_manager_secret_version" "photo_cdn_gcs_hmac" {
+  secret = google_secret_manager_secret.secrets["photo-cdn-gcs-hmac"].id
+  secret_data = jsonencode({
+    access_id = google_storage_hmac_key.photo_cdn.access_id
+    secret    = google_storage_hmac_key.photo_cdn.secret
+  })
+}

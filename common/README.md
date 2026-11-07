@@ -40,6 +40,8 @@ Common infrastructure resources for application workloads.
 | audit-alert | Service | - |
 | common-api | Service | - |
 
+The `photo-cdn` Cloudflare Worker (cloud_functions `photo-cdn/`) is not on Cloud Run. Cloud Build deploys it with wrangler, using the `cloudflare-photo-cdn-token` secret, and gives it the `photo-cdn-gcs-hmac` and `photo-cdn-signing-key` secrets.
+
 ## Architecture
 
 ### Runtime

@@ -258,3 +258,20 @@ resource "google_cloudbuild_trigger" "common_api" {
     _PIPELINE_NAME  = google_clouddeploy_delivery_pipeline.common_api.name
   }
 }
+
+# 写真を小さくして配る Cloudflare Worker。Cloud Run ではないので、Cloud Build が wrangler でデプロイする (Cloud Deploy は使わない)
+resource "google_cloudbuild_trigger" "photo_cdn" {
+  location        = "asia-northeast1"
+  name            = "photo-cdn"
+  service_account = google_service_account.service_accounts["cloudbuild"].id
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.cloud_functions.id
+    push {
+      branch = "^main$"
+    }
+  }
+  included_files = ["photo-cdn/**"]
+  ignored_files  = ["photo-cdn/**/*.md"]
+  filename       = "photo-cdn/cloudbuild.yaml"
+}
