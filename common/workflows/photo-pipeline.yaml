@@ -136,7 +136,7 @@ main:
           - condition: ${faceError != null}
             raise: ${faceError}
 
-# notify は、3 つの Job の結果を Slack (#google_cloud) にまとめる (Block Kit)。
+# notify は、3 つの Job の結果を Slack (#general) にまとめる (Block Kit)。
 # - 本文: 見出し、結果 (✅・⚠️・❌)・始めた時刻・かかった時間、Job ごとに名前 (太字) と結果の行。途中でやめた・エラーは、その下に 1 行ずつ (Job が書いた notes)
 # - スレッド: Job ごとに 1 件。名前と Job の名前・かかった時間、Job が書いた囲み
 # 結果のファイルがない (Job ごと落ちた) ときは「結果なし」とし、ワークフローが受け取ったエラーを返信に出す。
@@ -161,7 +161,7 @@ notify:
           - sections: []
           - failed: false
           - stopped: false
-          - channel: "#google_cloud"
+          - channel: "#general"
     - read_reports:
         for:
           value: job
