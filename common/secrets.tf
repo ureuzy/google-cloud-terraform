@@ -27,6 +27,8 @@ locals {
     "photo-cdn-gcs-hmac",
     "photo-cdn-signing-key",
     "cloudflare-photo-cdn-token",
+    # billing-monitor が Cloudflare の Billable Usage API で今月の料金を読むトークン (cloudflare-terraform で作り、値は terraform output から入れる)
+    "cloudflare-billing-token",
     # 家族が入れ直した元の動画を置く Cloudflare R2 のバケット (ureuzy-family-originals) を、common-api が S3 互換の API で読み書きする鍵。
     # cloudflare-terraform で作り、値は terraform output から入れる (cloud_functions の STORAGE.md)
     "r2-originals-access-key-id",

@@ -54,6 +54,8 @@ flowchart TB
   cfai(["Cloudflare Workers AI<br/>(cloudflare-terraform)"])
   r2[("Cloudflare R2<br/>ureuzy-family-originals<br/>(cloudflare-terraform)")]
   slack(["Slack"])
+  awsbill[("AWS billing export (S3)<br/>(aws-terraform)")]
+  cfbill(["Cloudflare Billable Usage API<br/>(cloudflare-terraform)"])
 
   subgraph org["Organization: ureuzy.io"]
     direction TB
@@ -101,6 +103,8 @@ flowchart TB
   api -->|run| wf
 
   billing -->|read| bq
+  billing -->|ID token → AWS role| awsbill
+  billing -->|cloudflare-billing-token| cfbill
   mitene -->|write| photos
   tagger -->|thumbnails / photo-tags| photos
   tagger -->|thumbnails| cfai
