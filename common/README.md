@@ -42,6 +42,8 @@ Common infrastructure resources for application workloads.
 
 The `photo-cdn` Cloudflare Worker (cloud_functions `photo-cdn/`) is not on Cloud Run. Cloud Build deploys it with wrangler, using the `cloudflare-photo-cdn-token` secret, and gives it the `photo-cdn-gcs-hmac` and `photo-cdn-signing-key` secrets.
 
+Original videos that the family re-uploads are not in Cloud Storage but in the Cloudflare R2 bucket `ureuzy-family-originals` (cloudflare-terraform). common-api reads and writes it through the S3-compatible API with the keys in the `r2-originals-access-key-id` and `r2-originals-secret-access-key` secrets.
+
 ## Architecture
 
 ### Runtime
@@ -50,6 +52,7 @@ The `photo-cdn` Cloudflare Worker (cloud_functions `photo-cdn/`) is not on Cloud
 flowchart TB
   user(["Browser<br/>home.ureuzy.io"])
   cfai(["Cloudflare Workers AI<br/>(cloudflare-terraform)"])
+  r2[("Cloudflare R2<br/>ureuzy-family-originals<br/>(cloudflare-terraform)")]
   slack(["Slack"])
 
   subgraph org["Organization: ureuzy.io"]
@@ -107,9 +110,10 @@ flowchart TB
   reporter & poster --> vertex
   handler --> vertex & fs
   api --> photos & cache & gapis & vertex
+  api -->|r2-originals keys| r2
 
   user --> api
-  user -->|signed URL| photos
+  user -->|signed URL| photos & r2
   user -->|Maps JS key| gapis
   slack -->|events| handler
   jobs & audit -.->|notify| slack
