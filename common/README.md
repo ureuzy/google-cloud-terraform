@@ -115,6 +115,7 @@ flowchart TB
   handler --> vertex & fs
   api --> photos & cache & gapis & vertex
   api -->|r2-originals keys| r2
+  api -->|usage page| awsbill & cfbill
 
   user --> api
   user -->|signed URL| photos & r2
