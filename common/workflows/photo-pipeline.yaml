@@ -12,6 +12,8 @@
 # - Job を動かすときに Cloud Run の API に届かなかった (ConnectionError) ときは、少し待ってやり直す (unreachable)。
 #   2026-11-05 0:00 に一度届かず、mitene-downloader が動かないまま失敗になった。Job の中で起きたエラーはやり直さない。
 #   Job が始まったあとに届かなくなってやり直しても、3 つの Job は続きからやるので、同じ写真を 2 回扱わない
+# - みてねから新しい写真・動画を取り込んだら、解析を待たずに common-api に数を渡し、家族のスマホに知らせてもらう (announce)。
+#   common-api はこのワークフローのサービスアカウントの ID トークン (OIDC) だけを通す。送れなくてもワークフローは失敗にしない
 main:
   params: [args]
   steps:
@@ -20,6 +22,8 @@ main:
           - parent: ${"projects/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/locations/asia-northeast1/jobs/"}
           - reports: ${"photo-pipeline/" + sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID") + "/"}
           - started: ${sys.now()}
+          # 家族のスマホに知らせる common-api (ID トークンの宛先もこの URL)
+          - commonApi: https://common-api-323389818498.asia-northeast1.run.app
           - wait:
               timeout: 10800
               polling_policy:
@@ -52,6 +56,51 @@ main:
           as: e
           assign:
             - downloadError: ${e}
+    # 取り込んだ数は mitene-downloader の結果のファイルから読む (Job ごと落ちて結果がないときは送らない)
+    - announce:
+        try:
+          steps:
+            - read_download:
+                call: googleapis.storage.v1.objects.get
+                args:
+                  bucket: ureuzy-family-data
+                  object: ${text.url_encode(reports + "mitene-downloader.json")}
+                  alt: media
+                result: downloaded
+            - decode_download:
+                switch:
+                  - condition: ${get_type(downloaded) == "bytes" or get_type(downloaded) == "string"}
+                    assign:
+                      - downloaded: ${json.decode(downloaded)}
+            # and が先で止まるとは限らないので、数があるかと、0 より多いかを分けて確かめる
+            - has_counts:
+                switch:
+                  - condition: ${"photos" in downloaded and "movies" in downloaded}
+                    steps:
+                      - has_new:
+                          switch:
+                            - condition: ${downloaded.photos + downloaded.movies > 0}
+                              steps:
+                                - post_imported:
+                                    call: http.post
+                                    args:
+                                      url: ${commonApi + "/internal/photo-pipeline/imported"}
+                                      auth:
+                                        type: OIDC
+                                        audience: ${commonApi}
+                                      body:
+                                        photos: ${downloaded.photos}
+                                        movies: ${downloaded.movies}
+        except:
+          as: e
+          steps:
+            - log_announce_error:
+                call: sys.log
+                args:
+                  severity: ERROR
+                  json:
+                    message: failed to tell common-api about the new photos
+                    error: ${e}
     # 枝ごとに失敗を受け止めて、両方が終わってから通知する (失敗にするのは最後の finish)
     - analyze:
         parallel:

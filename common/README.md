@@ -15,7 +15,7 @@ Common infrastructure resources for application workloads.
 | clouddeploy.tf | Cloud Deploy pipelines and targets |
 | gke.tf | GKE Autopilot cluster |
 | schedulers.tf | Cloud Scheduler jobs for periodic Cloud Run and workflow execution |
-| workflows.tf | Workflows (`photo-pipeline`: runs the photo jobs in order, source in `workflows/`) |
+| workflows.tf | Workflows (`photo-pipeline`: runs the photo jobs in order and asks common-api to notify phones about new mitene photos, source in `workflows/`) |
 | serviceaccounts.tf | Service accounts (managed via `for_each`) |
 | iam.tf | IAM bindings and public access settings |
 | secrets.tf | Secret Manager secrets (managed via `for_each`) |
